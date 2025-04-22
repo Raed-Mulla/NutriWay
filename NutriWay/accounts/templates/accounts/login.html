@@ -4,7 +4,8 @@
 {% block content %}
 <section class="login">
   <div class="container">
-    <form>
+    <form action="" method="post">
+      {% csrf_token %}
       <div class="mb-3">
         <label class="form-label">Username</label>
         <input type="text" class="form-control" name="username" required>

@@ -7,7 +7,8 @@
       <button type="button" onclick="showForm('signup-user')">Signup as User</button>
       <button type="button" onclick="showForm('signup-specialists')">Signup as Specialist</button>      
     </div>
-    <form id="signup-user" class="mt-5" action="">
+    <form id="signup-user" class="mt-5" action="" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
       <div class="mb-3">
         <label class="form-label">First Name</label>
         <input type="text" class="form-control" name="first_name" placeholder="Enter your first name" required>
@@ -53,12 +54,17 @@
         <input type="number" class="form-control" name="height" placeholder="Enter your height" required>
       </div>
       <div class="mb-3">
+        <label class="form-label">Goal</label>
+        <textarea class="form-control" name="goal" placeholder="Enter your goal" required></textarea>
+      </div>
+      <div class="mb-3">
         <label class="form-label">Chronic Diseases</label>
         <textarea class="form-control" name="chronic-diseases" placeholder="Enter any chronic diseases"></textarea>
       </div>
       <input type="submit" class="btn" value="Submit">
     </form>
-    <form id="signup-specialists" class="d-none mt-5" action="">
+    <form id="signup-specialists" class="d-none mt-5" action="" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
       <div class="mb-3">
         <label class="form-label">First Name</label>
         <input type="text" class="form-control" name="first_name" placeholder="Enter your first name" required>
