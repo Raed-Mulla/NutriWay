@@ -7,7 +7,7 @@
       <button type="button" onclick="showForm('signup-user')">Signup as User</button>
       <button type="button" onclick="showForm('signup-specialists')">Signup as Specialist</button>      
     </div>
-    <form id="signup-user" class="mt-5" action="" method="post" enctype="multipart/form-data">
+    <form id="signup-user" class="mt-5" action="{%url 'accounts:user_register_view'%}" method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="mb-3">
         <label class="form-label">First Name</label>
@@ -35,15 +35,15 @@
       </div>
       <div class="mb-3">
         <label class="form-label">Gender</label>
-        <select class="form-select" required>
+        <select class="form-select" name="gender" required>
           <option>Gender</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
         </select>
       </div>
       <div class="mb-3">
         <label class="form-label">Birth Date</label>
-        <input type="date" class="form-control" required>
+        <input type="date" class="form-control" name="birth_date" required>
       </div>
       <div class="mb-3">
         <label class="form-label">Weight</label>
@@ -63,7 +63,7 @@
       </div>
       <input type="submit" class="btn" value="Submit">
     </form>
-    <form id="signup-specialists" class="d-none mt-5" action="" method="post" enctype="multipart/form-data">
+    <form id="signup-specialists" class="d-none mt-5" action="{%url 'accounts:specialist_register_view' %}" method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="mb-3">
         <label class="form-label">First Name</label>
@@ -91,19 +91,34 @@
       </div>
       <div class="mb-3">
         <label class="form-label">Gender</label>
-        <select class="form-select" required>
+        <select class="form-select" name="gender" required>
           <option>Gender</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
         </select>
       </div>
       <div class="mb-3">
         <label class="form-label">Birth Date</label>
-        <input type="date" class="form-control" required>
+        <input type="date" class="form-control" name="birth_date" required>
       </div>
       <div class="mb-3">
         <label class="form-label">Specialization Certificate</label>
-        <input type="file" class="form-control" required>
+        <input type="file" class="form-control" name="specialization_certificate" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Specialty</label>
+        <select class="form-select" name="specialty" required>
+          <option value="">Select your specialty</option>
+          <option value="clinical">Clinical Nutrition</option>
+          <option value="weight">Weight Management</option>
+          <option value="children">Pediatric Nutrition</option>
+          <option value="women">Womens Nutrition</option>
+          <option value="chronic">Chronic Conditions</option>
+          <option value="vegan">Vegan/Vegetarian Nutrition</option>
+          <option value="seniors">Geriatric Nutrition</option>
+          <option value="disorders">Eating Disorders</option>
+          <option value="preventive">Preventive Nutrition</option>
+        </select>
       </div>
       <div class="mb-3">
         <div>
@@ -113,7 +128,7 @@
         <div id="certificates-container">
         </div>
       </div>
-      <input type="submit" class="btn" value="Submit">
+      <input type="submit" class="btn" value="Submit" >
     </form>
   </div>
 </section>

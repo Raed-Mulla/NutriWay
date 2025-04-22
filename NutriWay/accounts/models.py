@@ -46,7 +46,7 @@ class Specialist(models.Model):
     birth_date = models.DateField()
     specialization_certificate = models.FileField(upload_to='certificates/')
     specialty = models.CharField(max_length=30, choices=SpecialtyChoices.choices)
-    image = models.ImageField(upload_to='images/')
+    image = models.ImageField(upload_to='images/', default='images/default_profile.jpg')
     
     def __str__(self):
         return self.user.username

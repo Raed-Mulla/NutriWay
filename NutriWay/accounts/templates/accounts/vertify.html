@@ -1,0 +1,19 @@
+{% extends 'core/base.html' %}
+
+{%block content%}
+<div class="container d-flex flex-column justify-contact-center align-items-center">
+    <h2 class="mb-3"> code send to {{email}} to vertify </h2>
+    <form class="d-flex flex-column gap-3 w-50 " action="{%url 'accounts:vertify_view' %}" method="post" enctype="multipart/form-data">
+        {%csrf_token%}
+
+        <div class="form-floating">
+            <input type="hidden" name="email" value="{{ email }}">
+            <input type="text" class="form-control" name="code" id="foatingInput" placeholder="code" required>
+            <label for="floatingInput">code</label>
+        </div>
+            <input type="submit" class="btn btn-primary w-100 py-2" value="submit" >
+        </div>
+    </form>
+
+</div>
+{%endblock%}
