@@ -7,7 +7,7 @@
       <button type="button" onclick="showForm('signup-user')">Signup as User</button>
       <button type="button" onclick="showForm('signup-specialists')">Signup as Specialist</button>
     </div>
-    <form id="signup-user" class="mt-5 d-block" action="" method="post" enctype="multipart/form-data">
+    <form id="signup-user" class="mt-5" action="{%url 'accounts:user_register_view'%}" method="post" enctype="multipart/form-data">
       {% csrf_token %}
 
       <div class="form-step" id="user-step-1">
@@ -93,6 +93,7 @@
       </div>
     </form>
 
+
     <form id="signup-specialists" class="d-none" action="" method="post" enctype="multipart/form-data">
       {% csrf_token %}
 
@@ -153,6 +154,21 @@
           <input type="file" class="form-control" name="specialization_certificate" required>
         </div>
         <div class="mb-3">
+        <label class="form-label">Specialty</label>
+        <select class="form-select" name="specialty" required>
+          <option value="">Select your specialty</option>
+          <option value="clinical">Clinical Nutrition</option>
+          <option value="weight">Weight Management</option>
+          <option value="children">Pediatric Nutrition</option>
+          <option value="women">Womens Nutrition</option>
+          <option value="chronic">Chronic Conditions</option>
+          <option value="vegan">Vegan/Vegetarian Nutrition</option>
+          <option value="seniors">Geriatric Nutrition</option>
+          <option value="disorders">Eating Disorders</option>
+          <option value="preventive">Preventive Nutrition</option>
+        </select>
+        </div>
+        <div class="mb-3">
           <label class="form-label">Certificates</label>
           <button type="button" onclick="addCertificate()">Add Certificate</button>
           <div id="certificates-container"></div>
@@ -160,6 +176,8 @@
         <button type="button" onclick="previousSpecialistStep(3)">Previous</button>
         <input type="submit" class="btn" value="Submit">
       </div>
+      <input type="submit" class="btn" value="Submit" >
+
     </form>
 
   </div>
