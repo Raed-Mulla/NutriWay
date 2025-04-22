@@ -1,56 +1,162 @@
 {% extends 'core/base.html' %}
-
+{% block title %} Register {% endblock %}
 {% block content %}
-<section class="register">
+<section class="register mt-5">
   <div class="container">
-    
-    <form>
+    <div class="btns">
+      <button type="button" onclick="showForm('signup-user')">Signup as User</button>
+      <button type="button" onclick="showForm('signup-specialists')">Signup as Specialist</button>      
+    </div>
+    <form id="signup-user" class="mt-5" action="">
       <div class="mb-3">
         <label class="form-label">First Name</label>
-        <input type="text" class="form-control" name="first_name" required>
+        <input type="text" class="form-control" name="first_name" placeholder="Enter your first name" required>
       </div>
       <div class="mb-3">
         <label class="form-label">Last Name</label>
-        <input type="text" class="form-control" name="last_name" required>
+        <input type="text" class="form-control" name="last_name" placeholder="Enter your last name" required>
       </div>
       <div class="mb-3">
         <label class="form-label">Username</label>
-        <input type="text" class="form-control" name="username" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Password</label>
-        <input type="password" class="form-control" name="password" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Repeat Password</label>
-        <input type="password" class="form-control" name="repeat-password" required>
+        <input type="text" class="form-control" name="username" placeholder="Enter your username" required>
       </div>
       <div class="mb-3">
         <label class="form-label">Email address</label>
-        <input type="email" class="form-control" name="email" required>
+        <input type="email" class="form-control" name="email" placeholder="Enter your e-mail" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-control" name="password" placeholder="Enter password" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Repeat Password</label>
+        <input type="password" class="form-control" name="repeat-password" placeholder="Repeat your password" required>
       </div>
       <div class="mb-3">
         <label class="form-label">Gender</label>
-        <select class="form-select">
+        <select class="form-select" required>
           <option>Gender</option>
           <option value="male">Male</option>
           <option value="female">Female</option>
         </select>
       </div>
       <div class="mb-3">
+        <label class="form-label">Birth Date</label>
+        <input type="date" class="form-control" required>
+      </div>
+      <div class="mb-3">
         <label class="form-label">Weight</label>
-        <input type="number" class="form-control" name="weight" required>
+        <input type="number" class="form-control" name="weight" placeholder="Enter your weight" required>
       </div>
       <div class="mb-3">
         <label class="form-label">Height</label>
-        <input type="number" class="form-control" name="height" required>
+        <input type="number" class="form-control" name="height" placeholder="Enter your height" required>
       </div>
       <div class="mb-3">
         <label class="form-label">Chronic Diseases</label>
-        <textarea class="form-control" name="chronic-diseases"></textarea>
+        <textarea class="form-control" name="chronic-diseases" placeholder="Enter any chronic diseases"></textarea>
+      </div>
+      <input type="submit" class="btn" value="Submit">
+    </form>
+    <form id="signup-specialists" class="d-none mt-5" action="">
+      <div class="mb-3">
+        <label class="form-label">First Name</label>
+        <input type="text" class="form-control" name="first_name" placeholder="Enter your first name" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Last Name</label>
+        <input type="text" class="form-control" name="last_name" placeholder="Enter your last name" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Username</label>
+        <input type="text" class="form-control" name="username" placeholder="Enter your username" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Email address</label>
+        <input type="email" class="form-control" name="email" placeholder="Enter your e-mail" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-control" name="password" placeholder="Enter password" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Repeat Password</label>
+        <input type="password" class="form-control" name="repeat-password" placeholder="Repeat your password" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Gender</label>
+        <select class="form-select" required>
+          <option>Gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Birth Date</label>
+        <input type="date" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Specialization Certificate</label>
+        <input type="file" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <div>
+          <label class="form-label">Certificates</label>
+          <button type="button" onclick="addCertificate()">Add Certificate</button>
+        </div>
+        <div id="certificates-container">
+        </div>
       </div>
       <input type="submit" class="btn" value="Submit">
     </form>
   </div>
 </section>
+<script>
+    function showForm(formId) {
+    document.getElementById('signup-user').classList.add('d-none');
+    document.getElementById('signup-specialists').classList.add('d-none');
+
+    document.getElementById(formId).classList.remove('d-none');
+  }
+  let certificateCount = 1;
+
+function addCertificate() {
+  const container = document.getElementById("certificates-container");
+
+  const newField = document.createElement("div");
+  newField.className = "certificate-item mb-3";
+
+  newField.innerHTML = `
+    <div>
+      <label class="form-label">Certificate Name ${certificateCount}</label>
+      <input type="text" class="form-control mb-2" name="certificates-name-${certificateCount}" required>
+      <input type="file" class="form-control" required>
+    </div>
+    <button type="button" class="btn mt-2" onclick="removeCertificate(this)">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  `;
+
+  container.appendChild(newField);
+  resetCertificateLabels();
+}
+
+function removeCertificate(button) {
+  button.parentElement.remove();
+  resetCertificateLabels();
+}
+
+function resetCertificateLabels() {
+  const items = document.querySelectorAll('.certificate-item');
+  items.forEach((item, index) => {
+    const label = item.querySelector('label');
+    const input = item.querySelector('input[type="text"]');
+    label.textContent = `Certificate Name ${index + 1}`;
+    input.setAttribute('name', `certificates-name-${index + 1}`);
+  });
+  certificateCount = items.length + 1;
+}
+
+</script>
+
 {% endblock %}
