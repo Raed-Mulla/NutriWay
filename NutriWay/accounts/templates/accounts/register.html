@@ -5,107 +5,155 @@
   <div class="container">
     <div class="btns">
       <button type="button" onclick="showForm('signup-user')">Signup as User</button>
-      <button type="button" onclick="showForm('signup-specialists')">Signup as Specialist</button>      
+      <button type="button" onclick="showForm('signup-specialists')">Signup as Specialist</button>
     </div>
     <form id="signup-user" class="mt-5" action="{%url 'accounts:user_register_view'%}" method="post" enctype="multipart/form-data">
       {% csrf_token %}
-      <div class="mb-3">
-        <label class="form-label">First Name</label>
-        <input type="text" class="form-control" name="first_name" placeholder="Enter your first name" required>
+
+      <div class="form-step" id="user-step-1">
+        <div class="mb-3">
+          <label class="form-label">First Name</label>
+          <input type="text" class="form-control" name="first_name" placeholder="Enter your first name" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Last Name</label>
+          <input type="text" class="form-control" name="last_name" placeholder="Enter your last name" required>
+        </div>
+        <button type="button" onclick="nextUserStep()">Next</button>
       </div>
-      <div class="mb-3">
-        <label class="form-label">Last Name</label>
-        <input type="text" class="form-control" name="last_name" placeholder="Enter your last name" required>
+
+      <div class="form-step" id="user-step-2" style="display:none;">
+        <div class="mb-3">
+          <label class="form-label">Username</label>
+          <input type="text" class="form-control" name="username" placeholder="Enter your username" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Email address</label>
+          <input type="email" class="form-control" name="email" placeholder="Enter your e-mail" required>
+        </div>
+        <button type="button" onclick="prevUserStep()">Previous</button>
+        <button type="button" onclick="nextUserStep()">Next</button>
       </div>
-      <div class="mb-3">
-        <label class="form-label">Username</label>
-        <input type="text" class="form-control" name="username" placeholder="Enter your username" required>
+
+      <div class="form-step" id="user-step-3" style="display:none;">
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-control" name="password" placeholder="Enter password" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Repeat Password</label>
+          <input type="password" class="form-control" name="repeat-password" placeholder="Repeat your password"
+            required>
+        </div>
+        <button type="button" onclick="prevUserStep()">Previous</button>
+        <button type="button" onclick="nextUserStep()">Next</button>
       </div>
-      <div class="mb-3">
-        <label class="form-label">Email address</label>
-        <input type="email" class="form-control" name="email" placeholder="Enter your e-mail" required>
+
+      <div class="form-step" id="user-step-4" style="display:none;">
+        <div class="mb-3">
+          <label class="form-label">Gender</label>
+          <select class="form-select" name="gender" required>
+            <option value="">Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Birth Date</label>
+          <input type="date" class="form-control" name="birthdate" required>
+        </div>
+        <button type="button" onclick="prevUserStep()">Previous</button>
+        <button type="button" onclick="nextUserStep()">Next</button>
       </div>
-      <div class="mb-3">
-        <label class="form-label">Password</label>
-        <input type="password" class="form-control" name="password" placeholder="Enter password" required>
+
+      <div class="form-step" id="user-step-5" style="display:none;">
+        <div class="mb-3">
+          <label class="form-label">Weight</label>
+          <input type="number" class="form-control" name="weight" placeholder="Enter your weight" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Height</label>
+          <input type="number" class="form-control" name="height" placeholder="Enter your height" required>
+        </div>
+        <button type="button" onclick="prevUserStep()">Previous</button>
+        <button type="button" onclick="nextUserStep()">Next</button>
       </div>
-      <div class="mb-3">
-        <label class="form-label">Repeat Password</label>
-        <input type="password" class="form-control" name="repeat-password" placeholder="Repeat your password" required>
+
+      <div class="form-step" id="user-step-6" style="display:none;">
+        <div class="mb-3">
+          <label class="form-label">Goal</label>
+          <textarea class="form-control" name="goal" placeholder="Enter your goal" required></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Chronic Diseases</label>
+          <textarea class="form-control" name="chronic-diseases" placeholder="Enter any chronic diseases"></textarea>
+        </div>
+        <button type="button" onclick="prevUserStep()">Previous</button>
+        <input type="submit" class="btn" value="Submit">
       </div>
-      <div class="mb-3">
-        <label class="form-label">Gender</label>
-        <select class="form-select" name="gender" required>
-          <option>Gender</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Birth Date</label>
-        <input type="date" class="form-control" name="birth_date" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Weight</label>
-        <input type="number" class="form-control" name="weight" placeholder="Enter your weight" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Height</label>
-        <input type="number" class="form-control" name="height" placeholder="Enter your height" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Goal</label>
-        <textarea class="form-control" name="goal" placeholder="Enter your goal" required></textarea>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Chronic Diseases</label>
-        <textarea class="form-control" name="chronic-diseases" placeholder="Enter any chronic diseases"></textarea>
-      </div>
-      <input type="submit" class="btn" value="Submit">
     </form>
-    <form id="signup-specialists" class="d-none mt-5" action="{%url 'accounts:specialist_register_view' %}" method="post" enctype="multipart/form-data">
+
+
+    <form id="signup-specialists" class="d-none" action="" method="post" enctype="multipart/form-data">
       {% csrf_token %}
-      <div class="mb-3">
-        <label class="form-label">First Name</label>
-        <input type="text" class="form-control" name="first_name" placeholder="Enter your first name" required>
+
+      <div class="step" id="specialist-step-1">
+        <div class="mb-3">
+          <label class="form-label">First Name</label>
+          <input type="text" class="form-control" name="first_name" placeholder="Enter your first name" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Last Name</label>
+          <input type="text" class="form-control" name="last_name" placeholder="Enter your last name" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Username</label>
+          <input type="text" class="form-control" name="username" placeholder="Enter your username" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Email address</label>
+          <input type="email" class="form-control" name="email" placeholder="Enter your e-mail" required>
+        </div>
+        <button type="button" onclick="nextSpecialistStep(2)">Next</button>
       </div>
-      <div class="mb-3">
-        <label class="form-label">Last Name</label>
-        <input type="text" class="form-control" name="last_name" placeholder="Enter your last name" required>
+
+      <div class="step" id="specialist-step-2" style="display:none;">
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-control" name="password" placeholder="Enter password" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Repeat Password</label>
+          <input type="password" class="form-control" name="repeat-password" placeholder="Repeat your password"
+            required>
+        </div>
+        <button type="button" onclick="previousSpecialistStep(1)">Previous</button>
+        <button type="button" onclick="nextSpecialistStep(3)">Next</button>
       </div>
-      <div class="mb-3">
-        <label class="form-label">Username</label>
-        <input type="text" class="form-control" name="username" placeholder="Enter your username" required>
+
+      <div class="step" id="specialist-step-3" style="display:none;">
+        <div class="mb-3">
+          <label class="form-label">Gender</label>
+          <select class="form-select" name="gender" required>
+            <option value="">Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Birth Date</label>
+          <input type="date" class="form-control" name="birth_date" required>
+        </div>
+        <button type="button" onclick="previousSpecialistStep(2)">Previous</button>
+        <button type="button" onclick="nextSpecialistStep(4)">Next</button>
       </div>
-      <div class="mb-3">
-        <label class="form-label">Email address</label>
-        <input type="email" class="form-control" name="email" placeholder="Enter your e-mail" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Password</label>
-        <input type="password" class="form-control" name="password" placeholder="Enter password" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Repeat Password</label>
-        <input type="password" class="form-control" name="repeat-password" placeholder="Repeat your password" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Gender</label>
-        <select class="form-select" name="gender" required>
-          <option>Gender</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Birth Date</label>
-        <input type="date" class="form-control" name="birth_date" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Specialization Certificate</label>
-        <input type="file" class="form-control" name="specialization_certificate" required>
-      </div>
-      <div class="mb-3">
+
+      <div class="step" id="specialist-step-4" style="display:none;">
+        <div class="mb-3">
+          <label class="form-label">Specialization Certificate</label>
+          <input type="file" class="form-control" name="specialization_certificate" required>
+        </div>
+        <div class="mb-3">
         <label class="form-label">Specialty</label>
         <select class="form-select" name="specialty" required>
           <option value="">Select your specialty</option>
@@ -119,35 +167,38 @@
           <option value="disorders">Eating Disorders</option>
           <option value="preventive">Preventive Nutrition</option>
         </select>
-      </div>
-      <div class="mb-3">
-        <div>
+        </div>
+        <div class="mb-3">
           <label class="form-label">Certificates</label>
           <button type="button" onclick="addCertificate()">Add Certificate</button>
+          <div id="certificates-container"></div>
         </div>
-        <div id="certificates-container">
-        </div>
+        <button type="button" onclick="previousSpecialistStep(3)">Previous</button>
+        <input type="submit" class="btn" value="Submit">
       </div>
       <input type="submit" class="btn" value="Submit" >
+
     </form>
+
   </div>
 </section>
 <script>
-    function showForm(formId) {
+  // Show
+  function showForm(formId) {
     document.getElementById('signup-user').classList.add('d-none');
     document.getElementById('signup-specialists').classList.add('d-none');
 
     document.getElementById(formId).classList.remove('d-none');
   }
   let certificateCount = 1;
+  // Certificates
+  function addCertificate() {
+    const container = document.getElementById("certificates-container");
 
-function addCertificate() {
-  const container = document.getElementById("certificates-container");
+    const newField = document.createElement("div");
+    newField.className = "certificate-item mb-3";
 
-  const newField = document.createElement("div");
-  newField.className = "certificate-item mb-3";
-
-  newField.innerHTML = `
+    newField.innerHTML = `
     <div>
       <label class="form-label">Certificate Name ${certificateCount}</label>
       <input type="text" class="form-control mb-2" name="certificates-name-${certificateCount}" required>
@@ -158,25 +209,79 @@ function addCertificate() {
     </button>
   `;
 
-  container.appendChild(newField);
-  resetCertificateLabels();
-}
+    container.appendChild(newField);
+    resetCertificateLabels();
+  }
 
-function removeCertificate(button) {
-  button.parentElement.remove();
-  resetCertificateLabels();
-}
+  function removeCertificate(button) {
+    button.parentElement.remove();
+    resetCertificateLabels();
+  }
 
-function resetCertificateLabels() {
-  const items = document.querySelectorAll('.certificate-item');
-  items.forEach((item, index) => {
-    const label = item.querySelector('label');
-    const input = item.querySelector('input[type="text"]');
-    label.textContent = `Certificate Name ${index + 1}`;
-    input.setAttribute('name', `certificates-name-${index + 1}`);
-  });
-  certificateCount = items.length + 1;
-}
+  function resetCertificateLabels() {
+    const items = document.querySelectorAll('.certificate-item');
+    items.forEach((item, index) => {
+      const label = item.querySelector('label');
+      const input = item.querySelector('input[type="text"]');
+      label.textContent = `Certificate Name ${index + 1}`;
+      input.setAttribute('name', `certificates-name-${index + 1}`);
+    });
+    certificateCount = items.length + 1;
+  }
+  // User Form step
+  let userCurrentStep = 0;
+  const userSteps = document.querySelectorAll(".form-step");
+
+  function showUserStep(index) {
+    userSteps.forEach((step, i) => {
+      step.style.display = i === index ? "block" : "none";
+    });
+  }
+
+  function nextUserStep() {
+    if (userCurrentStep < userSteps.length - 1) {
+      userCurrentStep++;
+      showUserStep(userCurrentStep);
+    }
+  }
+
+  function prevUserStep() {
+    if (userCurrentStep > 0) {
+      userCurrentStep--;
+      showUserStep(userCurrentStep);
+    }
+  }
+
+  showUserStep(userCurrentStep);
+
+  // Specialist Form step
+  let specialistCurrentStep = 0;
+  const specialistSteps = document.querySelectorAll(".step");
+
+  function showSpecialistStep(index) {
+    specialistSteps.forEach((step, i) => {
+      step.style.display = i === index ? "block" : "none";
+    });
+  }
+
+  function nextSpecialistStep(step) {
+    if (specialistCurrentStep < specialistSteps.length - 1) {
+      specialistCurrentStep++;
+      showSpecialistStep(specialistCurrentStep);
+    }
+  }
+
+  function previousSpecialistStep(step) {
+    if (specialistCurrentStep > 0) {
+      specialistCurrentStep--;
+      showSpecialistStep(specialistCurrentStep);
+    }
+  }
+
+  showSpecialistStep(specialistCurrentStep);
+
+
+
 
 </script>
 
