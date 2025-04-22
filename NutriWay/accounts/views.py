@@ -148,7 +148,7 @@ def specialist_register_view(request: HttpRequest):
         else:
             messages.error(request, "Passwords must be the same", "alert-danger")
     
-    return render(request, "accounts/specialist_register.html")
+    return render(request, "accounts/register.html")
 
 def vertify_view(request:HttpRequest):
     if request.method == 'POST':
