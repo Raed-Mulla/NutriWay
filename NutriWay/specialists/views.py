@@ -48,7 +48,7 @@ def my_plans(request:HttpRequest):
 
 def all_specialists(request:HttpRequest):
     specialists = Specialist.objects.all()
-    return render(request, 'public/specialists_list.html', {'specialists': specialists})
+    return render(request, 'specialists/specialists_list.html', {'specialists': specialists})
 
 def specialist_detail(request:HttpRequest , specialist_id):
     try:
