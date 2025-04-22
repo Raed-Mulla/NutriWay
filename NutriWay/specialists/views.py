@@ -58,3 +58,4 @@ def specialist_detail(request:HttpRequest , specialist_id):
     except Specialist.DoesNotExist:
         return redirect("core:home_view")
     return render(request, 'public/specialist_detail.html', {'specialist': specialist,'certificate': certificate,'plans': plans})
+

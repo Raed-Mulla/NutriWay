@@ -1,9 +1,28 @@
 /* Main Conifg */
 :root {
+  /* Light Mode Colors */
+  --primary-color: #4CAF50;
+  --secondary-color: #81C784;
+  --accent-color: #FF7043;
+  --accent-hover: #F4511E;
+  --background-color: #F9FBE7;
+  --text-color: #333;
+  --heading-color: #2E7D32;
+  --link-hover: #388E3C;
+
+/* Dark Mode Colors */
+  --primary-color-dark: #81C784;
+  --secondary-color-dark: #4CAF50;
+  --accent-color-dark: #FF8A65;
+  --accent-hover-dark: #FF7043;
+  --background-color-dark: #1B1B1B;
+  --text-color-dark: #F1F1F1;
+  --heading-color-dark: #A5D6A7;
+  --link-hover-dark: #66BB6A;
 
 }
 body {
-
+  font-family: "Roboto Condensed", sans-serif;
 }
 /* Start Nav */
 .navbar .navbar-toggler:focus {
