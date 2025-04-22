@@ -1,0 +1,12 @@
+/* Main Conifg */
+:root {
+
+}
+body {
+
+}
+/* Start Nav */
+.navbar .navbar-toggler:focus {
+  box-shadow: none;
+}
+/* End Nav */
