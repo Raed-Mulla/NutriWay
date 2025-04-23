@@ -156,16 +156,11 @@
         <div class="mb-3">
         <label class="form-label">Specialty</label>
         <select class="form-select" name="specialty" required>
-          <option value="">Select your specialty</option>
-          <option value="clinical">Clinical Nutrition</option>
-          <option value="weight">Weight Management</option>
-          <option value="children">Pediatric Nutrition</option>
-          <option value="women">Womens Nutrition</option>
-          <option value="chronic">Chronic Conditions</option>
-          <option value="vegan">Vegan/Vegetarian Nutrition</option>
-          <option value="seniors">Geriatric Nutrition</option>
-          <option value="disorders">Eating Disorders</option>
-          <option value="preventive">Preventive Nutrition</option>
+          <option value="">Choose</option>
+          {% for val, label in specialty_choices  %}
+
+          <option value="{{val}}">{{label}}</option>
+          {% endfor %}
         </select>
         </div>
         <div class="mb-3">

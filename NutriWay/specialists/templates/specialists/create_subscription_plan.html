@@ -17,6 +17,10 @@
         <label class="form-label">Plan Type</label>
         <select class="form-control" name="plan_type" placeholder="Enter plan descriiption" required>
           <option value="">Choose</option>
+          {% for val, label in plan_type_choices %} 
+          <option value="{{val}}">{{label}}</option>
+          {% endfor %}
+          
         </select>
       </div>
       <div class="mb-3">
