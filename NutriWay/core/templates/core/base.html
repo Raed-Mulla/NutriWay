@@ -49,24 +49,19 @@
           <a href=""><i class="fa-solid fa-moon"></i></a>
         </div>
         {% if user.is_authenticated %}
-        <div class="account">
-          <a href="#"><i class="fa-solid fa-circle-user"></i></a>
+        <div class="dropdown">
+          <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-user me-1"></i>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'accounts:logout_view' %}">Logout</a></li>
+          </ul>
         </div>
-        <ul class="navbar-nav m-auto mb-2 mb-lg-0">
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                <i class="fas fa-user me-1"></i>{{ user.username }}
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="{% url 'accounts:logout_view' %}">Logout</a></li>
-            </ul>
-        </li>
-        </ul>
         {% else %}
         <div class="dropdown bg-transparent">
-          <a class="btn nav-link dropdown-toggle p-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <button class="btn nav-link dropdown-toggle p-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Sign up/ Sign in
-          </a>
+          </button>
           <ul class="dropdown-menu p-3">
               <li><a class="dropdown-item" href="{% url 'accounts:user_register_view' %}">Sign up</a></li>
               <li><a class="dropdown-item" href="{% url 'accounts:login_view' %}">Sign in</a></li>
