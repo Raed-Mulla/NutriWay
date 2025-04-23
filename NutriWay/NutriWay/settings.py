@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'specialists',
     'payments',
     'accounts',
+    'stripe'
 ]
 
 MIDDLEWARE = [
@@ -148,3 +149,10 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
+<<<<<<< HEAD
+# Stripe API Config
+
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY')
+=======
+>>>>>>> 97e3947f50f78d9d1f9f41e8d3925759871b1045
