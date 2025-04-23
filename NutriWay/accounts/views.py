@@ -1,8 +1,194 @@
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
+from . models import Person,PersonData,Director,Specialist
+from django.shortcuts import render, redirect
+from django.http import HttpRequest, HttpResponse
+from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth.models import User
+from django.contrib import messages
+from django.db import IntegrityError , transaction
+from django.core.mail import send_mail
+import random
+from django.conf import settings
+  
+verification_codes= {}
+def generate_verification_code():
+    return str(random.randint(100000, 999999))
+def send_verification_code_email(user_email,code):
+    subject = 'Your Email Verification Code'
+    message = f"Your verification code is: {code}"
+    send_mail(subject, message , settings.EMAIL_HOST_USER,[user_email])
+
+def user_register_view(request: HttpRequest):
+    if request.method == 'POST':
+        if request.POST['password'] == request.POST['repeat-password']:
+            try:
+                with transaction.atomic():
+                    email = request.POST['email']
+                    username = request.POST['username']
+                    # Check if username already exists
+                    # if User.objects.filter(username=username).exists():
+                    #     messages.error(request, "Username already taken. Please choose another.", "alert-danger")
+                    #     return render(request, "accounts/register.html")
+                    
+                    # Check if email already exists
+                    # if User.objects.filter(email=email).exists():
+                    #     messages.error(request, "Email already registered. Please use another email.", "alert-danger")
+                    #     return render(request, "accounts/register.html")
+                    
+                    new_user = User.objects.create_user(
+                        username=username,
+                        email=email,
+                        first_name=request.POST['first_name'],
+                        last_name=request.POST['last_name'],
+                        password=request.POST['password']
+                    )
+                    new_user.is_active = False
+                    new_user.save()
+                   
+                    birth_date = request.POST.get('birth_date')
+                    gender = request.POST.get('gender')
+                    
+                    person = Person.objects.create(
+                        user=new_user,
+                        birth_date=birth_date,
+                        gender=gender
+                    )
+                    
+                    height = request.POST.get('height')
+                    weight = request.POST.get('weight')
+                    goal = request.POST.get('goal', '')
+                    chronic_diseases = request.POST.get('chronic_diseases', '')
+                    
+                    
+                    person_data = PersonData.objects.create(
+                        person=person,
+                        height=float(height),
+                        weight=float(weight),
+                        goal=goal,
+                        chronic_diseases=chronic_diseases
+                    )                
+                
+                code = generate_verification_code()
+                verification_codes[email] = code
+                send_verification_code_email(email, code)
+                return render(request, "accounts/vertify.html", {"email": email})
+            
+            except IntegrityError as e:
+                print(f"IntegrityError: {e}")
+                if "username" in str(e).lower():
+                    messages.error(request, "Username already exists. Please choose another.", "alert-danger")
+                elif "email" in str(e).lower():
+                    messages.error(request, "Email already registered. Please use another email.", "alert-danger")
+                else:
+                    messages.error(request, f"Database error: {str(e)}", "alert-danger")
+            
+            except ValueError as e:
+                messages.error(request, str(e), "alert-danger")
+            
+            except Exception as e:
+                print(f"Exception: {e}")
+                messages.error(request, f"Unexpected error during signup: {str(e)}", "alert-danger")
+         
+        else:
+            messages.error(request, "Passwords must be the same", "alert-danger")
+    
+    return render(request, "accounts/register.html")
+
+def specialist_register_view(request: HttpRequest):
+    if request.method == 'POST':
+        if request.POST['password'] == request.POST['repeat-password']:
+            try:
+                with transaction.atomic():
+                    email = request.POST['email']
+                    username = request.POST['username']
+                    
+                    new_user = User.objects.create_user(
+                        username=username,
+                        email=email,
+                        first_name=request.POST['first_name'],
+                        last_name=request.POST['last_name'],
+                        password=request.POST['password']
+                    )
+                    new_user.is_active = False
+                    new_user.save()
+                    
+                    birth_date = request.POST.get('birth_date')
+                    gender = request.POST.get('gender')
+                    specialty = request.POST.get('specialty')
+                    
+                    specialist = Specialist.objects.create(
+                        user=new_user,
+                        birth_date=birth_date,
+                        gender=gender,
+                        specialty=specialty,
+                        specialization_certificate=request.FILES.get('specialization_certificate'),
+                        image=request.FILES.get('profile_image')
+                    )
+                    
+                code = generate_verification_code()
+                verification_codes[email] = code
+                send_verification_code_email(email, code)
+                messages.info(request, "Your specialist account has been created and will be reviewed by a director after verification.", "alert-info")
+                return render(request, "accounts/vertify.html", {"email": email})
+            
+            except IntegrityError as e:
+                print(f"IntegrityError: {e}")
+                if "username" in str(e).lower():
+                    messages.error(request, "Username already exists. Please choose another.", "alert-danger")
+                elif "email" in str(e).lower():
+                    messages.error(request, "Email already registered. Please use another email.", "alert-danger")
+                else:
+                    messages.error(request, f"Database error: {str(e)}", "alert-danger")
+            except ValueError as e:
+                messages.error(request, str(e), "alert-danger")
+            except Exception as e:
+                print(f"Exception: {e}")
+                messages.error(request, f"Unexpected error during register: {str(e)}", "alert-danger")
+        else:
+            messages.error(request, "Passwords must be the same", "alert-danger")
+    
+    return render(request, "accounts/register.html")
+
+def vertify_view(request:HttpRequest):
+    if request.method == 'POST':
+        code = request.POST.get('code')
+        email = request.POST.get('email')
+        expected_code = verification_codes.get(email)
+        
+        if expected_code and code == expected_code:
+            user = User.objects.filter(email=email).order_by('-id').first()
+            if user:
+                user.is_active = True
+                user.save()
+                messages.success(request, "User registered successfully", "alert-success")
+                return redirect('accounts:login_view')
+            else:
+                messages.error(request, "User not found.", "alert-danger")
+        else:
+            messages.error(request, "Invalid verification code.", "alert-danger")
+
+    return render(request, "accounts/vertify.html", {"email": email})
 
 def login_view(request: HttpRequest):
-  return render(request, "accounts/login.html")
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
 
-def register_view(request: HttpRequest):
-  return render(request, "accounts/register.html")
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                messages.success(request, f"Welcome {user.username}, you logged in successfully!", "alert-success")
+                return redirect('core:home_view')
+            else:
+                messages.error(request, "Your account is not active. Please verify your email.", "alert-danger")
+        else:
+            messages.error(request, "Invalid username or password. Please try again.", "alert-danger")
+    
+    return render(request, "accounts/login.html")
+
+def logout_view(request:HttpRequest):
+    logout(request)
+    messages.success(request,"logged out successfuly ", "alert-warning")
+    return redirect('accounts:login_view')

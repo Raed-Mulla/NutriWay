@@ -1,1 +1,17 @@
 {% extends 'core/base.html' %}
+
+{% block content %}
+  {% if user.is_authenticated %}
+    <h1>Welcome {{user.username}}</h1>
+    
+    {% if user.specialist %}
+      <p>You are logged in as a Specialist</p>
+    {% elif user.person %}
+      <p>You are logged in as a User</p>
+    {% elif user.is_staff %}
+      <p>You are logged in as an Admin</p>
+    {% endif %}
+  {% endif %}
+  
+  <h2>This is home page</h2>
+{% endblock %}
