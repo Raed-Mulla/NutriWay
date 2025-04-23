@@ -93,7 +93,9 @@ def user_register_view(request: HttpRequest):
         else:
             messages.error(request, "Passwords must be the same", "alert-danger")
     
-    return render(request, "accounts/register.html")
+    return render(request, "accounts/register.html", {
+        'specialty_choices': Specialist.SpecialtyChoices.choices
+    })
 
 def specialist_register_view(request: HttpRequest):
     if request.method == 'POST':
@@ -147,8 +149,9 @@ def specialist_register_view(request: HttpRequest):
                 messages.error(request, f"Unexpected error during register: {str(e)}", "alert-danger")
         else:
             messages.error(request, "Passwords must be the same", "alert-danger")
-    
-    return render(request, "accounts/register.html")
+    return render(request, "accounts/register.html", {
+        'specialty_choices': Specialist.SpecialtyChoices.choices
+    })
 
 def vertify_view(request:HttpRequest):
     if request.method == 'POST':
@@ -192,3 +195,6 @@ def logout_view(request:HttpRequest):
     logout(request)
     messages.success(request,"logged out successfuly ", "alert-warning")
     return redirect('accounts:login_view')
+
+def profile_view(request: HttpRequest):
+    return render(request, "accounts/profile.html")

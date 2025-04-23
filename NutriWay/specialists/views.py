@@ -5,6 +5,7 @@ from .models import SubscriptionPlan , Generalplan
 from accounts.models import Specialist , Certificate
 from django.contrib import messages
 
+
 def create_subscription_plan(request: HttpRequest):
     if request.method == "POST":
         form = SubscriptionPlanForm(request.POST, request.FILES)
@@ -22,7 +23,7 @@ def create_subscription_plan(request: HttpRequest):
     else:
         form = SubscriptionPlanForm()
 
-    return render(request, 'specialists/create_subscription_plan.html', {'form': form})
+    return render(request, 'specialists/create_subscription_plan.html', {'form': form,'plan_type_choices': SubscriptionPlan.PlanType.choices})
 
 
 
