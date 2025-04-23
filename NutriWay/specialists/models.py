@@ -24,7 +24,7 @@ class SubscriptionPlan(models.Model):
     name = models.CharField(max_length=128)
     description  = models.TextField()
     plan_type = models.CharField(max_length=30, choices=PlanType.choices)
-    duration = models.CharField(max_length=20, choices=DurationChoices.choices)
+    duration = models.CharField(max_length=20, choices=DurationChoices.choices,null=True , blank=True)
     price = models.FloatField()
     image = models.ImageField(upload_to='images/plans/')
     

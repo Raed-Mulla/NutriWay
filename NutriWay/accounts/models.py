@@ -19,7 +19,7 @@ class PersonData(models.Model):
     height = models.FloatField()
     weight = models.FloatField()
     goal = models.TextField()
-    chronic_diseases = models.CharField(max_length=150)
+    chronic_diseases = models.CharField(max_length=150 , null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -53,9 +53,9 @@ class Specialist(models.Model):
 
 class Certificate(models.Model):
     specialist = models.ForeignKey(Specialist ,on_delete=models.CASCADE , related_name="Certificates")
-    name = models.CharField(max_length=255)
-    image = models.FileField(upload_to='certificates/')
-    created_at = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=255,null=True)
+    image = models.FileField(upload_to='certificates/',null=True)
+    created_at = models.DateTimeField(auto_now_add=True,null=True)
 
     def __str__(self):
         return f"{self.name} - {self.specialist.user.username}"
