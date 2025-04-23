@@ -4,5 +4,7 @@ from . import views
 app_name = "core"
 
 urlpatterns = [
-  path("", views.home_view, name="home_view")
+  path("", views.home_view, name="home_view"),
+  path("mode/<mode>", views.mode_view, name= "mode_view"),
+
 ]

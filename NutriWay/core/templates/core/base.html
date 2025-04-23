@@ -45,11 +45,11 @@
           </li> -->
         </ul>
         <div class="mode pe-2">
-          <a href="" class="light-mode"><i class="fa-solid fa-sun"></i></a>
-          <a href="" class="dark-mode"><i class="fa-solid fa-moon"></i></a>
+          <a href="{% url 'core:mode_view' 'light' %}?next={{request.path}}" class="light-mode"><i class="fa-solid fa-sun"></i></a>
+          <a href="{% url 'core:mode_view' 'dark' %}?next={{request.path}}" class="dark-mode"><i class="fa-solid fa-moon"></i></a>
         </div>
         {% if user.is_authenticated %}
-        <div class="dropdown">
+        <div class="dropdown d-none d-md-block">
           <button class="btn dropdown-toggle border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fas fa-user me-1"></i>
           </button>
@@ -58,15 +58,23 @@
             <li><a class="dropdown-item" href="{% url 'accounts:logout_view' %}">Logout</a></li>
           </ul>
         </div>
+        <div class="btns-sm d-block d-md-none text-center mt-2">
+          <a class="btn me-2 mb-2" href="{% url 'accounts:profile_view' %}">Profile</a>
+          <a class="btn mb-2" href="{% url 'accounts:logout_view' %}">Logout</a>
+        </div>
         {% else %}
-        <div class="dropdown">
-          <button class="btn nav-link dropdown-toggle p-md-2 m-auto m-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <div class="dropdown d-none d-md-block">
+          <button class="btn nav-link dropdown-toggle p-md-2 m-auto m-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             Sign up/ Sign in
           </button>
-          <ul class="dropdown-menu p-3 dropdown-menu-end ">
+          <ul class="dropdown-menu p-3 dropdown-menu-end">
             <li><a class="dropdown-item" href="{% url 'accounts:user_register_view' %}">Sign up</a></li>
             <li><a class="dropdown-item" href="{% url 'accounts:login_view' %}">Sign in</a></li>
           </ul>
+        </div>
+        <div class="btns-sm d-block d-md-none text-center mt-2">
+          <a class="btn me-2 mb-2" href="{% url 'accounts:user_register_view' %}">Sign up</a>
+          <a class="btn mb-2" href="{% url 'accounts:login_view' %}">Sign in</a>
         </div>
         
         {% endif %}
