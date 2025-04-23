@@ -10,6 +10,9 @@
   --heading-color: #2E7D32;
   --link-hover: #388E3C;
 
+/* Transition */
+--t-duration: 0.3s;
+
 /* Dark Mode Colors */
   --primary-color-dark: #81C784;
   --secondary-color-dark: #4CAF50;
@@ -25,14 +28,47 @@ body {
   font-family: "Roboto Condensed", sans-serif;
 }
 /* Start Nav */
+.navbar {
+  background-color: var(--background-color);
+}
+.navbar .navbar-brand {
+  color: var(--primary-color);
+}
 .navbar .navbar-toggler:focus {
   box-shadow: none;
 }
+.navbar .nav-link,
+.navbar .dropdown {
+  color: var(--secondary-color);
+  transition: var(--t-duration);
+}
+.navbar .nav-link:hover,
+.navbar .dropdown:hover,
+.navbar .dropdown-menu .dropdown-item:hover {
+  color: var(--link-hover);
+}
+.navbar .dropdown-menu {
+  background-color: var(--background-color);
+}
+.navbar .dropdown  {
+}
+.navbar .dropdown-menu .dropdown-item {
+  color: var(--secondary-color);
+  transition-duration: var(--t-duration);
+}
+.navbar .dropdown-menu .dropdown-item:hover {
+  color: var(--link-hover-dark);
+  background-color: transparent;
+}
+.navbar .mode {
+  border-right: 1px solid var(--secondary-color);
+}
+
 /* End Nav */
 
-.avatar {
+/* .avatar {
   width: 30px;
   height: 30px;
   object-fit: cover;
-}
+} */
 
