@@ -7,7 +7,7 @@
       <button type="button" onclick="showForm('signup-user')">Signup as User</button>
       <button type="button" onclick="showForm('signup-specialists')">Signup as Specialist</button>
     </div>
-    <form id="signup-user" class="mt-5" action="{%url 'accounts:user_register_view'%}" method="post" enctype="multipart/form-data">
+    <form id="signup-user" class="mt-5" action="{% url 'accounts:user_register_view' %}" method="post" enctype="multipart/form-data">
       {% csrf_token %}
 
       <div class="form-step" id="user-step-1">
@@ -94,7 +94,7 @@
     </form>
 
 
-    <form id="signup-specialists" class="d-none" action="" method="post" enctype="multipart/form-data">
+    <form id="signup-specialists" class="d-none" action="{% url 'accounts:specialist_register_view' %}" method="post" enctype="multipart/form-data">
       {% csrf_token %}
 
       <div class="step" id="specialist-step-1">
