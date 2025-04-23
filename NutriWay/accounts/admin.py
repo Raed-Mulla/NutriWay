@@ -22,7 +22,6 @@ class DirectorAdmin(admin.ModelAdmin):
     list_display = ('user',)
     search_fields = ('user__username',)
 
-# تسجيل الموديلات في لوحة التحكم
 admin.site.register(Person, PersonAdmin)
 admin.site.register(PersonData, PersonDataAdmin)
 admin.site.register(Specialist, SpecialistAdmin)
