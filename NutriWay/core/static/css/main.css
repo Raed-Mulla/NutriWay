@@ -50,7 +50,19 @@ body {
 .navbar .dropdown-menu {
   background-color: var(--background-color);
 }
-.navbar .dropdown  {
+.navbar .mode .light-mode {
+  color: #facc15;
+  transition: var(--t-duration);
+}
+.navbar .mode .light-mode:hover {
+  color: #f59e0b;
+}
+.navbar .mode .dark-mode {
+  color: #38bdf8;
+  transition: var(--t-duration);
+}
+.navbar .mode .dark-mode:hover {
+  color: #0ea5e9;
 }
 .navbar .dropdown-menu .dropdown-item {
   color: var(--secondary-color);
@@ -60,8 +72,8 @@ body {
   color: var(--link-hover-dark);
   background-color: transparent;
 }
-.navbar .mode {
-  border-right: 1px solid var(--secondary-color);
+.navbar .navbar-collapse .btns-sm a {
+  
 }
 
 /* End Nav */

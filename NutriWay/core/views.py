@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
+
 from accounts.models import Person , Specialist
 from .models import Review
 from .forms import ReviewForm
@@ -32,3 +33,19 @@ def add_review(request:HttpRequest , specialist_id):
     form = ReviewForm()
 
   return render(request,'core/add_review.html' , {'form' : form , 'specialist' : specialist})
+
+
+def home_view(request: HttpRequest):
+  return render(request, "core/index.html")
+
+def mode_view(request: HttpRequest, mode):
+  next = request.GET.get("next", "/")
+  response = redirect(next)
+
+  if mode == "dark":
+    response.set_cookie("mode", "dark")
+  if mode == "light":
+    response.set_cookie("mode", "light")
+
+  return response
+
