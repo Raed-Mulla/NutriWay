@@ -51,6 +51,8 @@ def start_checkout_subscription(request : HttpRequest, plan_id : int) -> HttpRes
     return redirect(session.url)
 
 
+
+#This payment success for subscription plan
 def payment_success(request : HttpRequest) -> HttpResponse:
     try:
         # Retrieve the plan ID from the request query parameters
@@ -107,18 +109,21 @@ def payment_success(request : HttpRequest) -> HttpResponse:
         logger.error(f"Error sending confirmation email: {e}")
 
     # Render the success page
-    return render(request, 'payments/payment_success.html', {
+    return render(request, 'payments/subscription_success.html', {
         'plan': plan,
         'amount': plan.price,
     })
 
 
+
+#This payment cancel for subscription plan
 def payment_cancel(request : HttpRequest) -> HttpResponse:
     # Handle payment cancellation
-    return render(request, 'payments/cancel.html')
+    return render(request, 'payments/subscription_cancel.html')
 
 
 
+#This start checkout for general plan
 @login_required
 def start_checkout_general(request: HttpRequest, plan_id: int) -> HttpResponse:
     try:
@@ -150,6 +155,9 @@ def start_checkout_general(request: HttpRequest, plan_id: int) -> HttpResponse:
 
     return redirect(session.url)
 
+
+
+#This payment success for general plan
 logger = logging.getLogger(__name__)
 def payment_success_general(request: HttpRequest) -> HttpResponse:
     plan_id = request.GET.get('plan_id')
@@ -221,11 +229,45 @@ def payment_success_general(request: HttpRequest) -> HttpResponse:
         logger.error(f"Error sending general plan confirmation email: {e}")
 
     # Render the success page
-    return render(request, 'payments/general_success.html', {
+    return render(request, 'payments/generalplan_success.html', {
         'plan': plan,
         'amount': plan.price,
     })
 
+
+#This payment cancel for general plan
 def payment_cancel_general(request : HttpRequest) -> HttpResponse:
     # Handle payment cancellation
-    return render(request, 'payments/general_cancel.html')
+    return render(request, 'payments/generalplan_cancel.html')
+
+
+
+#This is the summary logic for subscription plan
+# Preview before payment
+@login_required
+def subscription_summary(request : HttpRequest, plan_id : int) -> HttpResponse:
+    plan = SubscriptionPlan.objects.get(id=plan_id)
+
+    context = {
+        'plan': plan,
+        'specialist_name': plan.specialist.user.get_full_name() or plan.specialist.user.username,
+        'payment_methods': ['Visa', 'Mastercard'],  
+    }
+
+    return render(request, 'payments/subscription_summary.html', context)
+
+
+
+#This summary logic for general plan
+# Preview before payment
+@login_required
+def generalplan_summary(request : HttpRequest, plan_id : int) -> HttpResponse:
+    plan = Generalplan.objects.get(id=plan_id)
+
+    context = {
+        'plan': plan,
+        'specialist_name': plan.specialist.user.get_full_name() or plan.specialist.user.username,
+        'payment_methods': ['Visa', 'Mastercard'],
+    }
+
+    return render(request, 'payments/generalplan_summary.html', context)

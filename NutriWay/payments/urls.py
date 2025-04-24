@@ -10,5 +10,8 @@ urlpatterns = [
     path('cancel/', views.payment_cancel, name='payment_cancel'),
     path('general-success/', views.payment_success_general, name='payment_success_general'),
     path('general-cancel/', views.payment_cancel_general, name='payment_cancel_general'),
+    path('subscription/summary/<int:plan_id>/', views.subscription_summary, name='subscription_summary'),
+    path('general/summary/<int:plan_id>/', views.generalplan_summary, name='generalplan_summary'),
+
 
 ]

@@ -1,0 +1,24 @@
+{% extends 'core/base.html' %}
+
+
+
+{% block title %}Subscription Summary{% endblock %}
+
+{% block content %}
+<div class="summary-card">
+    <ul>
+        <li><strong>Subscription Name:</strong> {{ plan.name }}</li>
+        <li><strong>Specialist:</strong> {{ specialist_name }}</li>
+        <li><strong>Type:</strong> {{ plan.get_plan_type_display }}</li>
+        <li><strong>Duration:</strong> {{ plan.get_duration_display }}</li>
+        <li><strong>Price:</strong> {{ plan.price }} SAR</li>
+        <li><strong>Payment Method:</strong>
+          {% for method in payment_methods %}
+            {{ method }}{% if not forloop.last %} or {% endif %}
+          {% endfor %}
+        </li>
+      </ul>
+      <a href="{%url 'payments:start_checkout_subscription' plan.id%}">Proceed to payment</a>
+
+</div>
+{% endblock %}
