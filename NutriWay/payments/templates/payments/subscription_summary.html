@@ -18,7 +18,7 @@
           {% endfor %}
         </li>
       </ul>
-      <a href="{%url 'payments:start_checkout_subscription' plan.id%}">Proceed to payment</a>
+      <a href="{% url 'payments:start_checkout_subscription' plan.id %}">Proceed to payment</a>
 
 </div>
 {% endblock %}

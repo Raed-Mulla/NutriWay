@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'specialists',
     'payments',
     'accounts',
-    'stripe'
+    'stripe',
 ]
 
 MIDDLEWARE = [
