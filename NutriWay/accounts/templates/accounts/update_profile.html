@@ -2,7 +2,106 @@
 {% block title %}Update Profile{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
+<section class="form-sec login mt-5">
+  <div class="container d-flex flex-column align-items-center">
+    <form action="" method="post" class="bg-white p-4">
+      {% csrf_token %}
+      <h2 class="main-title-2">Update Your Profile</h2>
+      <div class="mb-3">
+        <label>First Name</label>
+        <input type="text" class="form-control" name="first_name" value="{{ request.user.first_name }}">
+      </div>
+      
+      <div class="mb-3">
+        <label>Last Name</label>
+        <input type="text" class="form-control" name="last_name" value="{{ request.user.last_name }}">
+      </div>
+      {% if request.user.specialist %}
+      <div class="mb-3">
+          <label class="form-label">Profile Photo</label>
+          <input type="file" class="form-control" name="profile_image">
+          <small class="text-muted">Upload a new profile photo (leave empty to keep current)</small>
+        </div>
+        <div class="mb-3">
+          <div class="certificate-label d-flex justify-content-between">
+            <label class="form-label">Certificates</label>
+            <button class="add border-0 bg-transparent" type="button" onclick="addCertificate()">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+          <div id="certificates-container"></div>
+        </div>
+        {% endif %}
+
+        
+        {% if request.user.person %}
+          <div class="mb-3">
+            <div class="mb-3">
+            <label>Height (cm)</label>
+            <input type="number" step="0.01" class="form-control" name="height" value="{{ latest_data.height|default:'' }}">
+          </div>
+          
+          <div class="mb-3">
+            <label>Weight (kg)</label>
+            <input type="number" step="0.01" class="form-control" name="weight" value="{{ latest_data.weight|default:'' }}">
+          </div>
+          
+          <div class="mb-3">
+            <label>Goal</label>
+            <textarea class="form-control" name="goal">{{ latest_data.goal|default:'' }}</textarea>
+          </div>
+          
+          <div class="mb-3">
+            <label>Health Conditions</label>
+            <textarea class="form-control" name="chronic_diseases">{{ latest_data.chronic_diseases|default:'' }}</textarea>
+          </div>
+      {% endif %}
+      <input type="submit" value="Update" class="btn d-block w-100 mt-5">
+    </form>
+  </div>
+</section>
+<script>
+  let certificateCount = 1;
+  // Certificates
+  function addCertificate() {
+    const container = document.getElementById("certificates-container");
+
+    const newField = document.createElement("div");
+    newField.className = "certificate-item mb-3 position-relative";
+
+    newField.innerHTML = `
+    <div>
+      <label class="form-label">Certificate Name ${certificateCount}</label>
+      <input type="text" class="form-control mb-2" name="certificates-name-${certificateCount}" required>
+      <input type="file" class="form-control" required>
+    </div>
+    <button type="button" class="cancel position-absolute bg-transparent top-0 end-0 text-danger border-0" onclick="removeCertificate(this)">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  `;
+
+    container.appendChild(newField);
+    resetCertificateLabels();
+  }
+
+  function removeCertificate(button) {
+    button.parentElement.remove();
+    resetCertificateLabels();
+  }
+
+  function resetCertificateLabels() {
+    const items = document.querySelectorAll('.certificate-item');
+    items.forEach((item, index) => {
+      const label = item.querySelector('label');
+      const input = item.querySelector('input[type="text"]');
+      label.textContent = `Certificate Name ${index + 1}`;
+      input.setAttribute('name', `certificates-name-${index + 1}`);
+    });
+    certificateCount = items.length + 1;
+  }
+</script>
+{% endblock %}
+<!-- <div class="container mt-5">
   <h2>Update Your Profile</h2>
   
   <form method="post" enctype="multipart/form-data">
@@ -75,5 +174,4 @@
       <button type="submit" class="btn btn-primary">Save Changes</button>
     </div>
   </form>
-</div>
-{% endblock %}
+</div> -->
