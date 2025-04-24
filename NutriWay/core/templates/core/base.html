@@ -49,22 +49,22 @@
           <a href="{% url 'core:mode_view' 'dark' %}?next={{request.path}}" class="dark-mode"><i class="fa-solid fa-moon"></i></a>
         </div>
         {% if user.is_authenticated %}
-        <div class="dropdown d-none d-md-block">
+        <div class="dropdown d-none d-lg-block">
           <button class="btn dropdown-toggle border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fas fa-user me-1"></i>
           </button>
 
           <ul class="dropdown-menu dropdown-menu-end ">
-            <li><a class="dropdown-item" href="{% url 'accounts:profile_view' %}">Profile</a></li>
+            <li><a class="dropdown-item" href="{% url 'accounts:profile_view' user.username %}">Profile</a></li>
             <li><a class="dropdown-item" href="{% url 'accounts:logout_view' %}">Logout</a></li>
           </ul>
         </div>
-        <div class="btns-sm d-block d-md-none text-center mt-2">
-          <a class="btn me-2 mb-2" href="{% url 'accounts:profile_view' %}">Profile</a>
+        <div class="btns-sm d-block d-lg-none text-center mt-2">
+          <a class="btn me-2 mb-2" href="{% url 'accounts:profile_view' user.username %}">Profile</a>
           <a class="btn mb-2" href="{% url 'accounts:logout_view' %}">Logout</a>
         </div>
         {% else %}
-        <div class="dropdown d-none d-md-block">
+        <div class="dropdown d-none d-lg-block">
           <button class="btn nav-link dropdown-toggle p-md-2 m-auto m-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             Sign up/ Sign in
           </button>
@@ -73,7 +73,7 @@
             <li><a class="dropdown-item" href="{% url 'accounts:login_view' %}">Sign in</a></li>
           </ul>
         </div>
-        <div class="btns-sm d-block d-md-none text-center mt-2">
+        <div class="btns-sm d-block d-lg-none text-center mt-2">
           <a class="btn me-2 mb-2" href="{% url 'accounts:user_register_view' %}">Sign up</a>
           <a class="btn mb-2" href="{% url 'accounts:login_view' %}">Sign in</a>
         </div>
@@ -85,9 +85,11 @@
 
   {% if messages %}
   {% for message in messages %}
-  <div class="alert {{message.tags}} alert-dismissible fade show" role="alert">
-    {{message}}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  <div class="container mt-2">
+    <div class="message alert {{message.tags}} alert-dismissible fade show" role="alert">
+      {{message}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
   </div>
   {% endfor %}
 

@@ -1,6 +1,38 @@
 {% extends 'core/base.html' %}
 
 {% block content %}
+<section class="landing d-flex justify-content-center align-items-center">
+
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-5">
+        <div class="intro">
+          <h1>Heading</h1>
+          <p class="">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Natus corrupti rem delectus cum nesciunt ea similique eveniet numquam, quam sapiente? Laudantium, vel quam! Porro fugit nihil in doloribus! Impedit, quae!</p>
+          <a href="">Button</a>
+        </div>
+      </div>
+      <div class="col-7">
+        <img src="static/images/9650826_7878.jpg" class="img-fluid" alt="">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="about text-center pt-5 pb-5">
+  <div class="container">
+    <h2 class="main-title">About Us</h2>
+    <p>
+      At NutriWay, we believe that better health starts with better nutrition. Our platform is built to connect you with certified nutrition specialists who understand your unique goals and challenges.
+
+Whether you're aiming to lose weight, build muscle, or manage a health condition, NutriWay offers personalized meal plans, smart tracking tools, and expert support—all in one place.
+
+With a focus on simplicity and trust, we’re here to help you make lasting lifestyle changes through nutrition that fits your life.
+    </p>
+  </div>
+</section>
+
+
   {% if user.is_authenticated %}
     <h1>Welcome {{user.username}}</h1>
     
@@ -13,5 +45,4 @@
     {% endif %}
   {% endif %}
   
-  <h2>This is home page</h2>
 {% endblock %}
