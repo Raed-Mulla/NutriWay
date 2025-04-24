@@ -1,0 +1,21 @@
+{% extends "core/base.html" %}
+
+
+
+{% block title %}Contact Us{% endblock %}
+{% block content %} 
+<form method="POST">
+    {% csrf_token %}
+    <label>Name:</label><br>
+    <input type="text" name="name" required><br>
+
+    <label>Email:</label><br>
+    <input type="email" name="email" required><br>
+
+    <label>Message:</label><br>
+    <textarea name="message" required></textarea><br>
+
+    <button type="submit">Send</button>
+</form>
+
+{% endblock %}

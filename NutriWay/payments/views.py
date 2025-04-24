@@ -3,16 +3,16 @@ from django.http import HttpRequest, HttpResponse
 import stripe
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from specialists.models import SubscriptionPlan
+from specialists.models import SubscriptionPlan, Generalplan
+from accounts.models import Person
 from django.core.mail import send_mail
-# from payments.models import Payment
-from django.contrib.auth.models import User
+from payments.models import Payment
 import logging
 stripe.api_key = settings.STRIPE_SECRET_KEY
 logger = logging.getLogger(__name__)
 
 @login_required
-def start_checkout(request : HttpRequest, plan_id : int) -> HttpResponse: 
+def start_checkout_subscription(request : HttpRequest, plan_id : int) -> HttpResponse: 
     try:
         # Retrieve the subscription plan
         plan = SubscriptionPlan.objects.get(id=plan_id)
@@ -23,7 +23,7 @@ def start_checkout(request : HttpRequest, plan_id : int) -> HttpResponse:
 
     # Create a Stripe checkout session
     try:
-        session = stripe.checkout.Session.create(
+            session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
                 'price_data': {
@@ -36,8 +36,8 @@ def start_checkout(request : HttpRequest, plan_id : int) -> HttpResponse:
                 'quantity': 1,
             }],
             mode='payment',
-            success_url=f'http://localhost:8000/payments/success/?plan_id={plan.id}',
-            cancel_url='http://localhost:8000/payments/cancel/',
+            success_url=f'http://127.0.0.1:8000/success/?plan_id={plan.id}', 
+            cancel_url='http://127.0.0.1:8000/cancel/',
             metadata={
                 "plan_id": plan.id,
                 "user_id": request.user.id
@@ -49,11 +49,9 @@ def start_checkout(request : HttpRequest, plan_id : int) -> HttpResponse:
 
     #Redirect directly to Stripe
     return redirect(session.url)
-    
 
-@login_required
+
 def payment_success(request : HttpRequest) -> HttpResponse:
-    user = request.user
     try:
         # Retrieve the plan ID from the request query parameters
         plan_id = request.GET.get('plan_id')
@@ -64,15 +62,24 @@ def payment_success(request : HttpRequest) -> HttpResponse:
     except SubscriptionPlan.DoesNotExist:
         logger.error(f"Plan with ID {plan_id} does not exist")
         return HttpResponse("Invalid plan ID", status=400)
+    
+    try:
+        person = Person.objects.get(user=request.user)
+    except Person.DoesNotExist:
+        username = getattr(request.user, 'username', 'Unknown')
+        logger.error(f"No Person found for user {username}")
+        return HttpResponse("User profile error", status=400)
 
     # Create payment record
     try:
-        payment = Payment.objects.create(
-            user=request.user,
+        Payment.objects.create(
+            person=person,
             specialist=plan.specialist,
             subscription_plan=plan,
+            general_plan=None,  # No general plan for subscription payments
             amount=plan.price,
-            payment_status='Paid'
+            payment_method='visa',
+            status='Paid'
         )
     except Exception as e:
         logger.error(f"Error creating payment record: {e}")
@@ -83,10 +90,9 @@ def payment_success(request : HttpRequest) -> HttpResponse:
         send_mail(
             subject='NutriWay - Payment Confirmation',
             message=(
-                f"Hi {user.first_name},\n\n"
-                f"Your payment of {plan.price} SAR for the {plan.duration}-month plan has been received.\n"
+                f"Hi {person.user.first_name},\n\n"
+                f"Your payment of {plan.price} SAR for {plan.duration} plan has been received.\n"
                 f"Your specialist is {plan.specialist.user.username}.\n\n"
-                f"Plan Details:\n"
                 f"Name: {plan.name}\n"
                 f"Description: {plan.description}\n"
                 f"Thank you for subscribing to NutriWay!"
@@ -94,14 +100,14 @@ def payment_success(request : HttpRequest) -> HttpResponse:
                 f"NutriWay Team"
             ),
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[user.email],
+            recipient_list=[person.user.email],
             fail_silently=False,
         )
     except Exception as e:
         logger.error(f"Error sending confirmation email: {e}")
 
     # Render the success page
-    return render(request, 'payments/success.html', {
+    return render(request, 'payments/payment_success.html', {
         'plan': plan,
         'amount': plan.price,
     })
@@ -110,3 +116,116 @@ def payment_success(request : HttpRequest) -> HttpResponse:
 def payment_cancel(request : HttpRequest) -> HttpResponse:
     # Handle payment cancellation
     return render(request, 'payments/cancel.html')
+
+
+
+@login_required
+def start_checkout_general(request: HttpRequest, plan_id: int) -> HttpResponse:
+    try:
+        plan = Generalplan.objects.get(id=plan_id)
+    except Generalplan.DoesNotExist:
+        return HttpResponse("General plan not found", status=404)
+
+    session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        line_items=[{
+            'price_data': {
+                'currency': 'sar',
+                'product_data': {
+                    'name': f"General Plan - {plan.name}",
+                },
+                'unit_amount': int(round(plan.price * 100)),
+            },
+            'quantity': 1,
+        }],
+        mode='payment',
+        success_url=f'http://127.0.0.1:8000/general-success/?plan_id={plan.id}',
+        cancel_url='http://127.0.0.1:8000/general-cancel/',
+        metadata={
+            "plan_id": plan.id,
+            "user_id": request.user.id,
+            "plan_type": "general"
+        }
+    )
+
+    return redirect(session.url)
+
+logger = logging.getLogger(__name__)
+def payment_success_general(request: HttpRequest) -> HttpResponse:
+    plan_id = request.GET.get('plan_id')
+
+    if not plan_id:
+        logger.error("Missing general plan ID in success URL")
+        return HttpResponse("Missing plan ID", status=400)
+
+    try:
+        plan = Generalplan.objects.get(id=plan_id)
+    except Generalplan.DoesNotExist:
+        logger.error(f"General plan with ID {plan_id} does not exist")
+        return HttpResponse("General plan not found", status=404)
+
+    # Use request.user if logged in, or fall back to anonymous handling if needed
+    user = request.user
+    if not user.is_authenticated:
+        return HttpResponse("Please log in to complete this action.", status=401)
+
+    # Get the person (linked to user)
+    try:
+        person = Person.objects.get(user=user)
+    except Person.DoesNotExist:
+        username = getattr(request.user, 'username', 'Unknown')
+        logger.error(f"No Person profile for user {username}")
+        return HttpResponse("User profile not found", status=400)
+
+    # Check for duplicate payment
+    existing_payment = Payment.objects.filter(
+        person=person,
+        general_plan=plan,  
+        status='Paid',
+        amount=plan.price
+    ).first()
+
+    if existing_payment:
+        logger.info(f"Duplicate payment avoided for general plan ID {plan_id}")
+    else:
+        # Save payment record
+        try:
+            Payment.objects.create(
+                person=person,
+                specialist=plan.specialist,
+                general_plan=plan,
+                subscription_plan=None, # No subscription plan for general plans
+                amount=plan.price,
+                payment_method='visa',  # Assuming 'visa' is the default payment method
+                status='Paid'
+            )
+        except Exception as e:
+            logger.error(f"Error saving general payment: {e}")
+            return HttpResponse("Error saving payment", status=500)
+
+    # Send confirmation email
+    try:
+        send_mail(
+            subject="NutriWay - General Plan Purchase Confirmation",
+            message=(
+                f"Hi {person.user.first_name},\n\n"
+                f"Thank you for purchasing the general plan: {plan.name}.\n\n"
+                f"You can now access the plan file or await specialist instructions.\n\n"
+                f"Best regards,\nNutriWay Team"
+            ),
+            from_email=settings.DEFAULT_FROM_EMAIL,  
+            recipient_list=[person.user.email],
+            fail_silently=False,
+        )
+    except Exception as e:
+        logger.error(f"Error sending general plan confirmation email: {e}")
+
+    # Render the success page
+    return render(request, 'payments/general_success.html', {
+        'plan': plan,
+        'amount': plan.price,
+    })
+
+def payment_cancel_general(request : HttpRequest) -> HttpResponse:
+    # Handle payment cancellation
+    return render(request, 'payments/general_cancel.html')
