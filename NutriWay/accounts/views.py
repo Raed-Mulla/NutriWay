@@ -89,7 +89,6 @@ def user_register_view(request: HttpRequest):
             except Exception as e:
                 print(f"Exception: {e}")
                 messages.error(request, f"Unexpected error during signup: {str(e)}", "alert-danger")
-         
         else:
             messages.error(request, "Passwords must be the same", "alert-danger")
     

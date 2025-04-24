@@ -5,7 +5,6 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from specialists.models import SubscriptionPlan
 from django.core.mail import send_mail
-# from payments.models import Payment
 from django.contrib.auth.models import User
 import logging
 stripe.api_key = settings.STRIPE_SECRET_KEY
