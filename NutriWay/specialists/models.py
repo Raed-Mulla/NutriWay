@@ -41,6 +41,38 @@ class Generalplan(models.Model):
     def __str__(self):
         return f"General Plan: {self.name} ({self.specialist.user.username})"
 
+class SubscriberPlan(models.Model):
+    specialist = models.ForeignKey(Specialist,on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    
+    def __str__(self):
+        return f"{self.name} - {self.specialist.user.username}"
+    
 
+class SubscriberMeal(models.Model):
+    
+    class MealTypeChoices(models.TextChoices):
+        BREAKFAST = 'breakfast', 'Breakfast'
+        LUNCH = 'lunch', 'Lunch'
+        DINNER = 'dinner', 'Dinner'
+        SNACK = 'snack', 'Snack'
 
+    subscriber_plan = models.ForeignKey(SubscriberPlan,on_delete=models.CASCADE)
+    day_number = models.IntegerField()
+    meal_type = models.CharField(max_length=10,choices=MealTypeChoices.choices)
+    description = models.TextField()
+    meal_calorie = models.FloatField()
 
+    def __str__(self):
+        return f"{self.subscriber_plan.name} - Day {self.day_number} - {self.meal_type}"
+    
+
+class MealCheck(models.Model):
+    subscription = models.ForeignKey("users.Subscription",on_delete=models.CASCADE)
+    subscriber_meal = models.ForeignKey (SubscriberMeal,on_delete=models.CASCADE)
+    date = models.DateField()
+    is_checked = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Check for {self.subscription.person.user.username} on {self.date} - {self.is_checked}"

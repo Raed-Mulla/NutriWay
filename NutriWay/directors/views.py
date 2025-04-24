@@ -3,8 +3,10 @@ from django.http import HttpRequest, HttpResponse
 from .models import SpecialistRequest
 from .forms import SpecialistRequestForm
 from accounts.models import Specialist, Certificate
+from specialists.models import SubscriptionPlan
+from django.contrib import messages
 
-def Specialist_Request (request:HttpRequest):
+def specialist_request (request:HttpRequest):
     requests = SpecialistRequest.objects.all()
     return render(request , 'directors/specialist_request.html' , {"requests" : requests})
 
@@ -23,4 +25,51 @@ def specialist_request_detail(request:HttpRequest, request_id):
             return redirect("directors:specialist_request")
     else:
         form = SpecialistRequestForm(instance=specialist_request)
-    return render(request, 'director/specialist_request_detail.html', {'specialist_request': specialist_request,'specialist': specialist,'certificates': certificates,'form': form})
+    return render(request, 'directors/specialist_request_detail.html', {'specialist_request': specialist_request,'specialist': specialist,'certificates': certificates,'form': form})
+
+def specialist_manage(request:HttpRequest):
+    specialists = Specialist.objects.filter(specialist_request__status="approved")
+    return render(request, 'directors/specialist_manage.html', {'specialists': specialists})
+
+
+def specialist_manage_detail(request:HttpRequest,request_id):
+    try:
+        specialist = Specialist.objects.get(id=request_id)
+        certificates = Certificate.objects.filter(specialist=specialist)
+        plans = SubscriptionPlan.objects.filter(specialist=specialist)
+    except Specialist.DoesNotExist:
+        return redirect("core:home_view")
+    
+    return render(request, 'directors/manage_specialist_detail.html', {'specialist': specialist,'certificates': certificates,'plans': plans})
+
+def inactivate_specialist(request:HttpRequest,specialist_id):
+    if request.method == "POST":
+        try:
+            specialist = Specialist.objects.get(id=specialist_id)
+            specialist.user.is_active = False
+            specialist.user.save()
+            messages.success(request, "Specialist has been inactivated successfully.","alert-success")
+        except Specialist.DoesNotExist:
+            messages.error(request, "Specialist not found.","alert-danger")
+    return redirect('directors:specialist_manage')
+
+def delete_specialist(request:HttpRequest,specialist_id):
+    if request.method == "POST":
+        try:
+            specialist = Specialist.objects.get(id=specialist_id)
+            specialist.user.delete()
+            messages.success(request, "Specialist has been deleted successfully.", "alert-success")
+        except Specialist.DoesNotExist:
+            messages.error(request, "Specialist not found.","alert-danger")
+    return redirect('directors:specialist_manage')
+
+def activate_specialist(request:HttpRequest , specialist_id):
+    if request.method == "POST":
+        try:
+            specialist = Specialist.objects.get(id=specialist_id)
+            specialist.user.is_active = True
+            specialist.user.save()
+            messages.success(request, "Specialist has been activated successfully.","alert-success")
+        except Specialist.DoesNotExist:
+            messages.error(request, "Specialist not found.","alert-danger")
+    return redirect('directors:specialist_manage')
