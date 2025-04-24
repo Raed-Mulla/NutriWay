@@ -1,14 +1,16 @@
 {% extends 'core/base.html' %}
 {% block title %} Register {% endblock %}
 {% block content %}
-<section class="register mt-5">
-  <div class="container">
-    <div class="btns">
-      <button type="button" onclick="showForm('signup-user')">Signup as User</button>
-      <button type="button" onclick="showForm('signup-specialists')">Signup as Specialist</button>
+<section class="form-sec register mt-5">
+  <div class="container d-flex flex-column align-items-center">
+    <div class="btns mb-3">
+      <button class="p-2 ps-4 pe-4" type="button" onclick="showForm('signup-user')">Signup as User</button>
+      <button class="p-2 ps-4 pe-4" type="button" onclick="showForm('signup-specialists')">Signup as Specialist</button>
     </div>
-    <form id="signup-user" class="mt-5" action="{% url 'accounts:user_register_view' %}" method="post" enctype="multipart/form-data">
+    
+    <form id="signup-user" class=" p-4 bg-white" action="{% url 'accounts:user_register_view' %}" method="post" enctype="multipart/form-data">
       {% csrf_token %}
+      <h2 class="main-title-2">Register as user</h2>
 
       <div class="form-step" id="user-step-1">
         <div class="mb-3">
@@ -89,13 +91,14 @@
           <textarea class="form-control" name="chronic-diseases" placeholder="Enter any chronic diseases"></textarea>
         </div>
         <button type="button" onclick="prevUserStep()">Previous</button>
-        <input type="submit" class="btn" value="Submit">
+        <input type="submit" class="btn d-block w-100" value="Submit">
       </div>
     </form>
 
 
-    <form id="signup-specialists" class="d-none" action="{% url 'accounts:specialist_register_view' %}" method="post" enctype="multipart/form-data">
+    <form id="signup-specialists" class="d-none p-4 bg-white" action="{%url 'accounts:specialist_register_view' %}" method="post" enctype="multipart/form-data">
       {% csrf_token %}
+      <h2 class="main-title-2">Register as specialists</h2>
 
       <div class="step" id="specialist-step-1">
         <div class="mb-3">
@@ -164,12 +167,16 @@
         </select>
         </div>
         <div class="mb-3">
-          <label class="form-label">Certificates</label>
-          <button type="button" onclick="addCertificate()">Add Certificate</button>
+          <div class="certificate-label d-flex justify-content-between">
+            <label class="form-label">Certificates</label>
+            <button class="add border-0 bg-transparent" type="button" onclick="addCertificate()">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
           <div id="certificates-container"></div>
         </div>
         <button type="button" onclick="previousSpecialistStep(3)">Previous</button>
-        <input type="submit" class="btn" value="Submit" >
+        <input type="submit" class="btn d-block w-100" value="Submit" >
       </div>
 
     </form>
@@ -190,7 +197,7 @@
     const container = document.getElementById("certificates-container");
 
     const newField = document.createElement("div");
-    newField.className = "certificate-item mb-3";
+    newField.className = "certificate-item mb-3 position-relative";
 
     newField.innerHTML = `
     <div>
@@ -198,7 +205,7 @@
       <input type="text" class="form-control mb-2" name="certificates-name-${certificateCount}" required>
       <input type="file" class="form-control" required>
     </div>
-    <button type="button" class="btn mt-2" onclick="removeCertificate(this)">
+    <button type="button" class="cancel position-absolute bg-transparent top-0 end-0 text-danger border-0" onclick="removeCertificate(this)">
       <i class="fa-solid fa-xmark"></i>
     </button>
   `;

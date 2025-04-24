@@ -10,6 +10,9 @@
   --heading-color: #2E7D32;
   --link-hover: #388E3C;
 
+/* Transition */
+--t-duration: 0.3s;
+
 /* Dark Mode Colors */
   --primary-color-dark: #81C784;
   --secondary-color-dark: #4CAF50;
@@ -20,19 +23,206 @@
   --heading-color-dark: #A5D6A7;
   --link-hover-dark: #66BB6A;
 
+  --btn-color: var(--primary-color);           /* #4CAF50 */
+  --btn-hover-color: var(--heading-color);     /* #2E7D32 */
 }
 body {
   font-family: "Roboto Condensed", sans-serif;
 }
+.main-title {
+  position: relative;
+  margin: 0px auto 80px;
+  padding: 10px 20px;
+  width: fit-content;
+  border: 2px solid black;
+  font-size: 30px;
+  transition: var(--t-duration);
+  text-transform: uppercase;
+  z-index: 1;
+}
+.main-title::before,
+.main-title::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--heading-color);
+}
+.main-title::before {
+  left: -30px;
+}
+.main-title::after {
+  right: -30px;
+}
+.main-title:hover::before {
+  z-index: -1;
+  animation: left-move 0.5s linear forwards;
+}
+.main-title:hover::after {
+  z-index: -1;
+  animation: right-move 0.5s linear forwards;
+}
+.main-title:hover {
+  color: white;
+  border-color: var(--heading-color);
+  transition-delay: 0.5s;
+}
+@keyframes left-move {
+  50% {
+    width: 12px;
+    height: 12px;
+    left: 0;
+  }
+  100% {
+    left: 0;
+    border-radius: 0;
+    width: 55%;
+    height: 100%;
+  }
+}
+@keyframes right-move {
+  50% {
+    width: 12px;
+    height: 12px;
+    right: 0;
+  }
+  100% {
+    right: 0;
+    border-radius: 0;
+    width: 55%;
+    height: 100%;
+  }
+}
+.main-title-2 {
+  margin-bottom: 30px;
+}
+textarea {
+  resize: none;
+}
+/* End Main Config */
 /* Start Nav */
+.navbar {
+  background-color: var(--background-color);
+}
+.navbar .navbar-brand {
+  color: var(--primary-color);
+}
 .navbar .navbar-toggler:focus {
   box-shadow: none;
 }
-/* End Nav */
+.navbar .nav-link,
+.navbar .dropdown {
+  color: var(--secondary-color);
+  transition: var(--t-duration);
+}
+.navbar .nav-link:hover,
+.navbar .dropdown:hover,
+.navbar .dropdown-menu .dropdown-item:hover {
+  color: var(--link-hover);
+}
+.navbar .dropdown-menu {
+  background-color: var(--background-color);
+}
+.navbar .mode .light-mode {
+  color: #facc15;
+  transition: var(--t-duration);
+}
+.navbar .mode .light-mode:hover {
+  color: #f59e0b;
+}
+.navbar .mode .dark-mode {
+  color: #38bdf8;
+  transition: var(--t-duration);
+}
+.navbar .mode .dark-mode:hover {
+  color: #0ea5e9;
+}
+.navbar .dropdown-menu .dropdown-item {
+  color: var(--secondary-color);
+  transition-duration: var(--t-duration);
+}
+.navbar .dropdown-menu .dropdown-item:hover {
+  color: var(--link-hover-dark);
+  background-color: transparent;
+}
+.navbar .navbar-collapse .btns-sm a {
+  
+}
 
-.avatar {
+/* End Nav */
+/* Start Home Page */
+.landing {
+  height: calc(100vh - 56px);
+}
+.landing .intro h1 {
+  color: var(--primary-color);
+}
+.landing .intro p {
+  color: var(--text-color);
+}
+.about p {
+  color: var(--text-color);
+}
+/* End Home Page */
+/* Start Login  */
+.form-sec form {
+  width: 600px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+}
+.form-sec form input[type="submit"] {
+  background-color: var(--btn-color);
+  color: white;
+}
+.form-sec form input[type="submit"]:hover {
+  background-color: var(--btn-hover-color);
+}
+.form-sec .btns {
+  width: 400px;
+  display: flex;
+  justify-content: space-around;
+}
+.form-sec .btns button { 
+  color: white;
+  border: 0;
+  background-color: var(--btn-color);
+  border-radius: 12px;
+  width: 48%;
+}
+.form-sec .btns button:hover,
+.form-sec .btns button:focus {
+  background-color: var(--btn-hover-color);
+}
+.form-sec form .form-step button {
+  background-color: var(--accent-color);
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+.form-sec form .step button:not(.add):not(.cancel)
+ {
+  background-color: var(--accent-color);
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+@media (max-width:767px) {
+  .form-sec form {
+    width: 100%;
+  }
+  .form-sec .btns {
+    width: 100%;
+  }
+}
+/* End Login  */
+/* .avatar {
   width: 30px;
   height: 30px;
   object-fit: cover;
-}
+} */
 
