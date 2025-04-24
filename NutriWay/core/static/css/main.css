@@ -1,30 +1,35 @@
 /* Main Conifg */
 :root {
-  /* Light Mode Colors */
-  --primary-color: #4CAF50;
-  --secondary-color: #81C784;
-  --accent-color: #FF7043;
-  --accent-hover: #F4511E;
-  --background-color: #F9FBE7;
-  --text-color: #333;
-  --heading-color: #2E7D32;
-  --link-hover: #388E3C;
+/* Light Mode Colors */
+
+--primary-color: #328E6E;
+--secondary-color: #67AE6E;
+--accent-color: #90C67C;
+--accent-hover: #328E6E; /* reused primary for hover or change if needed */
+--background-color: #E1EEBC;
+--text-color: #333;
+--heading-color: #328E6E;
+--link-hover: #67AE6E;
 
 /* Transition */
 --t-duration: 0.3s;
 
 /* Dark Mode Colors */
-  --primary-color-dark: #81C784;
-  --secondary-color-dark: #4CAF50;
-  --accent-color-dark: #FF8A65;
-  --accent-hover-dark: #FF7043;
-  --background-color-dark: #1B1B1B;
-  --text-color-dark: #F1F1F1;
-  --heading-color-dark: #A5D6A7;
-  --link-hover-dark: #66BB6A;
+--primary-color-dark: #67AE6E;
+--secondary-color-dark: #328E6E;
+--accent-color-dark: #90C67C;
+--accent-hover-dark: #67AE6E;
+--background-color-dark: #1B1B1B;
+--text-color-dark: #F1F1F1;
+--heading-color-dark: #90C67C;
+--link-hover-dark: #67AE6E;
 
-  --btn-color: var(--primary-color);           /* #4CAF50 */
-  --btn-hover-color: var(--heading-color);     /* #2E7D32 */
+/* Button Colors */
+--btn-color: var(--primary-color);
+--btn-hover-color: #276254;
+
+
+  
 }
 body {
   font-family: "Roboto Condensed", sans-serif;
@@ -98,9 +103,26 @@ body {
 }
 .main-title-2 {
   margin-bottom: 30px;
+  color: var(--primary-color);
 }
 textarea {
   resize: none;
+}
+input {
+  caret-color: #2E7D32;
+}
+::placeholder {
+  transition: var(--t-duration);
+}
+input:focus::placeholder {
+  opacity: 0;
+}
+.form-control {
+  transition: var(--t-duration);
+}
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: none;
 }
 /* End Main Config */
 /* Start Nav */
@@ -202,14 +224,20 @@ textarea {
   color: white;
   padding: 5px 10px;
   border-radius: 5px;
+  width: 49%;
+  margin-bottom: 10px;
+  transition: var(--t-duration);
 }
-.form-sec form .step button:not(.add):not(.cancel)
- {
+.form-sec form .form-step button:hover {
+  background-color: var(--accent-hover);
+}
+.form-sec form .step button:not(.add):not(.cancel){
   background-color: var(--accent-color);
   border: none;
   color: white;
   padding: 5px 10px;
   border-radius: 5px;
+
 }
 @media (max-width:767px) {
   .form-sec form {
@@ -220,6 +248,35 @@ textarea {
   }
 }
 /* End Login  */
+/* Start Subscription list */
+.plans .box {
+  /* background-color: var(--background-color); */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  color: var(--text-color);
+}
+.plans .box .name {
+}
+.plans .box .name img {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  border-radius: 50%;
+}
+.plans .box .info {
+
+}
+.plans .box a {
+  background-color: var(--btn-color);
+  transition: var(--t-duration);
+  color: white;
+}
+.plans .box a:hover {
+  background-color: var(--btn-hover-color);
+}
+/* End Subscription list*/
 /* .avatar {
   width: 30px;
   height: 30px;

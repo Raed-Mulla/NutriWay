@@ -1,7 +1,66 @@
 {% extends 'core/base.html' %}
-
+{% load static %}
 {% block title %} Subscription Plans {% endblock %}
 
-{% block content %} 
-
+{% block content %}
+<section class="plans subscription-plans pt-5 pb-5">
+  <h2 class="main-title">Subscription Plans</h2>
+  <div class="container">
+    <div class="row">
+      {% for plan in plans %}
+      <div class="col-lg-4 mb-4">
+        <div class="box">
+          <div class="name text-center position-relative p-3">{{ plan.specialist.user.username }}<img src="{{plan.image.url}}" alt=""></div>
+          <div class="img">
+            <img src="{{plan.image.url}}" alt="" class="img-fluid">
+          </div>
+          <div class="info p-3">
+            <h3 class="subscription-name">{{plan.name}}</h3>
+            <p class="description"><span>Description:</span> {{plan.description}}</p>
+            <p class="type"> <span>Type: </span>{{plan.plan_type}}</p>
+            <div class="duration d-flex align-items-center ">
+              <span class="me-1">Duration</span>
+              <select name="duration" id="" class="p-1 border" >
+                <option value="">Duration</option>
+                {% for val, label in duration_choices %}
+                <option value="{{val}}">{{label}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="price text-center mb-3 mt-3 fw-bold">{{plan.price}}$</div>
+            <a href="" class="main-btn btn d-block m-auto mb-2">Subscribe</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
 {% endblock %}
+
+<!-- 
+      <div class="col-lg-4">
+        <div class="box">
+          <div class="name text-center position-relative p-3">Spesialists Name <img src="{% static 'images/9650826_7878.jpg' %}" alt=""></div>
+          <div class="img">
+            <img src="{% static 'images/9650826_7878.jpg' %}" alt="" class="img-fluid">
+          </div>
+          <div class="info p-3">
+            <h3 class="subscription-name">Kito</h3>
+            <p class="description"><span>Description:</span> anyting</p>
+            <p class="type"> <span>Type: </span>Anything</p>
+            <div class="duration d-flex align-items-center ">
+              <span class="me-1">Duration</span>
+              <select name="" id="" class="p-1 border" >
+                <option value="">One</option>
+                <option value="">One</option>
+                <option value="">One</option>
+              </select>
+            </div>
+            <div class="price text-center mb-3 mt-3 fw-bold">20$</div>
+            <a href="" class="btn d-block m-auto mb-2">Subscribe</a>
+          </div>
+        </div>
+      </div>
+
+-->

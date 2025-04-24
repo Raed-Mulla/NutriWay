@@ -54,7 +54,7 @@ def list_general_plan (request:HttpRequest):
 
 def list_subscription_plan (request:HttpRequest):
     plans = SubscriptionPlan.objects.all()
-    return render(request , 'specialists/list_subscription_plan.html' , {"plans" : plans})
+    return render(request , 'specialists/list_subscription_plan.html' , {"plans" : plans, "duration_choices":SubscriptionPlan.DurationChoices.choices})
 
 def my_plans(request:HttpRequest):
     specialist = Specialist.objects.get(user=request.user)

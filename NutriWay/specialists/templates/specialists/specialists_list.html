@@ -1,7 +1,32 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block title %} All Specialists {% endblock %}
 
-{% block content %} 
 
+
+
+{% block content %}
+<section class="plans subscription-plans pt-5 pb-5">
+  <h2 class="main-title">All Specialists</h2>
+  <div class="container">
+    <div class="row">
+      {% for specialist in specialists %}
+      <div class="col-lg-4 mb-4">
+        <div class="box">
+          <div class="name text-center position-relative p-3">{{ specialist.user.username }}<img src="{{plan.image.url}}" alt=""></div>
+          <div class="info p-3">
+            <h3 class="subscription-name">{{plan.name}}</h3>
+            <div class="age">Age: <span>{{specialist.birth_date}}</span></div>
+            <div class="gender">Gender: <span>{{specialist.gender}}</span></div>
+            <div class="specialty">Specialty: <span>{{specialist.specialty}}</span></div>
+            <a href="{% url 'specialists:specialist_detail' specialist.id %}" class="btn d-block m-auto mb-2 mt-3">View More</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
 {% endblock %}
+
