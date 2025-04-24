@@ -94,9 +94,8 @@
     </form>
 
 
-    <form id="signup-specialists" class="d-none" action="{% url 'accounts:specialist_register_view' %}" method="post" enctype="multipart/form-data">
+    <form id="signup-specialists" class="d-none" action="{%url 'accounts:specialist_register_view' %}" method="post" enctype="multipart/form-data">
       {% csrf_token %}
-
       <div class="step" id="specialist-step-1">
         <div class="mb-3">
           <label class="form-label">First Name</label>

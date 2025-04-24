@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
-from . models import Person,PersonData,Director,Specialist
+from . models import Person,PersonData,Director,Specialist,Certificate
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
 from django.contrib.auth import authenticate,login,logout
@@ -195,5 +195,57 @@ def logout_view(request:HttpRequest):
     messages.success(request,"logged out successfuly ", "alert-warning")
     return redirect('accounts:login_view')
 
-def profile_view(request: HttpRequest):
-    return render(request, "accounts/profile.html")
+# def profile_view(request: HttpRequest,user_name):
+#     try:
+#         user = User.objects.get(username=user_name)
+#     except Exception as e:
+#         print(e)
+#         messages.error(request, "user not found . ", "alert-danger")
+#         redirect('core:home')
+#     return render(request, "accounts/profile.html")
+
+
+def profile_view(request, user_name):
+    try:
+        profile_user = User.objects.get(username=user_name)
+        return render(request, 'accounts/profile.html', {'profile_user': profile_user})
+    except User.DoesNotExist:
+        messages.error(request, "User not found.", "alert-danger")
+        return redirect('core:home_view')
+    
+def update_profile_view(request):
+    if not request.user.is_authenticated:
+        return redirect('accounts:login_view')
+        
+    if request.method == 'POST':
+        request.user.first_name = request.POST.get('first_name')
+        request.user.last_name = request.POST.get('last_name')
+        request.user.save()
+        # if specialist
+        if hasattr(request.user, 'specialist'):
+            specialist = request.user.specialist
+            
+            if 'specialty' in request.POST:
+                specialist.specialty = request.POST.get('specialty')
+            
+            if 'profile_image' in request.FILES:
+                specialist.image = request.FILES['profile_image']
+            specialist.save()
+        
+        # if person
+        if hasattr(request.user, 'person'):
+            person = request.user.person
+            height = request.POST.get('height')
+            weight = request.POST.get('weight')
+            if height and weight:
+                PersonData.objects.create(
+                    person=person,
+                    height=float(height),
+                    weight=float(weight),
+                    goal=request.POST.get('goal', ''),
+                    chronic_diseases=request.POST.get('chronic_diseases', '')
+                )
+        messages.success(request, "Profile updated successfully!","alert-success")
+        return redirect('accounts:profile_view', user_name=request.user.username)
+    
+    return render(request, 'accounts/update_profile.html')

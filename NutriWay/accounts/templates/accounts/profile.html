@@ -1,0 +1,182 @@
+{% extends 'core/base.html' %}
+{% block title %}Profile - {{profile_user.username}}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body text-center">
+          {% if profile_user.specialist %}
+            {% if profile_user.specialist.image %}
+              <img src="{{ profile_user.specialist.image.url }}" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+            {% else %}
+              <img src="/media/images/default_profile.jpg" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+            {% endif %}
+          {% endif %}
+          
+          <h5 class="mb-1">{{ profile_user.first_name }} {{ profile_user.last_name }}</h5>
+          <p class="text-muted mb-1">@{{ profile_user.username }}</p>
+          
+          {% if is_specialist %}
+            <p class="text-muted mb-4">{{ profile_user.specialist.get_specialty_display }}</p>
+          {% endif %}
+          
+          {% if request.user == profile_user %}
+            <div class="d-flex justify-content-center mb-2">
+              <a href="{% url 'accounts:update_profile_view' %}" class="btn btn-primary">Edit Profile</a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      
+      {% if is_specialist %}
+        <div class="card mt-3">
+          <div class="card-body">
+            <h5 class="card-title">Certificates</h5>
+            {% if certificates %}
+              <ul class="list-group list-group-flush">
+                {% for cert in certificates %}
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ cert.name }}
+                    <a href="{{ cert.image.url }}" target="_blank" class="btn btn-sm btn-outline-primary">View</a>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p class="text-muted">No certificates uploaded yet.</p>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+    
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Profile Information</h5>
+          
+          <div class="row mb-3">
+            <div class="col-sm-3">
+              <p class="mb-0">Full Name</p>
+            </div>
+            <div class="col-sm-9">
+              <p class="text-muted mb-0">{{ profile_user.first_name }} {{ profile_user.last_name }}</p>
+            </div>
+          </div>
+          
+          <hr>
+          <div class="row mb-3">
+            <div class="col-sm-3">
+              <p class="mb-0">Email</p>
+            </div>
+            <div class="col-sm-9">
+              <p class="text-muted mb-0">{{ profile_user.email }}</p>
+            </div>
+          </div>
+          
+          <hr>
+          <div class="row mb-3">
+            <div class="col-sm-3">
+              <p class="mb-0">Gender</p>
+            </div>
+            <div class="col-sm-9">
+              {% if is_specialist %}
+                <p class="text-muted mb-0">{{ profile_user.specialist.get_gender_display }}</p>
+              {% elif profile_user.person %}
+                <p class="text-muted mb-0">{{ profile_user.person.get_gender_display }}</p>
+              {% else %}
+                <p class="text-muted mb-0">Not specified</p>
+              {% endif %}
+            </div>
+          </div>
+          
+          <hr>
+          <div class="row mb-3">
+            <div class="col-sm-3">
+              <p class="mb-0">Birth Date</p>
+            </div>
+            <div class="col-sm-9">
+              {% if is_specialist %}
+                <p class="text-muted mb-0">{{ profile_user.specialist.birth_date }}</p>
+              {% elif profile_user.person %}
+                <p class="text-muted mb-0">{{ profile_user.person.birth_date }}</p>
+              {% else %}
+                <p class="text-muted mb-0">Not specified</p>
+              {% endif %}
+            </div>
+          </div>
+          
+          {% if is_specialist %}
+            <hr>
+            <div class="row mb-3">
+              <div class="col-sm-3">
+                <p class="mb-0">Specialty</p>
+              </div>
+              <div class="col-sm-9">
+                <p class="text-muted mb-0">{{ profile_user.specialist.get_specialty_display }}</p>
+              </div>
+            </div>
+            
+            {% if profile_user.specialist.specialization_certificate %}
+              <hr>
+              <div class="row mb-3">
+                <div class="col-sm-3">
+                  <p class="mb-0">Certificate</p>
+                </div>
+                <div class="col-sm-9">
+                  <a href="{{ profile_user.specialist.specialization_certificate.url }}" target="_blank" class="btn btn-sm btn-outline-primary">View Certificate</a>
+                </div>
+              </div>
+            {% endif %}
+          {% endif %}
+          
+          {% if not is_specialist and person_data %}
+            <hr>
+            <div class="row mb-3">
+              <div class="col-sm-3">
+                <p class="mb-0">Height</p>
+              </div>
+              <div class="col-sm-9">
+                <p class="text-muted mb-0">{{ person_data.height }} cm</p>
+              </div>
+            </div>
+            
+            <hr>
+            <div class="row mb-3">
+              <div class="col-sm-3">
+                <p class="mb-0">Weight</p>
+              </div>
+              <div class="col-sm-9">
+                <p class="text-muted mb-0">{{ person_data.weight }} kg</p>
+              </div>
+            </div>
+            
+            <hr>
+            <div class="row mb-3">
+              <div class="col-sm-3">
+                <p class="mb-0">Goal</p>
+              </div>
+              <div class="col-sm-9">
+                <p class="text-muted mb-0">{{ person_data.goal }}</p>
+              </div>
+            </div>
+            
+            {% if person_data.chronic_diseases %}
+              <hr>
+              <div class="row mb-3">
+                <div class="col-sm-3">
+                  <p class="mb-0">Health Conditions</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0">{{ person_data.chronic_diseases }}</p>
+                </div>
+              </div>
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
