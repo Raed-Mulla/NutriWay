@@ -17,7 +17,4 @@ def contact_us_view(request: HttpRequest) -> HttpResponse:
         )
     return render(request, 'supports/contact_us.html')
 
-# Why ?
-def contact_thanks_view(request : HttpRequest) -> HttpResponse:
-    return render(request, 'supports/thanks.html')
 
