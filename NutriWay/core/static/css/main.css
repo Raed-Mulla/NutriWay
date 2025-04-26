@@ -278,7 +278,8 @@ input:focus::placeholder {
   color: white;
   padding: 5px 10px;
   border-radius: 5px;
-
+  width: 49%;
+  margin-bottom: 10px;
 }
 @media (max-width:767px) {
   .form-sec form {
