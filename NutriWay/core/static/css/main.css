@@ -11,6 +11,12 @@
 --heading-color: #328E6E;
 --link-hover: #67AE6E;
 
+--grey-color: #888;
+--card-hover-bg: #e8f2c9;
+--custom-danger: #ff4d4f;
+--custom-danger-hover: #d9363e;
+--custom-success: #52c41a;
+--custom-success-hover: #389e0d;
 /* Transition */
 --t-duration: 0.3s;
 
@@ -75,6 +81,11 @@ body {
   border-color: var(--heading-color);
   transition-delay: 0.5s;
 }
+@media (max-width:767px) {
+  .main-title {
+    font-size: 20px;
+  }
+}
 @keyframes left-move {
   50% {
     width: 12px;
@@ -124,6 +135,36 @@ input:focus::placeholder {
   border-color: var(--primary-color);
   box-shadow: none;
 }
+.btn-a {
+  background-color: var(--btn-color);
+  color: white;
+}
+.btn-a:hover {
+  color: white;
+  background-color: var(--btn-hover-color);
+}
+.to-top {
+  bottom: 10px;
+  right: 10px;
+  background-color: var(--accent-color);
+  color: white;
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+  transition: var(--t-duration);
+  cursor: pointer;
+  z-index: 9999;
+  transition: var(--t-duration);
+  opacity: 0;
+  transition: opacity var(--t-duration) ease;
+}
+.to-top:hover {
+  background-color: var(--accent-hover);
+}
+.to-top.show {
+  opacity: 1;
+}
+
 /* End Main Config */
 /* Start Nav */
 .navbar {
@@ -265,8 +306,9 @@ input:focus::placeholder {
   top: 5px;
   border-radius: 50%;
 }
-.plans .box .info {
-
+.plans .box .img img  {
+  height: 200px;
+  width: 100%;
 }
 .plans .box a {
   background-color: var(--btn-color);
@@ -277,6 +319,81 @@ input:focus::placeholder {
   background-color: var(--btn-hover-color);
 }
 /* End Subscription list*/
+/* Start info sec */
+.info-sec .row {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+}
+.info-sec .row .personal-info img {
+  width: 200px;
+  border-radius: 50%;
+}
+.info-sec .row .profile-info {
+  border-left: 1px solid #eee;
+}
+.info-sec .row .profile-info-row:not(:last-child) {
+  border-bottom: 1px solid #eee;
+}
+.info-sec .row .profile-info-row h4 {
+  color: var(--grey-color);
+}
+.info-sec .row .profile-info-row div span:first-child {
+  color: var(--grey-color);
+}
+.info-sec .row .profile-info-row div span:last-child {
+  font-size: 14px;
+}
+.certificates .box {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  transition: 0.5s;
+  border-bottom: 3px solid var(--primary-color);
+  min-height: 73px;
+}
+.certificates .box:hover {
+  background-color: var(--card-hover-bg);
+  transform: translateY(3px);
+  border-bottom: 0px solid var(--card-hover-bg);
+}
+
+@media (max-width:991px) {
+  .info-sec .row .profile-info .profile-info-row > div {
+    width: 100% !important;
+  }
+}
+@media (max-width:767px) {
+  .info-sec .row .profile-info {
+    border-left: none;
+  }
+
+}
+/* End info sec */
+/* Start Specialists Request */
+.specialists-request .row {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+}
+.specialists-request .row .data .row-data {
+  width: 50%;
+}
+.specialists-request .row .btns .approve {
+  background-color: var(--custom-success);
+}
+.specialists-request .row .btns .approve:hover {
+  background-color: var(--custom-success-hover);
+}
+.specialists-request .row .btns .reject {
+  background-color: var(--custom-danger);
+}
+.specialists-request .row .btns .reject:hover {
+  background-color: var(--custom-danger-hover);
+}
+@media (max-width:767px) {
+  .specialists-request .row .data .row-data {
+    width: 100%;
+  }
+}
+/* End Specialists Request */
 /* .avatar {
   width: 30px;
   height: 30px;

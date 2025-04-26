@@ -58,7 +58,7 @@ def list_subscription_plan (request:HttpRequest):
 
 def my_plans(request:HttpRequest):
     specialist = Specialist.objects.get(user=request.user)
-    plans = SubscriptionPlan.objects.filter(Specialist=specialist)
+    plans = SubscriptionPlan.objects.filter(specialist=specialist)
     return render(request,'specialists/my_plans.html',{'plans' : plans})
 
 
