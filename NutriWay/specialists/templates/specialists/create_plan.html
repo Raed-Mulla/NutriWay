@@ -1,0 +1,112 @@
+{% extends 'core/base.html' %}
+{% block title %} Create Subscription Plan {% endblock %}
+
+{% block content %}
+<section class="form-sec login pt-5 pb-5">
+  <div class="container d-flex flex-column align-items-center">
+    <form action="" method="post" class="bg-white p-4">
+      {% csrf_token %}
+      <h2 class="main-title-2">Create Subscription Plan</h2>
+      <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input type="text" class="form-control" name="name" placeholder="Enter your username" required>
+      </div>  
+      <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea class="form-control" name="description" placeholder="Enter your password" required></textarea>
+      </div>  
+      <div class="mb-3">
+        <div class="label d-flex justify-content-between align-items-center">
+          <label class="form-label">Meals</label>
+          <button class="add border-0 bg-transparent" type="button">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+        <div class="meals-container">
+          <div>
+            <div class="meal position-relative mb-2">
+              <div class="meal-no">Meal 1</div>
+              <button class="cancel position-absolute bg-transparent top-0 end-0 text-danger border-0">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          <div class="row g-0 mb-3">
+            <div class="col-2 flex-grow-1">
+              <input type="number" placeholder="Day" class="form-control" name="day_number">
+            </div>
+            <div class="col-2 flex-grow-1">
+              <input type="text" placeholder="Type" class="form-control" name="meal_type">
+  
+            </div>
+            <div class="col-5 flex-grow-1">
+              <input type="text" placeholder="Meal" class="form-control" name="description">
+  
+            </div>
+            <div class="col-2 flex-grow-1">
+              <input type="text" placeholder="Calories" class="form-control" name="meal_calorie">
+  
+            </div>
+          </div>
+        </div>
+      </div>  
+      <input type="submit" value="Submit" class="btn d-block w-100 mt-5">
+    </form>
+  </div>
+</section>
+<script>
+const addButton = document.querySelector('.add');
+const mealsContainer = document.querySelector('.meals-container'); 
+
+function updateMealNumbers() {
+  const meals = mealsContainer.querySelectorAll('.meal-no');
+  meals.forEach((meal, index) => {
+    meal.textContent = `Meal ${index + 1}`;
+  });
+}
+
+addButton.addEventListener('click', () => {
+  const rowContainer = document.createElement('div');
+  rowContainer.className = 'row-container';
+  rowContainer.innerHTML = `
+    <div>
+      <div class="meal position-relative mb-2">
+        <div class="meal-no">Meal</div>
+        <button class="cancel position-absolute bg-transparent top-0 end-0 text-danger border-0">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>
+    </div>
+    <div class="row g-0 mb-3">
+      <div class="col-2 flex-grow-1">
+        <input type="number" placeholder="Day" class="form-control">
+      </div>
+      <div class="col-2 flex-grow-1">
+        <input type="text" placeholder="Type" class="form-control">
+      </div>
+      <div class="col-5 flex-grow-1">
+        <input type="text" placeholder="Meal" class="form-control">
+      </div>
+      <div class="col-2 flex-grow-1">
+        <input type="text" placeholder="Calories" class="form-control">
+      </div>
+    </div>
+  `;
+
+  mealsContainer.appendChild(rowContainer);
+  updateMealNumbers();
+});
+
+mealsContainer.addEventListener('click', (e) => {
+  if (e.target.closest('.cancel')) {
+    const rowContainer = e.target.closest('.row-container');
+    rowContainer.remove();
+    updateMealNumbers();
+  }
+});
+
+updateMealNumbers();
+
+
+</script>
+{% endblock %}

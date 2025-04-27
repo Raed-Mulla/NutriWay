@@ -137,3 +137,4 @@ def edit_subscriber_plan(request:HttpRequest, plan_id):
             return redirect('specialists:my_plans')
 
     return render(request, 'specialists/edit_subscriber_plan.html', {'meal_formset': meal_formset,'subscriber_plan': subscriber_plan})
+
