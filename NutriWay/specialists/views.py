@@ -4,7 +4,7 @@ from .forms import SubscriptionPlanForm , GeneralPlanForm ,SubscriberMealForm, S
 from .models import SubscriptionPlan , Generalplan ,SubscriberMeal,SubscriberPlan,MealCheck
 from accounts.models import Specialist , Certificate
 from django.contrib import messages
-from users.models import Subscription
+from users.models import Subscription , ProgressReport
 
 def create_subscription_plan(request: HttpRequest):
     if request.method == "POST":
@@ -201,3 +201,29 @@ def edit_subscriber_plan(request:HttpRequest, plan_id):
 
     return render(request, 'specialists/edit_subscriber_plan.html', {'meal_formset': meal_formset,'subscriber_plan': subscriber_plan})
 
+
+def view_progress_reports(request: HttpRequest, subscription_id):
+    try:
+        specialist = Specialist.objects.get(user=request.user)
+        subscription = Subscription.objects.get(id=subscription_id, subscription_plan__specialist=specialist)
+    except (Specialist.DoesNotExist, Subscription.DoesNotExist):
+        return redirect("core:home_view")
+
+    progress_reports = ProgressReport.objects.filter(subscription=subscription).order_by('date')
+
+    if request.method == "POST":
+        progress_id = request.POST.get('progress_id')
+        comment = request.POST.get('specialist_comment')
+
+        try:
+            progress_report = ProgressReport.objects.get(id=progress_id, subscription=subscription)
+        except ProgressReport.DoesNotExist:
+            return redirect('core:home_view')
+
+        if not progress_report.specialist_comment:
+            progress_report.specialist_comment = comment
+            progress_report.save()
+
+        return redirect('specialists:view_progress_reports', subscription_id=subscription_id)
+
+    return render(request, 'specialists/view_progress_reports.html', {'subscription': subscription,'progress_reports': progress_reports})
