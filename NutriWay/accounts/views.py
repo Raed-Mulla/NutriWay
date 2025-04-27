@@ -124,8 +124,10 @@ def specialist_register_view(request: HttpRequest):
                         gender=gender,
                         specialty=specialty,
                         specialization_certificate=request.FILES.get('specialization_certificate'),
-                        image=request.FILES.get('profile_image')
                     )
+                    if 'image' in request.FILES:
+                        specialist.image = request.FILES['image']
+                        specialist.save()
                     
                 code = generate_verification_code()
                 verification_codes[email] = code
@@ -224,13 +226,15 @@ def update_profile_view(request):
         # if specialist
         if hasattr(request.user, 'specialist'):
             specialist = request.user.specialist
-            
+            print('>>>>>>>>>>>>>>>>>>>>', request.FILES)
             if 'specialty' in request.POST:
                 specialist.specialty = request.POST.get('specialty')
             
             if 'profile_image' in request.FILES:
+                print('&&&&&&&&& there is image in request.FILES  ')
+
                 specialist.image = request.FILES['profile_image']
-            specialist.save()
+                specialist.save()
         
         # if person
         if hasattr(request.user, 'person'):
