@@ -38,6 +38,7 @@ def start_checkout_subscription(request : HttpRequest, plan_id : int) -> HttpRes
             mode='payment',
             success_url=f'http://127.0.0.1:8000/success/?plan_id={plan.id}', 
             cancel_url='http://127.0.0.1:8000/cancel/',
+            customer_email=request.user.email,
             metadata={
                 "plan_id": plan.id,
                 "user_id": request.user.id
