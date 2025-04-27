@@ -1,0 +1,31 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %} My Plans {% endblock %}
+
+
+
+{% block content %}
+<section class="plans my-subscriptions-plans pt-5 pb-5">
+  <h2 class="main-title">My Plans</h2>
+  <div class="container">
+    <div class="row">
+      {% for plan in plans %}
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="box">
+          <div class="img">
+            <img src="" alt="" class="img-fluid">
+          </div>
+          <div class="info p-3">
+            <h3 class="subscription-name">{{plan.name}}</h3>
+            <p class="type"> <span>Type of Subscription: </span>{{plan.plan_type}}</p>
+            <div class="number-of-subscribers mb-3">Number of Subscribers: <span>22</span></div>
+            <a href="" class="btn d-block m-auto mb-2">View</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

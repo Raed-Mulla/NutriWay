@@ -5,8 +5,6 @@ from accounts.models import Person , Specialist
 from .models import Review
 from .forms import ReviewForm
 from django.contrib import messages
-def home_view(request : HttpRequest):
-  return render(request, "core/index.html")
 
 
 def add_review(request:HttpRequest , specialist_id):
