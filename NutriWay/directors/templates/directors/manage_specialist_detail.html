@@ -2,4 +2,81 @@
 
 {% block title %} Specialist Request Details {% endblock %}
 
-{% block content %} {% endblock %}
+{% block content %} 
+<section class="info-sec pt-5 pb-5">
+  <h2 class="main-title">Details</h2>
+
+  <div class="container">
+    <div class="row align-items-center ms-2 me-2 m-lg-0">
+      <div class="col-lg-4 col-md-4 p-4">
+        <div class="personal-info text-center">
+          <img src="" width="100px" class="" alt="">
+          <div class="full-name fs-3">{{specialist.user.first_name}} {{specialist.user.last_name}}</div>
+        </div>
+      </div>
+      <div class="col-lg-8 col-md-8">
+        <div class="profile-info">
+          <div class="profile-info-row p-4 d-flex flex-wrap">
+            <h4 class="fw-normal fs-5 w-100">General Inforamtion</h4>
+            <div class="w-50 flex-fill">
+              <span>Full Name:</span>
+              <span>{{specialist.user.first_name}} {{specialist.user.last_name}}</span>
+            </div>
+            <div class="w-50 flex-fill">
+              <span>Geneder:</span>
+              <span>{{specialist.gender}}</span>
+            </div>
+          </div>
+          <div class="profile-info-row p-4 d-flex flex-wrap">
+            <h4 class="fw-normal fs-5 w-100">Personal Information</h4>
+            <div class="w-50 flex-fill">
+              <span>Email:</span>
+              <span>{{specialist.user.email}}</span>
+            </div>
+            <div class="w-50 flex-fill">
+              <span>Date of Birth:</span>
+              <span>{{specialist.birth_date}}</span>
+            </div>
+          </div>
+          <div class="profile-info-row p-4 d-flex flex-wrap">
+            <h4 class="fw-normal fs-5 w-100"> Job Information</h4>
+            <div class="w-50 flex-fill">
+              <span>Specialty:</span>
+              <span>{{specialist.specialty}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="certificates pt-5 pb-5">
+  <h2 class="main-title">Specialization Certificate</h2>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 mb-4">
+        <div class="box p-3 d-flex align-items-center justify-content-between">
+          <div class="name">Bachelor’s degree in Nutritional Sciences</div>
+          <a href="" class="btn btn-a">View</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<section class="certificates pt-5 pb-5">
+  <h2 class="main-title">Certificates</h2>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 mb-4">
+        <div class="box p-3 d-flex align-items-center justify-content-between">
+          <div class="name">Bachelor’s degree in Nutritional Sciences</div>
+          <a href="" class="btn btn-a">View</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

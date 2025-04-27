@@ -1,5 +1,29 @@
 {% extends 'core/base.html' %}
+{% load static %}
+{% block title %} Specialist Requests {% endblock %}
 
-{% block title %} Specialist Request {% endblock %}
-
-{% block content %} {% endblock %}
+{% block content %}
+<section class="specialists-request pt-5 pb-5">
+  <div class="container">
+    <h2 class="main-title">Specialist Requests </h2>
+    <div class="row p-4 align-items-center text-center text-lg-start ms-2 me-2 m-lg-0">
+      <div class="col-lg-8">
+        <div class="data d-flex flex-wrap mb-4 mb-lg-0">
+          <div class="row-data">
+            <div class="full-name ">Full Name: <span>Nawaf Alhamdi</span></div>
+          </div>
+          <div class="row-data">
+            <div class="specialty">Specialty: <span>Wight</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="btns d-flex">
+          <a href="{% url 'directors:request_detail' %}" class="btn btn-a view flex-grow-1 ms-1">View</a>
+          <a href="{}" class="approve btn btn-a flex-grow-1 ms-1">Approve</a>
+          <a href="{}" class="reject btn btn-a flex-grow-1 ms-1">Reject</a>
+        </div>
+      </div>
+    </div>
+</section>
+{% endblock %}
