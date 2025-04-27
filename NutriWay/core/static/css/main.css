@@ -549,3 +549,19 @@ input:focus::placeholder {
   height: 30px;
   object-fit: cover;
 } */
+
+/* Start vertify */
+.vertify form {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  width: 50%;
+}
+@media (max-width:767px){
+  .vertify h2 {
+    font-size: 20px;
+  }
+  .vertify form {
+    width: 100%;
+  }
+}
+/* End vertify */
