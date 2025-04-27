@@ -11,7 +11,7 @@ urlpatterns = [
     path('plans/my/', views.my_plans, name='my_plans'),
     path('specialists/', views.all_specialists, name='all_specialists'),
     path('specialist/<int:specialist_id>/', views.specialist_detail, name='specialist_detail'),
-    path('specialist/subscriptions', views.specialist_subscriptions, name='specialist_subscriptions'),
-    path('create/plan', views.craete_plan, name='craete_plan'),
-    path('edit/plan', views.edit_plan, name='edit_plan'),
+    path('plans/my/<int:plan_id>/subscriptions/', views.specialist_subscriptions, name='specialist_subscriptions'),
+    path('subscriber/create/<int:subscription_id>/', views.create_subscriber_plan, name='create_subscriber_plan'),
+    path('subscriber/edit/<int:plan_id>/', views.edit_subscriber_plan, name='edit_subscriber_plan'),
 ]
