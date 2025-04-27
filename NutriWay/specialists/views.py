@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
-from .forms import SubscriptionPlanForm , GeneralPlanForm
-from .models import SubscriptionPlan , Generalplan
+from .forms import SubscriptionPlanForm , GeneralPlanForm ,SubscriberMealForm,SubscriberPlanForm ,SubscriberMealFormSet
+from .models import SubscriptionPlan , Generalplan ,SubscriberMeal,SubscriberPlan,MealCheck
 from accounts.models import Specialist , Certificate
 from django.contrib import messages
-
+from users.models import Subscription
 
 def create_subscription_plan(request: HttpRequest):
     if request.method == "POST":
@@ -75,11 +75,66 @@ def specialist_detail(request:HttpRequest , specialist_id):
         return redirect("core:home_view")
     return render(request, 'specialists/specialist_detail.html', {'specialist': specialist,'certificate': certificate,'plans': plans})
 
+def specialist_subscriptions(request:HttpRequest,plan_id):
+    try:
+        specialist = Specialist.objects.get(user=request.user)
+        subscription_plan = SubscriptionPlan.objects.get(id=plan_id, specialist=specialist)
+    except (Specialist.DoesNotExist, SubscriptionPlan.DoesNotExist):
+        return redirect('core:home_view')
+    
+    subscriptions = Subscription.objects.filter(subscription_plan=subscription_plan)
+    return render(request, 'specialists/view_subscriptions.html', {'subscriptions': subscriptions, 'subscription_plan': subscription_plan})
 
-def specialist_subscriptions(request):
-    return render(request, "specialists/view_subscriptions.html")
 
-def craete_plan(request):
-    return render(request, "specialists/create_plan.html")
-def edit_plan(request):
-    return render(request, "specialists/edit_plan.html")
+def create_subscriber_plan(request:HttpRequest, subscription_id):
+    try:
+        specialist = Specialist.objects.get(user=request.user)
+        subscription = Subscription.objects.get(id=subscription_id, subscription_plan__specialist=specialist)
+    except (Specialist.DoesNotExist, Subscription.DoesNotExist):
+        return redirect('core:home_view')
+
+    if request.method == "POST":
+        plan_form = SubscriberPlanForm(request.POST)
+        meal_formset = SubscriberMealFormSet(request.POST)
+
+        if plan_form.is_valid() and meal_formset.is_valid():
+            subscriber_plan = plan_form.save(commit=False)
+            subscriber_plan.specialist = specialist
+            subscriber_plan.save()
+
+            subscription.subscriber_plan = subscriber_plan
+            subscription.save()
+
+            meals = meal_formset.save(commit=False)
+            for meal in meals:
+                meal.subscriber_plan = subscriber_plan
+                meal.save()
+
+            return redirect('specialists:my_plans')
+
+    else:
+        plan_form = SubscriberPlanForm()
+        meal_formset = SubscriberMealFormSet(queryset=SubscriberMeal.objects.none())
+
+    return render(request, 'specialists/create_subscriber_plan.html', {'plan_form': plan_form,'meal_formset': meal_formset,'subscription': subscription})
+
+
+def edit_subscriber_plan(request:HttpRequest, plan_id):
+    try:
+        subscriber_plan = SubscriberPlan.objects.get(id=plan_id, specialist__user=request.user)
+    except SubscriberPlan.DoesNotExist:
+        return redirect("core:home_view")
+    
+    meal_formset = SubscriberMealFormSet(queryset=SubscriberMeal.objects.filter(subscriber_plan=subscriber_plan))
+
+    if request.method == "POST":
+        meal_formset = SubscriberMealFormSet(request.POST, queryset=SubscriberMeal.objects.filter(subscriber_plan=subscriber_plan))
+        if meal_formset.is_valid():
+            meals = meal_formset.save(commit=False)
+            for meal in meals:
+                meal.subscriber_plan = subscriber_plan
+                meal.save()
+            return redirect('specialists:my_plans')
+
+    return render(request, 'specialists/edit_subscriber_plan.html', {'meal_formset': meal_formset,'subscriber_plan': subscriber_plan})
+
