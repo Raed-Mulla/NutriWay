@@ -34,15 +34,28 @@
   /* Button Colors */
   --btn-color: var(--primary-color);
   --btn-hover-color: #276254;
-
-
-
 }
 
 body {
   font-family: "Roboto Condensed", sans-serif;
 }
-
+::-webkit-scrollbar {
+  width: 18px;
+}
+::-webkit-scrollbar-track {
+  background-color: #f6f6f6;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  transition: 0.3s;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--btn-hover-color);
+}
+::selection {
+  color: white;
+  background-color: var(--primary-color);
+}
 .main-title {
   position: relative;
   margin: 0px auto 80px;
@@ -467,6 +480,31 @@ input:focus::placeholder {
 }
 
 /* End Specialists Request */
+/* Start view subscriptions */
+.subscriptions .row .box {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  border-bottom: 3px solid var(--primary-color);
+}
+
+/* End view subscriptions */
+
+/* Start Craete Plan Form */
+.form-sec .label {
+  
+}
+.form-sec .row {
+  gap: 4px;
+}
+.form-sec .row .remove {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.form-sec input {
+  width: 100%;
+}
+/* End Craete Plan Form */
 /* .avatar {
   width: 30px;
   height: 30px;

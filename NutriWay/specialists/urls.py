@@ -10,5 +10,8 @@ urlpatterns = [
     path('plans/general/', views.list_general_plan, name='list_general_plan'),
     path('plans/my/', views.my_plans, name='my_plans'),
     path('specialists/', views.all_specialists, name='all_specialists'),
-    path('specialist/<int:specialist_id>/', views.specialist_detail, name='specialist_detail')
+    path('specialist/<int:specialist_id>/', views.specialist_detail, name='specialist_detail'),
+    path('specialist/subscriptions', views.specialist_subscriptions, name='specialist_subscriptions'),
+    path('create/plan', views.craete_plan, name='craete_plan'),
+    path('edit/plan', views.edit_plan, name='edit_plan'),
 ]

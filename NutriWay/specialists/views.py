@@ -74,3 +74,12 @@ def specialist_detail(request:HttpRequest , specialist_id):
     except Specialist.DoesNotExist:
         return redirect("core:home_view")
     return render(request, 'specialists/specialist_detail.html', {'specialist': specialist,'certificate': certificate,'plans': plans})
+
+
+def specialist_subscriptions(request):
+    return render(request, "specialists/view_subscriptions.html")
+
+def craete_plan(request):
+    return render(request, "specialists/create_plan.html")
+def edit_plan(request):
+    return render(request, "specialists/edit_plan.html")
