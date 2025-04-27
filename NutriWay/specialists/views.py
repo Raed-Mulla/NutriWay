@@ -4,7 +4,7 @@ from .forms import SubscriptionPlanForm , GeneralPlanForm ,SubscriberMealForm, S
 from .models import SubscriptionPlan , Generalplan ,SubscriberMeal,SubscriberPlan,MealCheck
 from accounts.models import Specialist , Certificate
 from django.contrib import messages
-from users.models import Subscription
+from users.models import Subscription , ProgressReport
 
 def create_subscription_plan(request: HttpRequest):
     if request.method == "POST":
@@ -138,3 +138,92 @@ def edit_subscriber_plan(request:HttpRequest, plan_id):
 
     return render(request, 'specialists/edit_subscriber_plan.html', {'meal_formset': meal_formset,'subscriber_plan': subscriber_plan})
 
+def specialist_subscriptions(request:HttpRequest,plan_id):
+    try:
+        specialist = Specialist.objects.get(user=request.user)
+        subscription_plan = SubscriptionPlan.objects.get(id=plan_id, specialist=specialist)
+    except (Specialist.DoesNotExist, SubscriptionPlan.DoesNotExist):
+        return redirect('core:home_view')
+    
+    subscriptions = Subscription.objects.filter(subscription_plan=subscription_plan)
+    return render(request, 'specialists/view_subscriptions.html', {'subscriptions': subscriptions, 'subscription_plan': subscription_plan})
+
+
+def create_subscriber_plan(request:HttpRequest, subscription_id):
+    try:
+        specialist = Specialist.objects.get(user=request.user)
+        subscription = Subscription.objects.get(id=subscription_id, subscription_plan__specialist=specialist)
+    except (Specialist.DoesNotExist, Subscription.DoesNotExist):
+        return redirect('core:home_view')
+
+    if request.method == "POST":
+        plan_form = SubscriberPlanForm(request.POST)
+        meal_formset = SubscriberMealFormSet(request.POST)
+
+        if plan_form.is_valid() and meal_formset.is_valid():
+            subscriber_plan = plan_form.save(commit=False)
+            subscriber_plan.specialist = specialist
+            subscriber_plan.save()
+
+            subscription.subscriber_plan = subscriber_plan
+            subscription.save()
+
+            meals = meal_formset.save(commit=False)
+            for meal in meals:
+                meal.subscriber_plan = subscriber_plan
+                meal.save()
+
+            return redirect('specialists:my_plans')
+
+    else:
+        plan_form = SubscriberPlanForm()
+        meal_formset = SubscriberMealFormSet(queryset=SubscriberMeal.objects.none())
+
+    return render(request, 'specialists/create_subscriber_plan.html', {'plan_form': plan_form,'meal_formset': meal_formset,'subscription': subscription})
+
+
+def edit_subscriber_plan(request:HttpRequest, plan_id):
+    try:
+        subscriber_plan = SubscriberPlan.objects.get(id=plan_id, specialist__user=request.user)
+    except SubscriberPlan.DoesNotExist:
+        return redirect("core:home_view")
+    
+    meal_formset = SubscriberMealFormSet(queryset=SubscriberMeal.objects.filter(subscriber_plan=subscriber_plan))
+
+    if request.method == "POST":
+        meal_formset = SubscriberMealFormSet(request.POST, queryset=SubscriberMeal.objects.filter(subscriber_plan=subscriber_plan))
+        if meal_formset.is_valid():
+            meals = meal_formset.save(commit=False)
+            for meal in meals:
+                meal.subscriber_plan = subscriber_plan
+                meal.save()
+            return redirect('specialists:my_plans')
+
+    return render(request, 'specialists/edit_subscriber_plan.html', {'meal_formset': meal_formset,'subscriber_plan': subscriber_plan})
+
+
+def view_progress_reports(request: HttpRequest, subscription_id):
+    try:
+        specialist = Specialist.objects.get(user=request.user)
+        subscription = Subscription.objects.get(id=subscription_id, subscription_plan__specialist=specialist)
+    except (Specialist.DoesNotExist, Subscription.DoesNotExist):
+        return redirect("core:home_view")
+
+    progress_reports = ProgressReport.objects.filter(subscription=subscription).order_by('date')
+
+    if request.method == "POST":
+        progress_id = request.POST.get('progress_id')
+        comment = request.POST.get('specialist_comment')
+
+        try:
+            progress_report = ProgressReport.objects.get(id=progress_id, subscription=subscription)
+        except ProgressReport.DoesNotExist:
+            return redirect('core:home_view')
+
+        if not progress_report.specialist_comment:
+            progress_report.specialist_comment = comment
+            progress_report.save()
+
+        return redirect('specialists:view_progress_reports', subscription_id=subscription_id)
+
+    return render(request, 'specialists/view_progress_reports.html', {'subscription': subscription,'progress_reports': progress_reports})
