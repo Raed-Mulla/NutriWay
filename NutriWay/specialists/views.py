@@ -2,11 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
 from .forms import SubscriptionPlanForm , GeneralPlanForm ,SubscriberMealForm, SubscriberPlanForm ,SubscriberMealFormSet
 from .models import SubscriptionPlan , Generalplan ,SubscriberMeal,SubscriberPlan,MealCheck
-from .forms import SubscriptionPlanForm , GeneralPlanForm ,SubscriberMealForm,SubscriberPlanForm ,SubscriberMealFormSet
-from .models import SubscriptionPlan , Generalplan ,SubscriberMeal,SubscriberPlan,MealCheck
 from accounts.models import Specialist , Certificate
 from django.contrib import messages
-from users.models import Subscription
 from users.models import Subscription
 
 def create_subscription_plan(request: HttpRequest):
