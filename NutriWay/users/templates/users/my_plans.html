@@ -4,6 +4,51 @@
 {% block title %} My Plans {% endblock %}
 
 {% block content %}
+<section class="plans subscription-plans pt-5 pb-5">
+  <h2 class="main-title mb-4">My Nutrition Plans</h2>
+  <div class="container">
+    <div class="row">
+      {% for subscription in subscriptions %}
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="box">
+          <div class="card-header d-flex align-items-center justify-content-between p-3">
+            <div class="name text-center position-relative">{{subscription.subscription_plan.name}}
+            </div>
+            <span class="badge {% if subscription.status == 'active' %}success{% else %}expired{% endif %}">
+              {{ subscription.get_status_display }}
+            </span>
+          </div>
+
+          <div class="img">
+            <img src="{{ subscription.subscription_plan.image.url }}" alt="" class="img-fluid">
+          </div>
+
+          <div class="info p-3">
+            <p class="card-text"><span>Specialist:</span> {{ subscription.subscription_plan.specialist.user.get_full_name }}</p>
+            <p class="card-text"><span>Start Date:</span> {{ subscription.start_date }}</p>
+            <p class="card-text"><span>End Date:</span> {{ subscription.end_date }}</p>
+            <p class="card-text"><span>Type:</span> {{ subscription.subscription_plan.get_plan_type_display }}</p>
+            {% if subscription.status == 'active' %}
+            <p class="card-text">
+              <span>Days Remaining:</span> 
+              {% with days_left=subscription.end_date|timeuntil %}
+                {{ days_left }}
+              {% endwith %}
+            </p>
+          {% endif %}
+          <a href="{% url 'users:subscription_detail' subscription.id %}" class="main-btn btn d-block m-auto mb-2">View</a>
+          </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+
+<!-- 
 <section class="my-plans mt-5 pt-5 pb-5">
   <div class="container">
     <h2 class="main-title mb-4">My Nutrition Plans</h2>
@@ -66,4 +111,4 @@
     {% endif %}
   </div>
 </section>
-{% endblock %}
+-->

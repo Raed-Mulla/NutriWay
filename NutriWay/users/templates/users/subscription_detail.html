@@ -3,7 +3,7 @@
 {% block title %}{{ subscription.subscription_plan.name }} - Details{% endblock %}
 
 {% block content %}
-<section class="subscription-detail py-5">
+<section class="subscription-detail pt-5 pb-5">
   <div class="container">
     <!-- Header Section with Status Badge -->
     <div class="row mb-4">
@@ -18,32 +18,31 @@
               {{ subscription.get_status_display }}
             </span>
           </div>
-          
+
           <!-- Specialist Actions -->
           {% if is_specialist and request.user == specialist.user %}
-            <div class="d-flex gap-2">
-              <a href="#" class="btn btn-outline-primary btn-sm">
-                <i class="fas fa-edit me-1"></i> Edit Plan
-              </a>
-              {% if subscription.status == 'active' %}
-                <a href="{% url 'users:cancel_subscription' subscription.id %}" class="btn btn-outline-danger btn-sm">
-                  <i class="fas fa-times-circle me-1"></i> Cancel
-                </a>
-              {% endif %}
-            </div>
+          <div class="d-flex gap-2">
+            <a href="#" class="btn btn-outline-primary btn-sm">
+              <i class="fas fa-edit me-1"></i> Edit Plan
+            </a>
+            {% if subscription.status == 'active' %}
+            <a href="{% url 'users:cancel_subscription' subscription.id %}" class="btn btn-outline-danger btn-sm">
+              <i class="fas fa-times-circle me-1"></i> Cancel
+            </a>
+            {% endif %}
+          </div>
           {% endif %}
         </div>
       </div>
     </div>
-    
     <!-- Main Content Area -->
     <div class="row">
       <!-- Left Column - Plan Info -->
       <div class="col-lg-4 mb-4">
-        <div class="card shadow-sm h-100">
+        <div class="card custom-card h-100">
           <div class="card-body">
             <h5 class="card-title border-bottom pb-3 mb-3">Plan Information</h5>
-            
+
             <!-- Subscription Progress -->
             <div class="mb-4">
               <div class="d-flex justify-content-between align-items-center mb-1">
@@ -51,15 +50,13 @@
                 <span class="text-muted small">{{ progress_percentage }}% Complete</span>
               </div>
               <div class="progress" style="height: 8px;">
-                <div class="progress-bar bg-success" role="progressbar" style="width: {{ progress_percentage }}%" 
-                  aria-valuenow="{{ progress_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ progress_percentage }}%" aria-valuenow="{{ progress_percentage }}" aria-valuemin="0" aria-valuemax="100"></div></div>
               <div class="d-flex justify-content-between mt-1">
                 <small class="text-muted">Day {{ days_elapsed }}</small>
                 <small class="text-muted">Day {{ total_days }}</small>
               </div>
             </div>
-            
+
             <!-- Plan Details -->
             <ul class="list-group list-group-flush">
               <li class="list-group-item px-0 d-flex justify-content-between">
@@ -84,15 +81,14 @@
               </li>
             </ul>
           </div>
-          
-          <!-- Action Buttons -->
+
           {% if subscription.status == 'active' and not is_specialist %}
           <div class="card-footer bg-transparent">
             <div class="d-grid gap-2">
-              <a href="{% url 'users:create_progress_report_view' subscription.id %}" class="btn btn-primary">
+              <a href="{% url 'users:create_progress_report_view' subscription.id %}" class="btn custom-btn">
                 <i class="fas fa-weight me-1"></i> Add Progress Update
               </a>
-              <a href="{% url 'users:view_progress' subscription.id %}" class="btn btn-outline-primary">
+              <a href="{% url 'users:view_progress' subscription.id %}" class="btn custom-btn">
                 <i class="fas fa-chart-line me-1"></i> View Progress History
               </a>
             </div>
@@ -100,109 +96,91 @@
           {% endif %}
         </div>
       </div>
-      
+
       <!-- Right Column - Meals & Progress -->
       <div class="col-lg-8">
-        <!-- Today's Meals Card -->
-        <div class="card shadow-sm mb-4">
+        <div class="card custom-card mb-4">
           <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
             <h5 class="mb-0">Today's Meals (Day {{ days_elapsed }})</h5>
             {% if subscription.status == 'active' and not is_specialist %}
-              <a href="{% url 'users:check_meals' subscription.id %}" class="btn btn-sm btn-outline-primary">
-                <i class="fas fa-check-circle me-1"></i> Update Progress
-              </a>
+            <a href="{% url 'users:check_meals' subscription.id %}" class="btn btn-sm custom-btn">
+              <i class="fas fa-check-circle me-1"></i> Update Progress
+            </a>
             {% endif %}
           </div>
-          
-
         </div>
-        
-        <!-- Recent Progress Card -->
-        <div class="card shadow-sm">
+
+        <div class="card custom-card">
           <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
             <h5 class="mb-0">Recent Progress</h5>
-            <a href="{% url 'users:view_progress' subscription_id %}" class="btn btn-sm btn-outline-primary">
+            <a href="{% url 'users:view_progress' subscription_id %}" class="btn btn-sm custom-btn">
+
               <i class="fas fa-history me-1"></i> View All
             </a>
           </div>
-          
+
           <div class="card-body">
             {% if weight_progress %}
-              <div class="d-flex justify-content-around mb-4 text-center">
-                <div>
-                  <p class="text-muted mb-1">Starting Weight</p>
-                  <h4>{{ weight_progress.first }} kg</h4>
-                </div>
-                <div>
-                  <p class="text-muted mb-1">Current Weight</p>
-                  <h4>{{ weight_progress.latest }} kg</h4>
-                </div>
-
+            <div class="d-flex justify-content-around mb-4 text-center">
+              <div>
+                <p class="text-muted mb-1">Starting Weight</p>
+                <h4>{{ weight_progress.first }} kg</h4>
+              </div>
+              <div>
+                <p class="text-muted mb-1">Current Weight</p>
+                <h4>{{ weight_progress.latest }} kg</h4>
+              </div>
+            </div>
             {% endif %}
-            
+
             {% if progress_reports %}
-              <div class="table-responsive">
-                <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Weight</th>
-                      <th>Notes</th>
-                      {% if is_specialist %}
-                        <th>Action</th>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Weight</th>
+                    <th>Notes</th>
+                    {% if is_specialist %}
+                    <th>Action</th>
+                    {% endif %}
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for report in progress_reports %}
+                  <tr>
+                    <td>{{ report.date }}</td>
+                    <td>{{ report.weight }} kg</td>
+                    <td>
+                      {% if report.note %}
+                      {{ report.note|truncatechars:40 }}
+                      {% else %}
+                      <span class="text-muted">No notes</span>
                       {% endif %}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for report in progress_reports %}
-                      <tr>
-                        <td>{{ report.date }}</td>
-                        <td>{{ report.weight }} kg</td>
-                        <td>
-                          {% if report.note %}
-                            {{ report.note|truncatechars:40 }}
-                          {% else %}
-                            <span class="text-muted">No notes</span>
-                          {% endif %}
-                        </td>
-                        {% if is_specialist %}
-                          <td>
-                            <a href="#" class="btn btn-sm btn-outline-primary">Comment</a>
-                          </td>
-                        {% endif %}
-                      </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              </div>
+                    </td>
+                    {% if is_specialist %}
+                    <td>
+                      <a href="#" class="btn btn-sm custom-btn">Comment</a>
+                    </td>
+                    {% endif %}
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
             {% else %}
-              <div >
-                <i class="fas fa-info-circle me-2"></i> No progress reports yet. Start tracking your progress to monitor your journey!
-                {% if not is_specialist %}
-                  <a href="{% url 'users:create_progress_report_view' subscription.id %}" class="alert-link">Add your first report</a>
-                {% endif %}
-              </div>
+            <div>
+              <i class="fas fa-info-circle me-2"></i> No progress reports yet. Start tracking your progress to monitor
+              your journey!
+              {% if not is_specialist %}
+              <a href="{% url 'users:create_progress_report_view' subscription.id %}" class="alert-link">Add your first
+                report</a>
+              {% endif %}
+            </div>
             {% endif %}
           </div>
         </div>
       </div>
     </div>
-    
-    <!-- Plan Description Section -->
-    <div class="row mt-4">
-      <div class="col-12">
-        <div class="card shadow-sm">
-          <div class="card-header bg-white py-3">
-            <h5 class="mb-0">Plan Description</h5>
-          </div>
-          <div class="card-body">
-            <p>{{ plan.description }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </section>
-
-<!-- Add custom filter for dictionary lookup -->
 {% endblock %}
