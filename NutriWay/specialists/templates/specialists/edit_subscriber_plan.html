@@ -1,111 +1,113 @@
 {% extends 'core/base.html' %}
-{% block title %} Edit Subscription Plan {% endblock %}
+{% block title %} Edit Subscriber Plan {% endblock %}
 
 {% block content %}
 <section class="form-sec login pt-5 pb-5">
   <div class="container d-flex flex-column align-items-center">
     <form action="" method="post" class="bg-white p-4">
       {% csrf_token %}
-      <h2 class="main-title-2">Edit Subscription Plan</h2>
+      <h2 class="main-title-2">Edit Subscriber Plan</h2>
+
       <div class="mb-3">
         <div class="label d-flex justify-content-between align-items-center">
-          <label class="form-label">Meals</label>
-          <button class="add border-0 bg-transparent" type="button">
+          <label class="form-label">Current Meals</label>
+        </div>
+
+        <div class="meals-container">
+          {% for meal in meals %}
+          <div class="row-container mb-3 position-relative">
+            <input type="hidden" name="meal_id-{{ meal.id }}" value="{{ meal.id }}">
+
+            <button class="cancel position-absolute bg-transparent top-0 end-0 text-danger border-0" type="button" onclick="markDelete('{{ meal.id }}')">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+
+            <div class="row g-0">
+              <div class="col-2 flex-grow-1">
+                <input type="number" name="day_number-{{ meal.id }}" class="form-control" value="{{ meal.day_number }}">
+              </div>
+              <div class="col-2 flex-grow-1">
+                <input type="text" name="meal_type-{{ meal.id }}" class="form-control" value="{{ meal.meal_type }}">
+              </div>
+              <div class="col-5 flex-grow-1">
+                <input type="text" name="description-{{ meal.id }}" class="form-control" value="{{ meal.description }}">
+              </div>
+              <div class="col-2 flex-grow-1">
+                <input type="text" name="meal_calorie-{{ meal.id }}" class="form-control" value="{{ meal.meal_calorie }}">
+              </div>
+              <input type="hidden" name="delete-{{ meal.id }}" id="delete-{{ meal.id }}" value="0">
+            </div>
+          </div>
+          {% empty %}
+          <p class="text-muted">No meals yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <div class="label d-flex justify-content-between align-items-center">
+          <label class="form-label">Add New Meals</label>
+          <button id="add-meal-btn" class="border-0 bg-transparent" type="button">
             <i class="fa-solid fa-plus"></i>
           </button>
         </div>
-        <div class="meals-container">
-          <!-- <div>
-            <div class="meal position-relative mb-2">
-              <div class="meal-no">Meal 1</div>
-              <button class="cancel position-absolute bg-transparent top-0 end-0 text-danger border-0">
-                <i class="fa-solid fa-trash"></i>
-              </button>
-            </div>
-          </div>
-          <div class="row g-0 mb-3">
-            <div class="col-2 flex-grow-1">
-              <input type="number" placeholder="Day" class="form-control" name="day_number">
-            </div>
-            <div class="col-2 flex-grow-1">
-              <input type="text" placeholder="Type" class="form-control" name="meal_type">
-  
-            </div>
-            <div class="col-5 flex-grow-1">
-              <input type="text" placeholder="Meal" class="form-control" name="description">
-  
-            </div>
-            <div class="col-2 flex-grow-1">
-              <input type="text" placeholder="Calories" class="form-control" name="meal_calorie">
-  
-            </div>
-          </div> -->
+        <div id="new-meals-container">
         </div>
-      </div>  
+      </div>
+
       <input type="submit" value="Modify" class="btn d-block w-100 mt-5">
     </form>
   </div>
 </section>
+
 <script>
-  const addButton = document.querySelector('.add');
-  const mealsContainer = document.querySelector('.meals-container');
-  function updateMealNumbers() {
-    const meals = mealsContainer.querySelectorAll('.row-container');
-    meals.forEach((rowContainer, index) => {
-      
-      const mealNo = rowContainer.querySelector('.meal-no');
-      mealNo.textContent = `Meal ${index + 1}`;
-  
-      // Update input names
-      rowContainer.querySelector('input[placeholder="Day"]').name = `day_number-${index + 1}`;
-      rowContainer.querySelector('input[placeholder="Type"]').name = `meal_type-${index + 1}`;
-      rowContainer.querySelector('input[placeholder="Meal"]').name = `description-${index + 1}`;
-      rowContainer.querySelector('input[placeholder="Calories"]').name = `meal_calorie-${index + 1}`;
-    });
-  }
-  
+  let mealCount = 0;
+
+  const addButton = document.getElementById('add-meal-btn');
+  const newMealsContainer = document.getElementById('new-meals-container');
+
   addButton.addEventListener('click', () => {
     const rowContainer = document.createElement('div');
-    rowContainer.className = 'row-container';
+    rowContainer.className = 'row-container mb-3 position-relative';
     rowContainer.innerHTML = `
-      <div>
-        <div class="meal position-relative mb-2">
-          <div class="meal-no">Meal</div>
-          <button class="cancel position-absolute bg-transparent top-0 end-0 text-danger border-0" type="button">
-            <i class="fa-solid fa-trash"></i>
-          </button>
-        </div>
+      <div class="meal position-relative mb-2">
+        <div class="meal-no">Meal ${mealCount + 1}</div>
+        <button class="cancel position-absolute bg-transparent top-0 end-0 text-danger border-0" type="button">
+          <i class="fa-solid fa-trash"></i>
+        </button>
       </div>
-      <div class="row g-0 mb-3">
+      <div class="row g-0">
         <div class="col-2 flex-grow-1">
-          <input type="number" placeholder="Day" class="form-control">
+          <input type="number" placeholder="Day" class="form-control" name="day_number-new-${mealCount}">
         </div>
         <div class="col-2 flex-grow-1">
-          <input type="text" placeholder="Type" class="form-control">
+          <input type="text" placeholder="Type" class="form-control" name="meal_type-new-${mealCount}">
         </div>
         <div class="col-5 flex-grow-1">
-          <input type="text" placeholder="Meal" class="form-control">
+          <input type="text" placeholder="Meal" class="form-control" name="description-new-${mealCount}">
         </div>
         <div class="col-2 flex-grow-1">
-          <input type="text" placeholder="Calories" class="form-control">
+          <input type="text" placeholder="Calories" class="form-control" name="meal_calorie-new-${mealCount}">
         </div>
       </div>
     `;
-  
-    mealsContainer.appendChild(rowContainer);
-    updateMealNumbers();
+    newMealsContainer.appendChild(rowContainer);
+    mealCount++;
   });
-  
-  mealsContainer.addEventListener('click', (e) => {
+
+  newMealsContainer.addEventListener('click', (e) => {
     if (e.target.closest('.cancel')) {
-      const rowContainer = e.target.closest('.row-container');
-      rowContainer.remove();
-      updateMealNumbers();
+      e.target.closest('.row-container').remove();
     }
   });
-  
-  // Initial
-  updateMealNumbers();
-  </script>
-  
+
+  function markDelete(id) {
+    const deleteInput = document.getElementById(`delete-${id}`);
+    if (deleteInput) {
+      deleteInput.value = "1";
+      const mealRow = deleteInput.closest('.row-container');
+      mealRow.style.display = "none";
+    }
+  }
+</script>
 {% endblock %}

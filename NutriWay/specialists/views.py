@@ -165,8 +165,7 @@ def create_subscriber_plan(request: HttpRequest, subscription_id):
                     subscriber_plan=subscriber_plan,
                     day_number=day_number,
                     meal_type=meal_type,
-                    description=meal_description,
-                    meal_calorie=meal_calorie
+                    description=meal_description,meal_calorie=meal_calorie
                 ))
                 i += 1
             else:
@@ -182,6 +181,8 @@ def create_subscriber_plan(request: HttpRequest, subscription_id):
 
 
 
+
+
 def edit_subscriber_plan(request: HttpRequest, plan_id):
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to access this page.", "alert-danger")
@@ -194,18 +195,45 @@ def edit_subscriber_plan(request: HttpRequest, plan_id):
         messages.error(request, "You are not authorized to edit this plan.", "alert-danger")
         return redirect('core:home_view')
 
-    meal_formset = SubscriberMealFormSet(queryset=SubscriberMeal.objects.filter(subscriber_plan=subscriber_plan))
-
     if request.method == "POST":
-        meal_formset = SubscriberMealFormSet(request.POST, queryset=SubscriberMeal.objects.filter(subscriber_plan=subscriber_plan))
-        if meal_formset.is_valid():
-            meals = meal_formset.save(commit=False)
-            for meal in meals:
-                meal.subscriber_plan = subscriber_plan
-                meal.save()
-            return redirect('specialists:my_plans')
+        old_meals = SubscriberMeal.objects.filter(subscriber_plan=subscriber_plan)
+        for meal in old_meals:
+            delete_flag = request.POST.get(f"delete-{meal.id}")
+            if delete_flag == "1":
+                meal.delete()
+            else:
+                day_number = request.POST.get(f"day_number-{meal.id}")
+                meal_type = request.POST.get(f"meal_type-{meal.id}")
+                description = request.POST.get(f"description-{meal.id}")
+                meal_calorie = request.POST.get(f"meal_calorie-{meal.id}")
 
-    return render(request, 'specialists/edit_subscriber_plan.html', {'meal_formset': meal_formset, 'subscriber_plan': subscriber_plan})
+                if day_number and meal_type and description and meal_calorie:
+                    meal.day_number = day_number
+                    meal.meal_type = meal_type
+                    meal.description = description
+                    meal.meal_calorie = meal_calorie
+                    meal.save()
+
+        i = 0
+        while True:
+            day_number = request.POST.get(f'day_number-new-{i}')
+            meal_type = request.POST.get(f'meal_type-new-{i}')
+            description = request.POST.get(f'description-new-{i}')
+            meal_calorie = request.POST.get(f'meal_calorie-new-{i}')
+
+            if day_number and meal_type and description and meal_calorie:
+                SubscriberMeal.objects.create(subscriber_plan=subscriber_plan,day_number=day_number,meal_type=meal_type,description=description,meal_calorie=meal_calorie)
+                i += 1
+            else:
+                break
+
+        messages.success(request, "Meals updated successfully.", "alert-success")
+        return redirect('specialists:my_plans')
+
+    meals = SubscriberMeal.objects.filter(subscriber_plan=subscriber_plan)
+    return render(request, 'specialists/edit_subscriber_plan.html', {'subscriber_plan': subscriber_plan,'meals': meals})
+
+
 
 
 def view_progress_reports(request: HttpRequest, subscription_id):
