@@ -7,6 +7,13 @@ from django.contrib import messages
 from users.models import Subscription , ProgressReport
 
 def create_subscription_plan(request: HttpRequest):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to access this page.", "alert-danger")
+        return redirect('accounts:login_view')
+    specialist = Specialist.objects.filter(user=request.user).first()
+    if not specialist:
+        messages.error(request, "You are not authorized to access this page.", "alert-danger")
+        return redirect('core:home_view')
     if request.method == "POST":
         form = SubscriptionPlanForm(request.POST, request.FILES)
         if form.is_valid():
@@ -29,6 +36,14 @@ def create_subscription_plan(request: HttpRequest):
 
 
 def create_general_plan(request: HttpRequest):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to access this page.", "alert-danger")
+        return redirect('accounts:login_view')
+    specialist = Specialist.objects.filter(user=request.user).first()
+    if not specialist:
+        messages.error(request, "You are not authorized to access this page.", "alert-danger")
+        return redirect('core:home_view')
+    
     if request.method == "POST":
         form = GeneralPlanForm(request.POST, request.FILES)
         if form.is_valid():
@@ -57,9 +72,14 @@ def list_subscription_plan (request:HttpRequest):
     return render(request , 'specialists/list_subscription_plan.html' , {"plans" : plans, "duration_choices":SubscriptionPlan.DurationChoices.choices})
 
 def my_plans(request:HttpRequest):
-    specialist = Specialist.objects.get(user=request.user)
+    try:
+        specialist = Specialist.objects.get(user=request.user)
+    except Specialist.DoesNotExist:
+        messages.error(request, "You are not authorized to access this page.", "alert-danger")
+        return redirect('core:home_view')
+    
     plans = SubscriptionPlan.objects.filter(specialist=specialist)
-    return render(request,'specialists/my_plans.html',{'plans' : plans})
+    return render(request, 'specialists/my_plans.html', {'specialist': specialist, 'plans': plans})
 
 
 def all_specialists(request:HttpRequest):
@@ -85,38 +105,59 @@ def specialist_subscriptions(request:HttpRequest,plan_id):
     subscriptions = Subscription.objects.filter(subscription_plan=subscription_plan)
     return render(request, 'specialists/view_subscriptions.html', {'subscriptions': subscriptions, 'subscription_plan': subscription_plan})
 
-
-def create_subscriber_plan(request:HttpRequest, subscription_id):
+def create_subscriber_plan(request: HttpRequest, subscription_id):
     try:
         specialist = Specialist.objects.get(user=request.user)
         subscription = Subscription.objects.get(id=subscription_id, subscription_plan__specialist=specialist)
     except (Specialist.DoesNotExist, Subscription.DoesNotExist):
+        messages.error(request, "You are not authorized.", "alert-danger")
         return redirect('core:home_view')
 
     if request.method == "POST":
-        plan_form = SubscriberPlanForm(request.POST)
-        meal_formset = SubscriberMealFormSet(request.POST)
+        plan_name = request.POST.get('name')
+        plan_description = request.POST.get('description')
 
-        if plan_form.is_valid() and meal_formset.is_valid():
-            subscriber_plan = plan_form.save(commit=False)
-            subscriber_plan.specialist = specialist
-            subscriber_plan.save()
+        if not plan_name or not plan_description:
+            messages.error(request, "Plan name and description are required.", "alert-danger")
+            return redirect(request.path)
 
-            subscription.subscriber_plan = subscriber_plan
-            subscription.save()
+        subscriber_plan = SubscriberPlan.objects.create(
+            specialist=specialist,
+            name=plan_name,
+            description=plan_description
+        )
 
-            meals = meal_formset.save(commit=False)
-            for meal in meals:
-                meal.subscriber_plan = subscriber_plan
-                meal.save()
+        
+        subscription.subscriber_plan = subscriber_plan
+        subscription.save()
 
-            return redirect('specialists:my_plans')
+        
+        meals = []
+        i = 0
+        while True:
+            day_number = request.POST.get(f'day_number_{i}')
+            meal_type = request.POST.get(f'meal_type_{i}')
+            description = request.POST.get(f'description_{i}')
+            meal_calorie = request.POST.get(f'meal_calorie_{i}')
+            
+            if day_number and meal_type and description and meal_calorie:
+                meals.append(SubscriberMeal(
+                    subscriber_plan=subscriber_plan,
+                    day_number=day_number,
+                    meal_type=meal_type,
+                    description=description,
+                    meal_calorie=meal_calorie
+                ))
+                i += 1
+            else:
+                break
 
-    else:
-        plan_form = SubscriberPlanForm()
-        meal_formset = SubscriberMealFormSet(queryset=SubscriberMeal.objects.none())
+        SubscriberMeal.objects.bulk_create(meals)
 
-    return render(request, 'specialists/create_subscriber_plan.html', {'plan_form': plan_form,'meal_formset': meal_formset,'subscription': subscription,"meals":SubscriberMeal.MealTypeChoices.choices})
+        messages.success(request, "Subscriber plan and meals created successfully.", "alert-success")
+        return redirect('specialists:my_plans')
+
+    return render(request, 'specialists/create_subscriber_plan.html', {'subscription': subscription})
 
 
 def edit_subscriber_plan(request:HttpRequest, plan_id):
@@ -147,60 +188,6 @@ def specialist_subscriptions(request:HttpRequest,plan_id):
     
     subscriptions = Subscription.objects.filter(subscription_plan=subscription_plan)
     return render(request, 'specialists/view_subscriptions.html', {'subscriptions': subscriptions, 'subscription_plan': subscription_plan})
-
-
-def create_subscriber_plan(request:HttpRequest, subscription_id):
-    try:
-        specialist = Specialist.objects.get(user=request.user)
-        subscription = Subscription.objects.get(id=subscription_id, subscription_plan__specialist=specialist)
-    except (Specialist.DoesNotExist, Subscription.DoesNotExist):
-        return redirect('core:home_view')
-
-    if request.method == "POST":
-        plan_form = SubscriberPlanForm(request.POST)
-        meal_formset = SubscriberMealFormSet(request.POST)
-
-        if plan_form.is_valid() and meal_formset.is_valid():
-            subscriber_plan = plan_form.save(commit=False)
-            subscriber_plan.specialist = specialist
-            subscriber_plan.save()
-
-            subscription.subscriber_plan = subscriber_plan
-            subscription.save()
-
-            meals = meal_formset.save(commit=False)
-            for meal in meals:
-                meal.subscriber_plan = subscriber_plan
-                meal.save()
-
-            return redirect('specialists:my_plans')
-
-    else:
-        plan_form = SubscriberPlanForm()
-        meal_formset = SubscriberMealFormSet(queryset=SubscriberMeal.objects.none())
-
-    return render(request, 'specialists/create_subscriber_plan.html', {'plan_form': plan_form,'meal_formset': meal_formset,'subscription': subscription})
-
-
-def edit_subscriber_plan(request:HttpRequest, plan_id):
-    try:
-        subscriber_plan = SubscriberPlan.objects.get(id=plan_id, specialist__user=request.user)
-    except SubscriberPlan.DoesNotExist:
-        return redirect("core:home_view")
-    
-    meal_formset = SubscriberMealFormSet(queryset=SubscriberMeal.objects.filter(subscriber_plan=subscriber_plan))
-
-    if request.method == "POST":
-        meal_formset = SubscriberMealFormSet(request.POST, queryset=SubscriberMeal.objects.filter(subscriber_plan=subscriber_plan))
-        if meal_formset.is_valid():
-            meals = meal_formset.save(commit=False)
-            for meal in meals:
-                meal.subscriber_plan = subscriber_plan
-                meal.save()
-            return redirect('specialists:my_plans')
-
-    return render(request, 'specialists/edit_subscriber_plan.html', {'meal_formset': meal_formset,'subscriber_plan': subscriber_plan})
-
 
 def view_progress_reports(request: HttpRequest, subscription_id):
     try:
@@ -239,9 +226,9 @@ def delete_subscription(request: HttpRequest, subscription_id):
             return redirect('core:home_view')
 
         subscription.delete()
-        messages.success(request, "Subscriber has been successfully removed.")
+        messages.success(request, "Subscriber has been successfully removed.","alert-success")
         
     except (Subscription.DoesNotExist, Specialist.DoesNotExist):
-        messages.error(request, "Subscriber not found or you are not authorized.")
+        messages.error(request, "Subscriber not found or you are not authorized.","alert-danger")
     
     return redirect('specialists:my_plans')
