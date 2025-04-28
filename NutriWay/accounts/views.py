@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db import IntegrityError , transaction
 from django.core.mail import send_mail
+from directors.models import SpecialistRequest
 import random
 from django.conf import settings
   
@@ -125,6 +126,10 @@ def specialist_register_view(request: HttpRequest):
                         specialty=specialty,
                         specialization_certificate=request.FILES.get('specialization_certificate'),
                     )
+                    specialisr_request = SpecialistRequest.objects.create(
+                        specialist = specialist
+                    )
+                    
                     if 'image' in request.FILES:
                         specialist.image = request.FILES['image']
                         specialist.save()
@@ -171,7 +176,6 @@ def vertify_view(request:HttpRequest):
                 messages.error(request, "User not found.", "alert-danger")
         else:
             messages.error(request, "Invalid verification code.", "alert-danger")
-
     return render(request, "accounts/vertify.html", {"email": email})
 
 def login_view(request: HttpRequest):
@@ -181,6 +185,28 @@ def login_view(request: HttpRequest):
 
         user = authenticate(request, username=username, password=password)
         if user is not None:
+            if hasattr(user, 'specialist'):
+                try:
+                    specialist_request = SpecialistRequest.objects.get(specialist=user.specialist)
+                    
+                    if specialist_request.status == SpecialistRequest.RequestStatus.PENDING:
+                        messages.error(request, "Your specialist request is still pending approval. Please wait until a director accepts you.", "alert-danger")
+                        return redirect('accounts:login_view')
+                    
+                    if specialist_request.status == SpecialistRequest.RequestStatus.REJECTED:
+                        messages.error(request, "Your specialist request has been rejected.", "alert-danger")
+                        return redirect('accounts:login_view')
+                
+                except SpecialistRequest.DoesNotExist:
+                    print("No SpecialistRequest found for this user")
+                    messages.error(request, "Your specialist account is not properly set up. Please contact an administrator.", "alert-danger")
+                    return redirect('accounts:login_view')
+                except Exception as e:
+                    print(f"Exception when checking specialist status: {e}")
+                    messages.error(request, "There was a problem verifying your specialist status. Please contact support.", "alert-danger")
+                    return redirect('accounts:login_view')
+
+            
             if user.is_active:
                 login(request, user)
                 messages.success(request, f"Welcome {user.username}, you logged in successfully!", "alert-success")

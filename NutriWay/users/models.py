@@ -8,12 +8,19 @@ class Subscription(models.Model):
         ACTIVE = 'active', 'Active'
         EXPIRED = 'expired', 'Expired'
         CANCELLED = 'cancelled', 'Cancelled'
+     
+    class DurationChoices(models.TextChoices):
+        ONE_MONTH = '1_month', '1 Month'
+        THREE_MONTHS = '3_months', '3 Months'
+        SIX_MONTHS = '6_months', '6 Months'
+        YEAR = '12_months', '12 Months'
 
     person = models.ForeignKey(Person,on_delete=models.CASCADE)
     subscription_plan = models.ForeignKey("specialists.SubscriptionPlan",on_delete=models.CASCADE)
     subscriber_plan = models.ForeignKey("specialists.SubscriberPlan",on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
+    duration = models.CharField(max_length=20, choices=DurationChoices.choices,default=DurationChoices.ONE_MONTH)
     status = models.CharField(max_length=15 , choices=StatusChoices.choices)
 
     def __str__(self):
