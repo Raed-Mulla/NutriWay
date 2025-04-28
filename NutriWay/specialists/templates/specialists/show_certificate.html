@@ -1,0 +1,13 @@
+{% extends 'core/base.html' %}
+{% block title %} Show {% endblock %}
+
+{% block content %}
+<section class="pt-5 pb-5">
+    <h2 class="main-title">Certificate of {{ specialist.name }}</h2>
+    <div class="container text-center">
+        <img src="{{ specialist.specialization_certificate.url }}" alt="Certificate" class="certificate-image img-fluid" >
+        <a href="{{ specialist.specialization_certificate.url }}" download class="btn btn-a d-block mt-5">Download Certificate</a>
+    </div>
+</section>
+{% endblock %}
+

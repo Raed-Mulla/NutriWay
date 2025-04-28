@@ -196,6 +196,7 @@
     document.getElementById(formId).classList.remove('d-none');
   }
   let certificateCount = 1;
+  let certificateCountFile = 1;
   // Certificates
   function addCertificate() {
     const container = document.getElementById("certificates-container");
@@ -207,7 +208,7 @@
     <div>
       <label class="form-label">Certificate Name ${certificateCount}</label>
       <input type="text" class="form-control mb-2" name="certificates-name-${certificateCount}" required>
-      <input type="file" class="form-control" required>
+      <input type="file" class="form-control" name="certificate-file-${certificateCountFile}" required>
     </div>
     <button type="button" class="cancel position-absolute bg-transparent top-0 end-0 text-danger border-0" onclick="removeCertificate(this)">
       <i class="fa-solid fa-trash"></i>

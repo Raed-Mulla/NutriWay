@@ -232,3 +232,10 @@ def delete_subscription(request: HttpRequest, subscription_id):
         messages.error(request, "Subscriber not found or you are not authorized.","alert-danger")
     
     return redirect('specialists:my_plans')
+
+
+# 
+
+def show_certificate(request, specialist_id):
+    specialist = Specialist.objects.get(id=specialist_id)
+    return render(request, 'specialists/show_certificate.html', {'specialist': specialist})

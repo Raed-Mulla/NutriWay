@@ -59,8 +59,8 @@
         <div class="box p-3 d-flex align-items-center justify-content-between">
           <!-- {{ specialist.specialization_certificate }} -->
           <div class="name"> Specialization Certificate</div>
-          <a href="" download class="btn btn-a">View</a>
-        </div>
+          <a href="{% url 'specialists:show_certificate' specialist.id %}" class="btn btn-a">View</a>
+
       </div>
 
     </div>
