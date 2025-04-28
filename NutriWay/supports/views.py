@@ -8,6 +8,7 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.views.decorators.http import require_http_methods
 
 def contact_us_view(request: HttpRequest) -> HttpResponse:
     if request.method == 'POST':
@@ -58,32 +59,42 @@ def contact_messages(request : HttpRequest) -> HttpResponse:
     return render(request, 'supports/contact_messages.html', {'messages_list': messages_list})
 
 
+
+
 @login_required
-def mark_as_resolved(request : HttpRequest, message_id : int) -> HttpResponse:
-    if not isinstance(request.user, User) or not request.user.is_staff:
+@require_http_methods(["GET", "POST"])
+def reply_message(request : HttpRequest, message_id : int) -> HttpResponse:
+    if not request.user.is_staff:
         return redirect('home')
 
     message_obj = ContactUs.objects.get(id=message_id)
 
-    if message_obj.status != 'Resolved':
-        message_obj.status = 'Resolved'
-        message_obj.save()
+    if request.method == 'POST':
+        reply_text = request.POST.get('reply_message')
 
-        # Send confirmation email
-        send_mail(
-            subject='NutriWay - Your Support Request Has Been Resolved',
-            message=(
-                f"Hi {message_obj.name},\n\n"
-                "Your support request has been reviewed and marked as resolved.\n\n"
-                "Thank you for contacting NutriWay!\n\n"
-                "Best regards,\n"
-                "NutriWay Support Team"
-            ),
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[message_obj.email],
-            fail_silently=False,
-        )
+        if reply_text:
+            # Send custom email to the customer
+            send_mail(
+                subject='NutriWay - Reply to Your Support Request',
+                message=(
+                    f"Hi {message_obj.name},\n\n"
+                    f"{reply_text}\n\n"
+                    "Thank you for contacting NutriWay!\n"
+                    "Best regards,\n"
+                    "NutriWay Support Team"
+                ),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[message_obj.email],
+                fail_silently=False,
+            )
 
-        messages.success(request, "Marked as resolved and confirmation email sent.", "alert-success")
+            # Mark as Resolved
+            message_obj.status = 'Resolved'
+            message_obj.save()
 
-    return redirect('supports:contact_messages')
+            messages.success(request, "Reply sent successfully and marked as resolved." , "alert-success")
+            return redirect('supports:contact_messages')
+
+    return render(request, 'supports/reply_message.html', {
+        'message_obj': message_obj
+    })
