@@ -1,0 +1,114 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %} My Plans {% endblock %}
+
+{% block content %}
+<section class="plans subscription-plans pt-5 pb-5">
+  <h2 class="main-title mb-4">My Nutrition Plans</h2>
+  <div class="container">
+    <div class="row">
+      {% for subscription in subscriptions %}
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="box">
+          <div class="card-header d-flex align-items-center justify-content-between p-3">
+            <div class="name text-center position-relative">{{subscription.subscription_plan.name}}
+            </div>
+            <span class="badge {% if subscription.status == 'active' %}success{% else %}expired{% endif %}">
+              {{ subscription.get_status_display }}
+            </span>
+          </div>
+
+          <div class="img">
+            <img src="{{ subscription.subscription_plan.image.url }}" alt="" class="img-fluid">
+          </div>
+
+          <div class="info p-3">
+            <p class="card-text"><span>Specialist:</span> {{ subscription.subscription_plan.specialist.user.get_full_name }}</p>
+            <p class="card-text"><span>Start Date:</span> {{ subscription.start_date }}</p>
+            <p class="card-text"><span>End Date:</span> {{ subscription.end_date }}</p>
+            <p class="card-text"><span>Type:</span> {{ subscription.subscription_plan.get_plan_type_display }}</p>
+            {% if subscription.status == 'active' %}
+            <p class="card-text">
+              <span>Days Remaining:</span> 
+              {% with days_left=subscription.end_date|timeuntil %}
+                {{ days_left }}
+              {% endwith %}
+            </p>
+          {% endif %}
+          <a href="{% url 'users:subscription_detail' subscription.id %}" class="main-btn btn d-block m-auto mb-2">View</a>
+          </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+
+<!-- 
+<section class="my-plans mt-5 pt-5 pb-5">
+  <div class="container">
+    <h2 class="main-title mb-4">My Nutrition Plans</h2>
+    
+    {% if subscriptions %}
+      <div class="row">
+        {% for subscription in subscriptions %}
+          <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">{{ subscription.subscription_plan.name }}</h5>
+                <span class="badge {% if subscription.status == 'active' %}bg-success{% elif subscription.status == 'expired' %}bg-secondary{% else %}bg-danger{% endif %}">
+                  {{ subscription.get_status_display }}
+                </span>
+              </div>
+              
+              {% if subscription.subscription_plan.image %}
+                <img src="{{ subscription.subscription_plan.image.url }}" class="card-img-top" alt="{{ subscription.subscription_plan.name }}">
+              {% endif %}
+              
+              <div class="card-body">
+                <p class="card-text"><strong>Specialist:</strong> {{ subscription.subscription_plan.specialist.user.get_full_name }}</p>
+                <p class="card-text"><strong>Start Date:</strong> {{ subscription.start_date }}</p>
+                <p class="card-text"><strong>End Date:</strong> {{ subscription.end_date }}</p>
+                <p class="card-text"><strong>Type:</strong> {{ subscription.subscription_plan.get_plan_type_display }}</p>
+                
+                {% if subscription.status == 'active' %}
+                  <p class="card-text">
+                    <strong>Days Remaining:</strong> 
+                    {% with days_left=subscription.end_date|timeuntil %}
+                      {{ days_left }}
+                    {% endwith %}
+                  </p>
+                {% endif %}
+              </div>
+              
+              <div class="card-footer">
+                <div class="d-grid gap-2">
+                  <a href="{% url 'users:subscription_detail' subscription.id %}" class="btn btn-primary">View Details</a>
+                  
+                  {% if subscription.status == 'active' %}
+
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="alert alert-info">
+        <h4 class="alert-heading">No active plans!</h4>
+        <p>You don't have any nutrition plans yet. Browse our specialists and subscription plans to get started on your nutrition journey.</p>
+        <hr>
+        <div class="d-flex gap-2">
+          <a href="{% url 'specialists:all_specialists' %}" class="btn btn-primary">Browse Specialists</a>
+          <a href="{% url 'specialists:list_subscription_plan' %}" class="btn btn-primary">Browse Plans</a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+-->

@@ -386,7 +386,22 @@ input:focus::placeholder {
 .plans .box a:hover {
   background-color: var(--btn-hover-color);
 }
-
+.plans .box .card-header span {
+  color: white;
+}
+.plans .box .card-header span.success {
+  background-color: var(--primary-color);
+}
+.plans .box .card-header span.expired {
+  background-color: var(--custom-danger);
+}
+.plans .box .info p span {
+  color: var(--grey-color);
+  font-size: 16px;
+}
+.plans .box .info p {
+  font-size: 14px;
+}
 /* End Subscription list*/
 /* Start info sec */
 .info-sec .row {
@@ -505,8 +520,48 @@ input:focus::placeholder {
   width: 100%;
 }
 /* End Craete Plan Form */
+/* Start subscription-detail */
+.subscription-detail .main-content .box {
+  border: 1px solid #eee;
+}
+.subscription-detail .card {
+  overflow: hidden;
+}
+.subscription-detail .custom-card {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  border: 1px solid #EEE;
+}
+.subscription-detail .custom-btn {
+  background-color: var(--btn-color);
+  border: 1px solid #EEE;
+  border-radius: 12px;
+  color: #fff;
+  transition: var(--t-duration);
+}
+.custom-btn:hover {
+  background-color: var(--btn-hover-color);
+  color: #fff;
+}
+/* Start subscription-detail */
 /* .avatar {
   width: 30px;
   height: 30px;
   object-fit: cover;
 } */
+
+/* Start vertify */
+.vertify form {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  width: 50%;
+}
+@media (max-width:767px){
+  .vertify h2 {
+    font-size: 20px;
+  }
+  .vertify form {
+    width: 100%;
+  }
+}
+/* End vertify */

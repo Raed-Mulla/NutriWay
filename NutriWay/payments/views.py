@@ -8,6 +8,8 @@ from accounts.models import Person
 from django.core.mail import send_mail
 from payments.models import Payment
 import logging
+from users.views import subscription_to_plan
+        
 stripe.api_key = settings.STRIPE_SECRET_KEY
 logger = logging.getLogger(__name__)
 
@@ -84,6 +86,9 @@ def payment_success(request : HttpRequest) -> HttpResponse:
             payment_method='visa',
             status='Paid'
         )
+        
+        subscription = subscription_to_plan(request, plan_id=int(plan_id))
+
     except Exception as e:
         logger.error(f"Error creating payment record: {e}")
         return HttpResponse("Error creating payment record", status=500)

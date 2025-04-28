@@ -5,20 +5,38 @@
 {% block title %}Subscription Summary{% endblock %}
 
 {% block content %}
-<div class="summary-card">
-    <ul>
-        <li><strong>Subscription Name:</strong> {{ plan.name }}</li>
-        <li><strong>Specialist:</strong> {{ specialist_name }}</li>
-        <li><strong>Type:</strong> {{ plan.get_plan_type_display }}</li>
-        <li><strong>Duration:</strong> {{ plan.get_duration_display }}</li>
-        <li><strong>Price:</strong> {{ plan.price }} SAR</li>
-        <li><strong>Payment Method:</strong>
-          {% for method in payment_methods %}
-            {{ method }}{% if not forloop.last %} or {% endif %}
-          {% endfor %}
+<section class="payment-summary py-5">
+  <div class="container">
+    <div class="summary-card card shadow-sm border-light p-4">
+      <h4 class="card-title mb-4 text-center">Subscription Summary</h4>
+      <ul class="list-unstyled">
+        <li class="d-flex justify-content-between py-2">
+          <strong>Subscription Name:</strong> <span>{{ plan.name }}</span>
+        </li>
+        <li class="d-flex justify-content-between py-2">
+          <strong>Specialist:</strong> <span>{{ specialist_name }}</span>
+        </li>
+        <li class="d-flex justify-content-between py-2">
+          <strong>Type:</strong> <span>{{ plan.get_plan_type_display }}</span>
+        </li>
+        <li class="d-flex justify-content-between py-2">
+          <strong>Duration:</strong> <span>{{ plan.get_duration_display }}</span>
+        </li>
+        <li class="d-flex justify-content-between py-2">
+          <strong>Price:</strong> <span>{{ plan.price }} SAR</span>
+        </li>
+        <li class="d-flex justify-content-between py-2">
+          <strong>Payment Method:</strong>
+          <span>
+            {% for method in payment_methods %}
+              {{ method }}{% if not forloop.last %} or {% endif %}
+            {% endfor %}
+          </span>
         </li>
       </ul>
-      <a href="{% url 'payments:start_checkout_subscription' plan.id %}">Proceed to payment</a>
+      <a href="{% url 'payments:start_checkout_subscription' plan.id %}" class="btn btn-a d-block w-100 mt-5">Proceed to Payment</a>
+    </div>
+  </div>
+</section>
 
-</div>
 {% endblock %}
