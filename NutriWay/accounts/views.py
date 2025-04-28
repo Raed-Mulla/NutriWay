@@ -125,15 +125,26 @@ def specialist_register_view(request: HttpRequest):
                         gender=gender,
                         specialty=specialty,
                         specialization_certificate=request.FILES.get('specialization_certificate'),
+                        image = request.FILES.get('image')
                     )
                     specialisr_request = SpecialistRequest.objects.create(
                         specialist = specialist
                     )
                     
-                    if 'image' in request.FILES:
-                        specialist.image = request.FILES['image']
-                        specialist.save()
-                    
+                    for key in request.POST:
+                        if key.startswith('certificates-name-'):
+                            certificate_number = key.split('-')[-1]
+                            certificate_name = request.POST[key]
+                            
+                            file_key = f'certificates-file-{certificate_number}'
+                            if file_key in request.FILES:
+                                certificate_file = request.FILES[file_key]
+                                
+                                Certificate.objects.create(
+                                    specialist=specialist,
+                                    name=certificate_name,
+                                    image=certificate_file
+                                )
                 code = generate_verification_code()
                 verification_codes[email] = code
                 send_verification_code_email(email, code)
@@ -252,16 +263,26 @@ def update_profile_view(request):
         # if specialist
         if hasattr(request.user, 'specialist'):
             specialist = request.user.specialist
-            print('>>>>>>>>>>>>>>>>>>>>', request.FILES)
             if 'specialty' in request.POST:
                 specialist.specialty = request.POST.get('specialty')
             
             if 'profile_image' in request.FILES:
-                print('&&&&&&&&& there is image in request.FILES  ')
-
                 specialist.image = request.FILES['profile_image']
-                specialist.save()
-        
+            for key in request.POST:
+                if key.startswith('certificates-name-'):
+                    certificate_number = key.split('-')[-1]
+                    certificate_name = request.POST[key]
+                    
+                    file_key = f'certificates-file-{certificate_number}'
+                    if file_key in request.FILES:
+                        certificate_file = request.FILES[file_key]
+                        
+                        Certificate.objects.create(
+                            specialist=specialist,
+                            name=certificate_name,
+                            image=certificate_file
+                        )
+            specialist.save()
         # if person
         if hasattr(request.user, 'person'):
             person = request.user.person
