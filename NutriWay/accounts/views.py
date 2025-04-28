@@ -176,7 +176,7 @@ def vertify_view(request:HttpRequest):
                 messages.error(request, "User not found.", "alert-danger")
         else:
             messages.error(request, "Invalid verification code.", "alert-danger")
-            return render(request, "accounts/vertify.html", {"email": email})
+    return render(request, "accounts/vertify.html", {"email": email})
 
 def login_view(request: HttpRequest):
     if request.method == 'POST':
