@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+{%load static%}
+{% block title %}  Progress Report {% endblock %}
+
+{% block content %}
+
+<div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Weight</th>
+          <th>Notes</th>
+          {% if is_specialist %}
+            <th>Action</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for report in progress_reports %}
+          <tr>
+            <td>{{ report.date }}</td>
+            <td>{{ report.weight }} kg</td>
+            <td>
+              {% if report.note %}
+                {{ report.note|truncatechars:40 }}
+              {% else %}
+                <span class="text-muted">No notes</span>
+              {% endif %}
+            </td>
+            {% if is_specialist %}
+              <td>
+                <a href="#" class="btn btn-sm btn-outline-primary">Comment</a>
+              </td>
+            {% endif %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="card-footer">
+    <div class="d-grid gap-2">
+      <a href="{% url 'users:create_progress_report_view' subscription_id %}" class="btn btn-primary">new progress</a>
+    </div>
+{% endblock %}

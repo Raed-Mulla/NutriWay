@@ -108,6 +108,7 @@ def subscription_detail(request, subscription_id):
     
     subscription_detail = {
         'subscription': subscription,
+        'subscription_id':subscription_id,
         'plan': plan,
         'specialist': specialist,
         'days_elapsed': days_elapsed,
@@ -158,7 +159,8 @@ def check_meals(request: HttpRequest, subscription_id):
     pass
 
 def view_progress(request:HttpRequest, subscription_id):
-   pass
+    progress_reports = ProgressReport.objects.filter(subscription= subscription_id)
+    return render(request,'users/view_progress.html',{'progress_reports' : progress_reports, 'subscription_id': subscription_id})
 
 @login_required
 def cancel_subscription(request: HttpRequest, subscription_id: int):
