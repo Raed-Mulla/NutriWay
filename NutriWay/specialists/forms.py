@@ -26,6 +26,6 @@ class SubscriberMealForm(forms.ModelForm):
 SubscriberMealFormSet = modelformset_factory(
     SubscriberMeal,
     form=SubscriberMealForm,
-    extra=0,
+    extra=1,
     can_delete=True
 )

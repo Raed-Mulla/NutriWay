@@ -227,3 +227,21 @@ def view_progress_reports(request: HttpRequest, subscription_id):
         return redirect('specialists:view_progress_reports', subscription_id=subscription_id)
 
     return render(request, 'specialists/view_progress_reports.html', {'subscription': subscription,'progress_reports': progress_reports})
+
+
+def delete_subscription(request: HttpRequest, subscription_id):
+    try:
+        subscription = Subscription.objects.get(id=subscription_id)
+        specialist = Specialist.objects.get(user=request.user)
+
+        if subscription.subscription_plan.specialist != specialist:
+            messages.error(request, "You are not authorized to remove this subscriber.")
+            return redirect('core:home_view')
+
+        subscription.delete()
+        messages.success(request, "Subscriber has been successfully removed.")
+        
+    except (Subscription.DoesNotExist, Specialist.DoesNotExist):
+        messages.error(request, "Subscriber not found or you are not authorized.")
+    
+    return redirect('specialists:my_plans')
