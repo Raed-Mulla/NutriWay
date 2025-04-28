@@ -127,32 +127,31 @@ def create_subscriber_plan(request: HttpRequest, subscription_id):
             description=plan_description
         )
 
-        
         subscription.subscriber_plan = subscriber_plan
         subscription.save()
 
-        
         meals = []
         i = 0
         while True:
-            day_number = request.POST.get(f'day_number_{i}')
-            meal_type = request.POST.get(f'meal_type_{i}')
-            description = request.POST.get(f'description_{i}')
-            meal_calorie = request.POST.get(f'meal_calorie_{i}')
-            
-            if day_number and meal_type and description and meal_calorie:
+            day_number = request.POST.get(f'day_number-{i}')
+            meal_type = request.POST.get(f'meal_type-{i}')
+            meal_description = request.POST.get(f'description-{i}')
+            meal_calorie = request.POST.get(f'meal_calorie-{i}')
+
+            if day_number and meal_type and meal_description and meal_calorie:
                 meals.append(SubscriberMeal(
                     subscriber_plan=subscriber_plan,
                     day_number=day_number,
                     meal_type=meal_type,
-                    description=description,
+                    description=meal_description,
                     meal_calorie=meal_calorie
                 ))
                 i += 1
             else:
                 break
 
-        SubscriberMeal.objects.bulk_create(meals)
+        if meals:
+            SubscriberMeal.objects.bulk_create(meals)
 
         messages.success(request, "Subscriber plan and meals created successfully.", "alert-success")
         return redirect('specialists:my_plans')

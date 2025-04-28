@@ -55,65 +55,48 @@
   </div>
 </section>
 <script>
+  let mealCount = 0;
+
   const addButton = document.querySelector('.add');
   const mealsContainer = document.querySelector('.meals-container');
-  function updateMealNumbers() {
-    const meals = mealsContainer.querySelectorAll('.row-container');
-    meals.forEach((rowContainer, index) => {
-      
-      const mealNo = rowContainer.querySelector('.meal-no');
-      mealNo.textContent = `Meal ${index + 1}`;
-  
-      // Update input names
-      rowContainer.querySelector('input[placeholder="Day"]').name = `day_number-${index + 1}`;
-      rowContainer.querySelector('input[placeholder="Type"]').name = `meal_type-${index + 1}`;
-      rowContainer.querySelector('input[placeholder="Meal"]').name = `description-${index + 1}`;
-      rowContainer.querySelector('input[placeholder="Calories"]').name = `meal_calorie-${index + 1}`;
-    });
-  }
-  
+
   addButton.addEventListener('click', () => {
     const rowContainer = document.createElement('div');
     rowContainer.className = 'row-container';
     rowContainer.innerHTML = `
-      <div>
-        <div class="meal position-relative mb-2">
-          <div class="meal-no">Meal</div>
-          <button class="cancel position-absolute bg-transparent top-0 end-0 text-danger border-0" type="button">
-            <i class="fa-solid fa-trash"></i>
-          </button>
-        </div>
+      <div class="meal position-relative mb-2">
+        <div class="meal-no">Meal ${mealCount + 1}</div>
+        <button class="cancel position-absolute bg-transparent top-0 end-0 text-danger border-0" type="button">
+          <i class="fa-solid fa-trash"></i>
+        </button>
       </div>
       <div class="row g-0 mb-3">
         <div class="col-2 flex-grow-1">
-          <input type="number" placeholder="Day" class="form-control">
+          <input type="number" placeholder="Day" class="form-control" name="day_number-${mealCount}">
         </div>
         <div class="col-2 flex-grow-1">
-          <input type="text" placeholder="Type" class="form-control">
+          <input type="text" placeholder="Type" class="form-control" name="meal_type-${mealCount}">
         </div>
         <div class="col-5 flex-grow-1">
-          <input type="text" placeholder="Meal" class="form-control">
+          <input type="text" placeholder="Meal" class="form-control" name="description-${mealCount}">
         </div>
         <div class="col-2 flex-grow-1">
-          <input type="text" placeholder="Calories" class="form-control">
+          <input type="text" placeholder="Calories" class="form-control" name="meal_calorie-${mealCount}">
         </div>
       </div>
     `;
-  
+
     mealsContainer.appendChild(rowContainer);
-    updateMealNumbers();
+    mealCount++;
   });
-  
+
   mealsContainer.addEventListener('click', (e) => {
     if (e.target.closest('.cancel')) {
-      const rowContainer = e.target.closest('.row-container');
-      rowContainer.remove();
-      updateMealNumbers();
+      e.target.closest('.row-container').remove();
     }
   });
-  
-  // Initial
-  updateMealNumbers();
-  </script>
+</script>
+
+
   
 {% endblock %}
