@@ -236,6 +236,10 @@ def delete_subscription(request: HttpRequest, subscription_id):
 
 # 
 
+def show_certificate_specialization(request, specialist_id):
+    specialist = Specialist.objects.get(id=specialist_id)
+    return render(request, 'specialists/show_specialization_certificate_certificate.html', {'specialist': specialist})
 def show_certificate(request, specialist_id):
     specialist = Specialist.objects.get(id=specialist_id)
-    return render(request, 'specialists/show_certificate.html', {'specialist': specialist})
+    certificates = specialist.Certificates.all()
+    return render(request, 'specialists/show_certificates.html', {'specialist': specialist ,'certificates':certificates})

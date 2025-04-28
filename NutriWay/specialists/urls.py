@@ -16,6 +16,7 @@ urlpatterns = [
     path('subscriber/edit/<int:plan_id>/', views.edit_subscriber_plan, name='edit_subscriber_plan'),
     path('subscriptions/<int:subscription_id>/progress/', views.view_progress_reports, name='view_progress_reports'),
     path('subscriptions/delete/<int:subscription_id>/', views.delete_subscription, name="delete_subscription"),
-    path('certificate/<int:specialist_id>/', views.show_certificate, name='show_certificate'),
+    path('certificate/specialization/<int:specialist_id>/', views.show_certificate_specialization, name='show_specialization_certificate_certificate'),
+    path('certificates/<int:specialist_id>/', views.show_certificate, name='show_certificates'),
 
 ]

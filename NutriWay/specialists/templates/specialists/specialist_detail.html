@@ -59,7 +59,7 @@
         <div class="box p-3 d-flex align-items-center justify-content-between">
           <!-- {{ specialist.specialization_certificate }} -->
           <div class="name"> Specialization Certificate</div>
-          <a href="{% url 'specialists:show_certificate' specialist.id %}" class="btn btn-a">View</a>
+          <a href="{% url 'specialists:show_specialization_certificate_certificate' specialist.id %}" class="btn btn-a">View</a>
 
       </div>
 
@@ -76,7 +76,7 @@
         {% for certificat in certificate %}
         <div class="box p-3 d-flex align-items-center justify-content-between">
           <div class="name">{{certificat.name}}</div>
-          <a href="" class="btn btn-a">View</a>
+          <a href="{% url 'specialists:show_certificates' specialist.id %}" class="btn btn-a">View</a>
         </div>
         {% endfor %}
       </div>

@@ -1,0 +1,21 @@
+{% extends 'core/base.html' %}
+{% block title %} Show {% endblock %}
+
+{% block content %}
+<section class="pt-5 pb-5">
+    <h2 class="main-title">Certificate of {{specialist.user.first_name}} {{specialist.user.last_name}}</h2>
+    <div class="container text-center">
+
+        {% if ".jpg" in specialist.specialization_certificate.url or ".png" in specialist.specialization_certificate.url or ".jpeg" in specialist.specialization_certificate.url or ".jpg" in specialist.specialization_certificate.url %}
+          <img src="{{ specialist.specialization_certificate.url }}" alt="Certificate" class="certificate-image img-fluid">
+        <a href="{{ specialist.specialization_certificate.url }}" download class="btn btn-a d-block mt-5">Download Certificate</a>
+
+        {% else %}
+        <object data="{{ specialist.specialization_certificate.url }}" type="application/pdf" width="600" height="400">
+            <p>Your browser does not support viewing this file. <a href="{{ specialist.specialization_certificate.url }}" download class="btn btn-a d-block">Download</a></p>
+        </object>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}
