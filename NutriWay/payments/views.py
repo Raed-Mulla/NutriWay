@@ -31,9 +31,9 @@ def start_checkout_subscription(request : HttpRequest, plan_id : int) -> HttpRes
                 'price_data': {
                     'currency': 'sar',
                     'product_data': {
-                        'name': f'{plan.duration}-Month Nutrition Plan',
+                        'name': f'{plan.get_duration_display()} - {plan.name}'
                     },
-                    'unit_amount': int(round(plan.price * 100)),
+                    'unit_amount': int(round(plan.price * 100)), 
                 },
                 'quantity': 1,
             }],
@@ -99,9 +99,9 @@ def payment_success(request : HttpRequest) -> HttpResponse:
             subject='NutriWay - Payment Confirmation',
             message=(
                 f"Hi {person.user.first_name},\n\n"
-                f"Your payment of {plan.price} SAR for {plan.duration} plan has been received.\n"
+                f"Your payment of {plan.price} ﷼ for {plan.get_duration_display()} plan has been received.\n"
                 f"Your specialist is {plan.specialist.user.username}.\n\n"
-                f"Name: {plan.name}\n"
+                f"Subscription Plan: {plan.name}\n"
                 f"Description: {plan.description}\n"
                 f"Thank you for subscribing to NutriWay!"
                 f"\n\nBest regards,\n"
@@ -152,6 +152,7 @@ def start_checkout_general(request: HttpRequest, plan_id: int) -> HttpResponse:
         mode='payment',
         success_url=f'http://127.0.0.1:8000/general-success/?plan_id={plan.id}',
         cancel_url='http://127.0.0.1:8000/general-cancel/',
+        customer_email=request.user.email,
         metadata={
             "plan_id": plan.id,
             "user_id": request.user.id,
