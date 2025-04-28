@@ -279,16 +279,19 @@ def delete_subscription(request: HttpRequest, subscription_id):
         subscription = Subscription.objects.get(id=subscription_id)
 
         if subscription.subscription_plan.specialist != specialist:
-            messages.error(request, "You are not authorized to remove this subscriber.")
+            messages.error(request, "You are not authorized to cancel this subscriber.", "alert-danger")
             return redirect('core:home_view')
 
-        subscription.delete()
-        messages.success(request, "Subscriber has been successfully removed.", "alert-success")
+        subscription.status = 'cancelled'
+        subscription.save()
+
+        messages.success(request, "Subscriber has been successfully cancelled.", "alert-success")
 
     except (Specialist.DoesNotExist, Subscription.DoesNotExist):
         messages.error(request, "Subscriber not found or you are not authorized.", "alert-danger")
 
     return redirect('specialists:my_plans')
+
 
 
 # 
