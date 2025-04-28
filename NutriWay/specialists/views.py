@@ -116,7 +116,7 @@ def create_subscriber_plan(request:HttpRequest, subscription_id):
         plan_form = SubscriberPlanForm()
         meal_formset = SubscriberMealFormSet(queryset=SubscriberMeal.objects.none())
 
-    return render(request, 'specialists/create_subscriber_plan.html', {'plan_form': plan_form,'meal_formset': meal_formset,'subscription': subscription})
+    return render(request, 'specialists/create_subscriber_plan.html', {'plan_form': plan_form,'meal_formset': meal_formset,'subscription': subscription,"meals":SubscriberMeal.MealTypeChoices.choices})
 
 
 def edit_subscriber_plan(request:HttpRequest, plan_id):

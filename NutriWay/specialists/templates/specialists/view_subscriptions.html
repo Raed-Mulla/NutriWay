@@ -8,17 +8,21 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-4 col-md-6 col-sm-6">
+        {% for subscription in subscriptions %}
         <div class="box p-4 text-center position-relative">
-          <div class="name mb-3">Subscription Name</div>
-          <div class="duration">Duration: <span>1 Month</span></div>
-          <div class="end-date">End Date: <span>2020/2/2</span></div>
+          <div class="name mb-3">{{ subscription.person.user.first_name }}</div>
+          <div class="duration">Duration: <span>{{ subscription.duration }}</span></div>
+          <div class="end-date">End Date: <span>{{ subscription.end_date }}</span></div>
           <div class="btns d-flex mt-3">
-            <a href="" class="btn btn-a flex-grow-1 me-1">Create Plan</a>
-            <a href="" class="btn btn-a flex-grow-1 ">View Plan</a>
+            <a href="{% url 'specialists:create_subscriber_plan' subscription.id %}" class="btn btn-a flex-grow-1 me-1">Create Plan</a>
+            <a href="{% url 'specialists:delete_subscription' subscription.id %}" class="btn btn-a flex-grow-1 ">Cancel</a>
           </div>
         </div>
+        {% endfor %}
       </div>
     </div>
   </div>
 </section>
 {% endblock %}
+
+            <!-- <a href="{% url 'specialists:'  %}" class="btn btn-a flex-grow-1 me-1 ">View Plan</a> -->

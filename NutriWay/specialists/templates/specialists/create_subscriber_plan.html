@@ -1,12 +1,12 @@
 {% extends 'core/base.html' %}
-{% block title %} Create Subscription Plan {% endblock %}
+{% block title %} Create Subscriber Plan {% endblock %}
 
 {% block content %}
 <section class="form-sec login pt-5 pb-5">
   <div class="container d-flex flex-column align-items-center">
-    <form action="" method="post" class="bg-white p-4">
+    <form action="{% url 'specialists:create_subscriber_plan'  subscription.id %}" method="post" class="bg-white p-4">
       {% csrf_token %}
-      <h2 class="main-title-2">Create Subscription Plan</h2>
+      <h2 class="main-title-2">Create Subscriber Plan</h2>
       <div class="mb-3">
         <label class="form-label">Name</label>
         <input type="text" class="form-control" name="name" placeholder="Enter your username" required>
