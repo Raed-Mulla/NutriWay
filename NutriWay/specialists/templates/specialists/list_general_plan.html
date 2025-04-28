@@ -17,7 +17,7 @@
             <h3 class="subscription-name">{{plan.name}}</h3>
             <p class="description"><span>Description:</span> {{plan.description}}</p>
             <div class="price text-center mb-3 mt-3 fw-bold">{{plan.price}}$</div>
-            <a href="" class="btn d-block m-auto mb-2">Buy</a>
+            <a href="{% url 'payments:generalplan_summary' plan.id %}" class="btn d-block m-auto mb-2">Buy</a>
           </div>
         </div>
       </div>

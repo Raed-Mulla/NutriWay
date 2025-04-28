@@ -1,0 +1,44 @@
+{% extends "core/base.html" %}
+
+{% block title %}NutriWay - Reply Message{% endblock %}
+
+{% block content %}
+
+
+
+<div class="container mt-5">
+    <h2 class="main-title">✉️ Reply to {{ message_obj.name }}</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <form action="" method="post" class="bg-white p-4">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="reply_message" class="form-label">Write Your Reply:</label>
+                    <textarea name="reply_message" id="reply_message" rows="8" class="form-control" placeholder="Write your custom reply here..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Send Reply</button>
+                <a href="{% url 'supports:contact_messages' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    Customer's Original Message
+                </div>
+                <div class="card-body">
+                    <p><strong>Name:</strong> {{ message_obj.name }}</p>
+                    <p><strong>Email:</strong> {{ message_obj.email }}</p>
+                    <hr>
+                    <p><strong>Message:</strong></p>
+                    <p>{{ message_obj.message }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}
