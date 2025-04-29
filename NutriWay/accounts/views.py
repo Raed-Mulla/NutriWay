@@ -190,6 +190,9 @@ def vertify_view(request:HttpRequest):
     return render(request, "accounts/vertify.html", {"email": email})
 
 def login_view(request: HttpRequest):
+    if request.user.is_authenticated:
+        messages.error(request, "You are Already logged in ", "alert-warning")
+        return redirect('core:home_view')
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -245,21 +248,58 @@ def logout_view(request:HttpRequest):
 
 
 def profile_view(request, user_name):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to view profiles.", "alert-danger")
+        return redirect('accounts:login_view')
     try:
         profile_user = User.objects.get(username=user_name)
+        if request.user.username != user_name:
+            messages.error(request, "You can only view your own profile.", "alert-danger")
+            return redirect('core:home_view')
         return render(request, 'accounts/profile.html', {'profile_user': profile_user})
+
     except User.DoesNotExist:
         messages.error(request, "User not found.", "alert-danger")
         return redirect('core:home_view')
+
     
-def update_profile_view(request):
+def update_profile_view(request,user_name):
     if not request.user.is_authenticated:
         return redirect('accounts:login_view')
+    if request.user.username != user_name:
+        messages.error(request, "You can update your own profile.", "alert-danger")
+        return redirect('core:home_view')
+    # Get context data for the template
+    context = {}
+    
+    # Get latest person data if user is a person
+    if hasattr(request.user, 'person'):
+        person = request.user.person
+        person_data = PersonData.objects.filter(person=person).order_by('-created_at').first()
+        context['latest_data'] = person_data
+    
+    # Get certificates if user is a specialist
+    if hasattr(request.user, 'specialist'):
+        specialist = request.user.specialist
+        certificates = Certificate.objects.filter(specialist=specialist)
+        context['certificates'] = certificates
         
     if request.method == 'POST':
         request.user.first_name = request.POST.get('first_name')
         request.user.last_name = request.POST.get('last_name')
         request.user.save()
+        
+        # Handle certificate deletion
+        if 'delete_certificate' in request.POST:
+            cert_id = request.POST.get('delete_certificate')
+            try:
+                certificate = Certificate.objects.get(id=cert_id, specialist=request.user.specialist)
+                certificate.delete()
+                messages.success(request, "Certificate deleted successfully!", "alert-success")
+                return redirect('accounts:update_profile_view',user_name)
+            except Certificate.DoesNotExist:
+                messages.error(request, "Certificate not found!", "alert-danger")
+        
         # if specialist
         if hasattr(request.user, 'specialist'):
             specialist = request.user.specialist
@@ -268,12 +308,13 @@ def update_profile_view(request):
             
             if 'profile_image' in request.FILES:
                 specialist.image = request.FILES['profile_image']
+            
             for key in request.POST:
                 if key.startswith('certificates-name-'):
                     certificate_number = key.split('-')[-1]
                     certificate_name = request.POST[key]
                     
-                    file_key = f'certificates-file-{certificate_number}'
+                    file_key = f'certificate_file_{certificate_number}'
                     if file_key in request.FILES:
                         certificate_file = request.FILES[file_key]
                         
@@ -283,6 +324,7 @@ def update_profile_view(request):
                             image=certificate_file
                         )
             specialist.save()
+
         # if person
         if hasattr(request.user, 'person'):
             person = request.user.person
@@ -296,7 +338,8 @@ def update_profile_view(request):
                     goal=request.POST.get('goal', ''),
                     chronic_diseases=request.POST.get('chronic_diseases', '')
                 )
-        messages.success(request, "Profile updated successfully!","alert-success")
-        return redirect('accounts:profile_view', user_name=request.user.username)
+        
+        messages.success(request, "Profile updated successfully!", "alert-success")
+        return redirect('accounts:update_profile_view',user_name)
     
-    return render(request, 'accounts/update_profile.html')
+    return render(request, 'accounts/update_profile.html', context)
