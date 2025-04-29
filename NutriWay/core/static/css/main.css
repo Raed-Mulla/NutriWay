@@ -37,7 +37,7 @@
 }
 
 body {
-  font-family: "Roboto Condensed", sans-serif;
+font-family: "Roboto Condensed", sans-serif;
 }
 ::-webkit-scrollbar {
   width: 18px;
@@ -285,7 +285,8 @@ input:focus::placeholder {
 /* Start Login  */
 .form-sec form {
   width: 600px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+ 
   border-radius: 12px;
 }
 
@@ -356,7 +357,8 @@ input:focus::placeholder {
 /* Start Subscription list */
 .plans .box {
   /* background-color: var(--background-color); */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+ 
   border-radius: 12px;
   color: var(--text-color);
 }
@@ -405,7 +407,8 @@ input:focus::placeholder {
 /* End Subscription list*/
 /* Start info sec */
 .info-sec .row {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+ 
   border-radius: 12px;
 }
 
@@ -435,7 +438,8 @@ input:focus::placeholder {
 }
 
 .certificates .box {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+ 
   border-radius: 12px;
   transition: 0.5s;
   border-bottom: 3px solid var(--primary-color);
@@ -464,7 +468,8 @@ input:focus::placeholder {
 /* End info sec */
 /* Start Specialists Request */
 .specialists-request .row {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+ 
   border-radius: 12px;
 }
 
@@ -497,7 +502,8 @@ input:focus::placeholder {
 /* End Specialists Request */
 /* Start view subscriptions */
 .subscriptions .row .box {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+ 
   border-radius: 12px;
   border-bottom: 3px solid var(--primary-color);
 }
@@ -528,7 +534,8 @@ input:focus::placeholder {
   overflow: hidden;
 }
 .subscription-detail .custom-card {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+ 
   border-radius: 12px;
   border: 1px solid #EEE;
 }
@@ -552,7 +559,8 @@ input:focus::placeholder {
 
 /* Start vertify */
 .vertify form {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+ 
   border-radius: 12px;
   width: 50%;
 }

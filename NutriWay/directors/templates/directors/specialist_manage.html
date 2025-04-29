@@ -6,24 +6,26 @@
 <section class="specialists-request pt-5 pb-5">
   <div class="container">
     <h2 class="main-title">Specialist Manage</h2>
-    <div class="row p-4 align-items-center text-center text-lg-start ms-2 me-2 m-lg-0">
+    {% for specialist in specialists %}
+    <div class="row p-4 align-items-center text-center text-lg-start ms-2 me-2 mb-3">
       <div class="col-lg-8">
         <div class="data d-flex flex-wrap mb-4 mb-lg-0">
           <div class="row-data">
-            <div class="full-name ">Full Name: <span>Nawaf Alhamdi</span></div>
+            <div class="full-name ">Full Name: <span>{{specialist.user.first_name}} {{specialist.user.last_name}}</span></div>
           </div>
           <div class="row-data">
-            <div class="specialty">Specialty: <span>Wight</span></div>
+            <div class="specialty">Specialty: <span>{{specialist.specialty}}</span></div>
           </div>
         </div>
       </div>
       <div class="col-lg-4">
         <div class="btns d-flex">
-          <a href="" class="btn btn-a flex-grow-1 ms-1">View</a>
-          <a href="" class="btn btn-a flex-grow-1 ms-1 approve">Active</a>
-          <a href="" class="btn btn-a flex-grow-1 ms-1 reject">Deactivate</a>
+          <a href="{% url 'directors:specialist_manage_detail' specialist.id  %}" class="btn btn-a flex-grow-1 ms-1">View</a>
+          <a href="{% url 'directors:activate_specialist' specialist.id %}" class="btn btn-a flex-grow-1 ms-1 approve">Active</a>
+          <a href="{% url 'directors:inactivate_specialist' specialist.id %}" class="btn btn-a flex-grow-1 ms-1 reject">Deactivate</a>
         </div>
       </div>
     </div>
+    {% endfor %}
 </section>
 {% endblock %}

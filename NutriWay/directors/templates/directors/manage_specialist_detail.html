@@ -57,26 +57,31 @@
     <div class="row">
       <div class="col-md-6 mb-4">
         <div class="box p-3 d-flex align-items-center justify-content-between">
-          <div class="name">Bachelor’s degree in Nutritional Sciences</div>
-          <a href="" class="btn btn-a">View</a>
-        </div>
+          <!-- {{ specialist.specialization_certificate }} -->
+          <div class="name"> Specialization Certificate</div>
+          <a href="{% url 'specialists:show_specialization_certificate_certificate' specialist.id %}" class="btn btn-a">View</a>
+
       </div>
 
     </div>
   </div>
 </section>
+{% if certificate %}
 <section class="certificates pt-5 pb-5">
   <h2 class="main-title">Certificates</h2>
 
   <div class="container">
     <div class="row">
       <div class="col-md-6 mb-4">
+        {% for certificat in certificate %}
         <div class="box p-3 d-flex align-items-center justify-content-between">
-          <div class="name">Bachelor’s degree in Nutritional Sciences</div>
-          <a href="" class="btn btn-a">View</a>
+          <div class="name">{{certificat.name}}</div>
+          <a href="{% url 'specialists:show_certificates' specialist.id %}" class="btn btn-a">View</a>
         </div>
+        {% endfor %}
       </div>
     </div>
   </div>
 </section>
+{% endif %}
 {% endblock %}

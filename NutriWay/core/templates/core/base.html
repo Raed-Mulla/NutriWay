@@ -43,9 +43,6 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'specialists:all_specialists' %}">Specialists</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'specialists:my_plans' %}">My Plans</a>
-          </li>
           <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Dropdown
@@ -71,7 +68,20 @@
           </button>
 
           <ul class="dropdown-menu dropdown-menu-end ">
+            <li class="dropdown-item mb-2">Welcome Mr.{{request.user.first_name}}</li>
             <li><a class="dropdown-item" href="{% url 'accounts:profile_view' user.username %}">Profile</a></li>
+            {% if user.specialist %}
+            <li><a class="dropdown-item" href="{% url 'specialists:my_plans' %}">My Plans</a></li>
+            <li><a class="dropdown-item" href="{% url 'specialists:create_subscription_plan' %}">Craete Subscription Plan</a></li>
+            <li><a class="dropdown-item" href="{% url 'specialists:create_general_plan' %}">Create General Plan</a></li>
+            {% endif %}
+            {% if user.director %}
+            <li><a class="dropdown-item" href="{% url 'directors:Specialist_Request' %}">Specialist Request</a></li>
+            <li><a class="dropdown-item" href="{% url 'directors:specialist_manage' %}">Specialist Manage</a></li>
+            {% endif %}
+            {% if user.person %}
+            <li><a class="dropdown-item" href="{% url 'users:my_plans' %}">My Plans</a></li>
+            {% endif %}
             <li><a class="dropdown-item" href="{% url 'accounts:logout_view' %}">Logout</a></li>
           </ul>
         </div>
