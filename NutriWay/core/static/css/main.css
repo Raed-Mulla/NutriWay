@@ -176,10 +176,18 @@ input:focus::placeholder {
   border-color: var(--primary-color);
   box-shadow: none;
 }
+.form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: none;
+}
 
 .btn-a {
   background-color: var(--btn-color);
   color: white;
+}
+.btn-a:active {
+  background-color: var(--btn-color) !important;
+  color: white !important;
 }
 
 .btn-a:hover {
@@ -215,7 +223,8 @@ input:focus::placeholder {
   border: none;
 }
 button.btn:active,
-input.btn:active {
+input.btn:active,
+a.btn:active {
   color: white !important;
 }
 /* End Main Config */
@@ -277,7 +286,7 @@ input.btn:active {
   background-color: transparent;
 }
 .navbar .drop-links {
-  min-width: 180px;
+  min-width: 250px;
   border: 1px solid #90C67C;
   border-radius: 8px;
 
@@ -408,6 +417,7 @@ input.btn:active {
   border-radius: 12px;
   color: var(--text-color);
   border-bottom: 3px solid var(--primary-color);
+  overflow: hidden;
 }
 
 .plans .box .name {}

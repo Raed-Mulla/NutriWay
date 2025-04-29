@@ -20,7 +20,7 @@
             <p class="type"> <span>Type: </span>{{plan.plan_type}}</p>
             <div class="duration d-flex align-items-center ">
               <span class="me-1">Duration</span>
-              <select name="duration" id="" class="p-1 border" >
+              <select name="duration " id="" class="p-1 border form-select" >
                 <option value="">Duration</option>
                 {% for val, label in duration_choices %}
                 <option value="{{val}}">{{label}}</option>
