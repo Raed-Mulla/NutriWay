@@ -19,14 +19,15 @@
               <option value="">Choose</option>
               <optgroup label="Gender">
                 {% for val, label in genderChoices %}
-                <option value="{{ val }}">{{ label }}</option>
+                  <option value="{{ val }}" {% if selected_filter == val %}selected{% endif %}>{{ label }}</option>
                 {% endfor %}
               </optgroup>
               <optgroup label="Specialty">
                 {% for val, label in specialtyChoices %}
-                <option value="{{val}}">{{label}}</option>
+                  <option value="{{ val }}" {% if selected_filter == val %}selected{% endif %}>{{ label }}</option>
                 {% endfor %}
               </optgroup>
+              
             </select>
           </form>
         </div>

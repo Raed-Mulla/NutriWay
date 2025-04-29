@@ -13,20 +13,20 @@
             <label for="filter" class="form-label fw-semibold">Filter by <i class="ms-1 fa-solid fa-filter"></i></label>
             <select id="filter" name="filter" class="form-select" onchange="this.form.submit()">
               <option value="">Choose</option>
-              <optgroup label="Type">
-                {% for val, label in planType %}
-                <option value="{{val}}">{{label}}</option>
-                {% endfor %}
-              </optgroup>
-              <optgroup label="Sort by price">
-                <option value="low">Low to High</option>
-                <option value="high">High to Low</option>
-              </optgroup>
-              <optgroup label="Gender">
-                {% for val, label in genderChoices %}
-                <option value="{{ val }}">{{ label }}</option>
-                {% endfor %}
-              </optgroup>
+                <optgroup label="Type">
+                  {% for val, label in planType %}
+                    <option value="{{ val }}" {% if selected_filter == val %}selected{% endif %}>{{ label }}</option>
+                  {% endfor %}
+                </optgroup>
+                <optgroup label="Sort by price">
+                  <option value="low" {% if selected_filter == 'low' %}selected{% endif %}>Low to High</option>
+                  <option value="high" {% if selected_filter == 'high' %}selected{% endif %}>High to Low</option>
+                </optgroup>
+                <optgroup label="Gender">
+                  {% for val, label in genderChoices %}
+                    <option value="{{ val }}" {% if selected_filter == val %}selected{% endif %}>{{ label }}</option>
+                  {% endfor %}
+                </optgroup>
             </select>
           </form>
         </div>
