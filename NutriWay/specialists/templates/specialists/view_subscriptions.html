@@ -20,7 +20,7 @@
             <a href="{% url 'specialists:create_subscriber_plan' subscription.id %}" class="btn btn-a flex-grow-1 me-1">Create Plan</a>
 
             {% endif %}
-            <a href="{% url 'specialists:delete_subscription' subscription.id %}" class="btn btn-a flex-grow-1 ">Cancel</a>
+            <a href="{% url 'users:subscription_detail' subscription.id %}" class="btn btn-a flex-grow-1 ">view details</a>
           </div>
         </div>
       </div>
