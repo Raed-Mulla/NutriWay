@@ -5,6 +5,7 @@ from .models import SubscriptionPlan , Generalplan ,SubscriberMeal,SubscriberPla
 from accounts.models import Specialist , Certificate
 from django.contrib import messages
 from users.models import Subscription , ProgressReport
+from datetime import date
 
 
 def create_subscription_plan(request: HttpRequest):
@@ -96,8 +97,17 @@ def my_plans(request: HttpRequest):
 
 
 def all_specialists(request:HttpRequest):
+    gender = request.GET.get('gender')
+    specialty = request.GET.get('specialty')
+
     specialists = Specialist.objects.all()
-    return render(request, 'specialists/specialists_list.html', {'specialists': specialists , "specialtyChoices":Specialist.SpecialtyChoices.choices, "genderChoices":Specialist.GenderChoices.choices})
+    if gender :
+        specialists = specialists.filter(gender=gender)
+
+    if specialty:
+        specialists = specialists.filter(specialty=specialty)
+
+    return render(request,'specialists/specialist_list.html',{'specialists': specialists,'selected_gender': gender,'selected_specialty': specialty,"specialtyChoices":Specialist.SpecialtyChoices.choices, "genderChoices":Specialist.GenderChoices.choices})
 
 def specialist_detail(request:HttpRequest , specialist_id):
     try:
@@ -295,7 +305,37 @@ def delete_subscription(request: HttpRequest, subscription_id):
 
 
 
-# 
+def view_subscriber_plan(request:HttpRequest, subscription_id):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in.", "alert-danger")
+        return redirect('accounts:login_view')
+    
+    try:
+        specialist = Specialist.objects.get(user=request.user)
+        subscription = Subscription.objects.get(id=subscription_id)
+
+        if subscription.subscription_plan.specialist != specialist:
+            messages.error(request, "You are not authorized to view this subscription.", "alert-danger")
+            return redirect('core:home_view')
+
+    except (Specialist.DoesNotExist, Subscription.DoesNotExist):
+        messages.error(request, "Subscription not found or you are not authorized.", "alert-danger")
+        return redirect('core:home_view')
+    
+    meals = SubscriberMeal.objects.filter(subscriber_plan=subscription.subscriber_plan)
+    today = date.today()
+    checks = MealCheck.objects.filter(subscription=subscription, date=today)
+
+    check_status = []
+    for meal in meals:
+        status = None
+        for check in checks:
+            if check.subscriber_meal_id == meal.id:
+                status = check.is_checked
+                break
+        check_status.append((meal, status))
+    return render(request, 'specialists/view_subscriber_plan.html', {'subscription': subscription,'person': subscription.person,'check_status': check_status ,'today': today})
+
 
 def show_certificate_specialization(request, specialist_id):
     specialist = Specialist.objects.get(pk=specialist_id)
