@@ -5,40 +5,35 @@
 {% block content %}
 
 
-
-<div class="container mt-5">
-    <h2 class="main-title">✉️ Reply to {{ message_obj.name }}</h2>
-
-    <div class="row">
-        <div class="col-md-6">
-            <form action="" method="post" class="bg-white p-4">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="reply_message" class="form-label">Write Your Reply:</label>
-                    <textarea name="reply_message" id="reply_message" rows="8" class="form-control" placeholder="Write your custom reply here..." required></textarea>
-                </div>
-                <button type="submit" class="btn btn-success">Send Reply</button>
-                <a href="{% url 'supports:contact_messages' %}" class="btn btn-secondary">Cancel</a>
-            </form>
-        </div>
-
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    Customer's Original Message
-                </div>
-                <div class="card-body">
-                    <p><strong>Name:</strong> {{ message_obj.name }}</p>
-                    <p><strong>Email:</strong> {{ message_obj.email }}</p>
-                    <hr>
-                    <p><strong>Message:</strong></p>
-                    <p>{{ message_obj.message }}</p>
-                </div>
+<section class="form-sec login mt-5">
+    <div class="container d-flex flex-column align-items-center">
+        <form action="" method="post" class="bg-white p-4">
+        {% csrf_token %}
+        <h2 class="main-title"> Reply to {{ message_obj.name }}</h2>
+        <div class="mb-3">
+            <label for="reply_message" class="form-label">Write Your Reply:</label>
+            <textarea name="reply_message" id="reply_message" rows="8" class="form-control" placeholder="Write your custom reply here..." required></textarea>
+        </div>  
+        <div class="card card-body mt-3">
+            <label class="form-label">Customer's Original Message</label>
+            <div class="card-body">
+                <p><strong>Name:</strong> {{ message_obj.name }}</p>
+                <p><strong>Email:</strong> {{ message_obj.email }}</p>
+                <hr>
+                <p><strong>Message:</strong></p>
+                <p>{{ message_obj.message }}</p>
             </div>
         </div>
+        <div class="d-flex gap-1">
+            <button type="submit" class="btn btn-a  w-50 mt-5">Send Reply</button>
+            <a href="{% url 'supports:contact_messages' %}" class="btn btn-a w-50 mt-5" style="background-color: gray;">Cancel</a>
+        </div>
+    </form>
     </div>
+</section>
 
-</div>
 
 
 {% endblock %}
+
+
