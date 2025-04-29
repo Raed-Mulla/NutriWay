@@ -57,7 +57,7 @@
             {% endif %}
             {% if request.user == profile_user %}
             <div class="profile-info-row p-4 d-flex flex-wrap justify-content-center">
-              <a href="{% url 'accounts:update_profile_view' %}" class="btn btn-a">Edit Profile</a>
+              <a href="{% url 'accounts:update_profile_view' profile_user.username %}" class="btn btn-a">Edit Profile</a>
               {% endif %}
             </div>
           </div>
