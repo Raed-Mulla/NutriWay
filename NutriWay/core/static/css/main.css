@@ -187,7 +187,7 @@ input:focus::placeholder {
 }
 .btn-a:active {
   background-color: var(--btn-color) !important;
-  color: white !important;
+  color: var(--link-hover) !important;
 }
 
 .btn-a:hover {
@@ -225,7 +225,7 @@ input:focus::placeholder {
 button.btn:active,
 input.btn:active,
 a.btn:active {
-  color: white !important;
+  color: var(--link-hover) !important;
 }
 /* End Main Config */
 /* Start Nav */
@@ -649,3 +649,8 @@ a.btn:active {
 }
 
 /* End View Progress */
+/* Filter */
+.filter label svg {
+  color: var(--primary-color);
+}
+/* Filter */

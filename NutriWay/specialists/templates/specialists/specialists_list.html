@@ -10,6 +10,32 @@
 <section class="plans subscription-plans pt-5 pb-5">
   <h2 class="main-title">All Specialists</h2>
   <div class="container">
+    <form method="get" class="mb-4 filter">
+      <div class="row">
+        <div class="col-lg-3">
+          <form action="{% url 'specialists:all_specialists' %}" method="get">
+            <label for="filter" class="form-label fw-semibold">Filter by <i class="ms-1 fa-solid fa-filter"></i></label>
+            <select id="filter" name="filter" class="form-select" onchange="this.form.submit()">
+              <option value="">Choose</option>
+              <optgroup label="Gender">
+                {% for val, label in genderChoices %}
+                <option value="{{ val }}">{{ label }}</option>
+                {% endfor %}
+              </optgroup>
+              <optgroup label="Specialty">
+                {% for val, label in specialtyChoices %}
+                <option value="{{val}}">{{label}}</option>
+                {% endfor %}
+              </optgroup>
+            </select>
+          </form>
+        </div>
+      </div>
+    </form>
+
+
+
+
     <div class="row">
       {% for specialist in specialists %}
       <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
