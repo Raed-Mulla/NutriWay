@@ -77,7 +77,7 @@ def list_general_plan (request:HttpRequest):
 
 def list_subscription_plan (request:HttpRequest):
     plans = SubscriptionPlan.objects.all()
-    return render(request , 'specialists/list_subscription_plan.html' , {"plans" : plans, "duration_choices":SubscriptionPlan.DurationChoices.choices})
+    return render(request , 'specialists/list_subscription_plan.html' , {"plans" : plans, "duration_choices":SubscriptionPlan.DurationChoices.choices, "planType":SubscriptionPlan.PlanType.choices, "genderChoices":Specialist.GenderChoices.choices})
 
 def my_plans(request: HttpRequest):
     if not request.user.is_authenticated:
@@ -97,7 +97,7 @@ def my_plans(request: HttpRequest):
 
 def all_specialists(request:HttpRequest):
     specialists = Specialist.objects.all()
-    return render(request, 'specialists/specialists_list.html', {'specialists': specialists})
+    return render(request, 'specialists/specialists_list.html', {'specialists': specialists , "specialtyChoices":Specialist.SpecialtyChoices.choices, "genderChoices":Specialist.GenderChoices.choices})
 
 def specialist_detail(request:HttpRequest , specialist_id):
     try:

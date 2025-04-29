@@ -6,6 +6,32 @@
 <section class="plans subscription-plans pt-5 pb-5">
   <h2 class="main-title">Subscription Plans</h2>
   <div class="container">
+    <form method="get" class="mb-4 filter">
+      <div class="row">
+        <div class="col-lg-3">
+          <form action="{% url 'specialists:list_subscription_plan' %}" method="get">
+            <label for="filter" class="form-label fw-semibold">Filter by <i class="ms-1 fa-solid fa-filter"></i></label>
+            <select id="filter" name="filter" class="form-select" onchange="this.form.submit()">
+              <option value="">Choose</option>
+              <optgroup label="Type">
+                {% for val, label in planType %}
+                <option value="{{val}}">{{label}}</option>
+                {% endfor %}
+              </optgroup>
+              <optgroup label="Sort by price">
+                <option value="low">Low to High</option>
+                <option value="high">High to Low</option>
+              </optgroup>
+              <optgroup label="Gender">
+                {% for val, label in genderChoices %}
+                <option value="{{ val }}">{{ label }}</option>
+                {% endfor %}
+              </optgroup>
+            </select>
+          </form>
+        </div>
+      </div>
+    </form>
     <div class="row">
       {% for plan in plans %}
       <div class="col-lg-4 col-md-6 mb-4">
