@@ -17,7 +17,7 @@ class Subscription(models.Model):
 
     person = models.ForeignKey(Person,on_delete=models.CASCADE)
     subscription_plan = models.ForeignKey("specialists.SubscriptionPlan",on_delete=models.CASCADE)
-    subscriber_plan = models.ForeignKey("specialists.SubscriberPlan",on_delete=models.CASCADE)
+    subscriber_plan = models.ForeignKey("specialists.SubscriberPlan",on_delete=models.CASCADE,null=True,blank=True)
     start_date = models.DateField()
     end_date = models.DateField()
     duration = models.CharField(max_length=20, choices=DurationChoices.choices,default=DurationChoices.ONE_MONTH)
