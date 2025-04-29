@@ -76,9 +76,34 @@ def list_general_plan (request:HttpRequest):
     plans = Generalplan.objects.all()
     return render(request , 'specialists/list_general_plan.html' , {"plans" : plans})
 
-def list_subscription_plan (request:HttpRequest):
-    plans = SubscriptionPlan.objects.all()
-    return render(request , 'specialists/list_subscription_plan.html' , {"plans" : plans, "duration_choices":SubscriptionPlan.DurationChoices.choices, "planType":SubscriptionPlan.PlanType.choices, "genderChoices":Specialist.GenderChoices.choices})
+def list_subscription_plan(request: HttpRequest):
+    filter_value = request.GET.get('filter')
+    plans = SubscriptionPlan.objects.select_related('specialist__user')
+
+    type_choices = [choice[0] for choice in SubscriptionPlan.PlanType.choices]
+    gender_choices = [choice[0] for choice in Specialist.GenderChoices.choices]
+
+
+    if filter_value in type_choices:
+        plans = plans.filter(plan_type=filter_value)
+
+
+    elif filter_value in gender_choices:
+        plans = plans.filter(specialist__gender=filter_value)
+
+    elif filter_value == "low":
+        plans = plans.order_by("price")
+    elif filter_value == "high":
+        plans = plans.order_by("-price")
+
+    context = {
+        "plans": plans,
+        "planType": SubscriptionPlan.PlanType.choices,
+        "genderChoices": Specialist.GenderChoices.choices,
+        "duration_choices": SubscriptionPlan.DurationChoices.choices,
+        "selected_filter": filter_value,
+    }
+    return render(request, 'specialists/list_subscription_plan.html', context)
 
 def my_plans(request: HttpRequest):
     if not request.user.is_authenticated:
@@ -96,18 +121,27 @@ def my_plans(request: HttpRequest):
 
 
 
-def all_specialists(request:HttpRequest):
-    gender = request.GET.get('gender')
-    specialty = request.GET.get('specialty')
+def all_specialists(request: HttpRequest):
+    filter_value = request.GET.get('filter')
 
     specialists = Specialist.objects.all()
-    if gender :
-        specialists = specialists.filter(gender=gender)
 
-    if specialty:
-        specialists = specialists.filter(specialty=specialty)
+    gender_choices = [choice[0] for choice in Specialist.GenderChoices.choices]
+    specialty_choices = [choice[0] for choice in Specialist.SpecialtyChoices.choices]
 
-    return render(request,'specialists/specialist_list.html',{'specialists': specialists,'selected_gender': gender,'selected_specialty': specialty,"specialtyChoices":Specialist.SpecialtyChoices.choices, "genderChoices":Specialist.GenderChoices.choices})
+    if filter_value in gender_choices:
+        specialists = specialists.filter(gender=filter_value)
+    elif filter_value in specialty_choices:
+        specialists = specialists.filter(specialty=filter_value)
+
+    context = {
+        'specialists': specialists,
+        'genderChoices': Specialist.GenderChoices.choices,
+        'specialtyChoices': Specialist.SpecialtyChoices.choices,
+        'selected_filter': filter_value,
+    }
+
+    return render(request, 'specialists/specialists_list.html', context)
 
 def specialist_detail(request:HttpRequest , specialist_id):
     try:
