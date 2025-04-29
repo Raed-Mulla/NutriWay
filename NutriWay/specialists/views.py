@@ -6,6 +6,7 @@ from accounts.models import Specialist , Certificate
 from django.contrib import messages
 from users.models import Subscription , ProgressReport
 
+
 def create_subscription_plan(request: HttpRequest):
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to access this page.", "alert-danger")

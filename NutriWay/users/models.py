@@ -8,7 +8,7 @@ class Subscription(models.Model):
         ACTIVE = 'active', 'Active'
         EXPIRED = 'expired', 'Expired'
         CANCELLED = 'cancelled', 'Cancelled'
-     
+    
     class DurationChoices(models.TextChoices):
         ONE_MONTH = '1_month', '1 Month'
         THREE_MONTHS = '3_months', '3 Months'
@@ -28,7 +28,7 @@ class Subscription(models.Model):
 
 
 class ProgressReport(models.Model):
-    subscription = models.ForeignKey("specialists.SubscriptionPlan",on_delete=models.CASCADE)
+    subscription = models.ForeignKey(Subscription,on_delete=models.CASCADE)
     date = models.DateField()
     weight = models.FloatField()
     note = models.TextField()
