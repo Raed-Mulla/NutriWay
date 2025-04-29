@@ -244,9 +244,9 @@ def create_progress_report_view(request:HttpRequest,subscription_id):
 @login_required
 def view_progress(request:HttpRequest, subscription_id):
     subscription = get_object_or_404(Subscription, id=subscription_id)   
-    if subscription.person.user != request.user and subscription.subscription_plan.specialist != request.user:
+    if subscription.person.user != request.user and subscription.subscription_plan.specialist.user != request.user:
         messages.error(request, "You don't have permission to view progress for this subscription", "alert-danger")
-        return redirect('core:home_viwe')
+        return redirect('core:home_view')
     progress_reports = ProgressReport.objects.filter(subscription= subscription_id)
     is_cancelled = subscription.status == subscription.StatusChoices.CANCELLED
     return render(request,'users/view_progress.html',{'progress_reports' : progress_reports, 'subscription_id': subscription_id,'is_cancelled':is_cancelled})
