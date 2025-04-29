@@ -11,4 +11,6 @@ urlpatterns = [
     path('specialist/<int:specialist_id>/inactivate/', views.inactivate_specialist, name='inactivate_specialist'),
     path('specialist/<int:specialist_id>/delete/', views.delete_specialist, name='delete_specialist'),
     path('specialist/<int:specialist_id>/activate/', views.activate_specialist, name='activate_specialist'),
+    path('requests/approve/<int:request_id>/', views.approve_specialist_request, name='approve_specialist_request'),
+    path('requests/reject/<int:request_id>/', views.reject_specialist_request, name='reject_specialist_request')    
 ]

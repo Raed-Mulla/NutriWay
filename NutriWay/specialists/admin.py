@@ -27,7 +27,7 @@ class MealCheckAdmin(admin.ModelAdmin):
     list_display = ('subscription', 'subscriber_meal', 'date', 'is_checked')
 
 
-# تسجيلهم كلهم
+
 admin.site.register(SubscriptionPlan, SubscriptionPlanAdmin)
 admin.site.register(Generalplan, GeneralPlanAdmin)
 admin.site.register(SubscriberPlan, SubscriberPlanAdmin)

@@ -5,6 +5,8 @@ from .forms import SpecialistRequestForm
 from accounts.models import Specialist, Certificate , Director
 from specialists.models import SubscriptionPlan
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
 
 def specialist_request (request:HttpRequest):
     requests = SpecialistRequest.objects.all()
@@ -101,3 +103,51 @@ def approve_specialist_request(request: HttpRequest, request_id):
 
     messages.success(request, "Specialist approved and activated successfully.", "alert-success")
     return redirect('director:view_requests')
+
+def reject_specialist_request(request: HttpRequest, request_id):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in.", "alert-danger")
+        return redirect('accounts:login_view')
+
+    if not Director.objects.filter(user=request.user).exists():
+        messages.error(request, "You are not authorized to perform this action.", "alert-danger")
+        return redirect('core:home_view')
+
+    try:
+        specialist_request = SpecialistRequest.objects.get(id=request_id)
+    except SpecialistRequest.DoesNotExist:
+        messages.error(request, "Request not found.", "alert-danger")
+        return redirect('core:home_view')
+
+    if specialist_request.status != SpecialistRequest.RequestStatus.PENDING:
+        messages.error(request, "This request has already been processed.", "alert-warning")
+        return redirect('director:view_requests')
+
+    if request.method == "POST":
+        feedback = request.POST.get('feedback', '')
+
+        specialist_request.status = SpecialistRequest.RequestStatus.REJECTED
+        specialist_request.director = Director.objects.get(user=request.user)
+        specialist_request.feedback = feedback
+        specialist_request.save()
+
+        
+        send_mail(
+            subject='NutriWay - Specialist Request Rejected',
+            message=(
+                f"Hello {specialist_request.specialist.user.first_name},\n\n"
+                f"Your specialist account request has been rejected.\n"
+                f"Reason: {feedback}\n\n"
+                "If you have any questions or would like to reapply, feel free to contact us.\n\n"
+                "Best regards,\n"
+                "NutriWay Support Team"
+            ),
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[specialist_request.specialist.user.email],
+            fail_silently=False,
+        )
+
+        messages.success(request, "Specialist request rejected and feedback sent via email.", "alert-success")
+        return redirect('director:view_requests')
+
+    return render(request, 'director/reject_request.html', {'specialist_request': specialist_request})
