@@ -7,19 +7,24 @@
   <h2 class="main-title">Plan Name</h2>
   <div class="container">
     <div class="row">
+      {% for subscription in subscriptions %}
       <div class="col-lg-4 col-md-6 col-sm-6">
-        {% for subscription in subscriptions %}
         <div class="box p-4 text-center position-relative">
           <div class="name mb-3">{{ subscription.person.user.first_name }}</div>
           <div class="duration">Duration: <span>{{ subscription.duration }}</span></div>
           <div class="end-date">End Date: <span>{{ subscription.end_date }}</span></div>
           <div class="btns d-flex mt-3">
+            {% if subscription.subscriber_plan %}
+            <a href="{% url 'specialists:edit_subscriber_plan' subscription.subscriber_plan.id %}" class="btn btn-a flex-grow-1 me-1">Edit Plan</a>
+            {% else %}
             <a href="{% url 'specialists:create_subscriber_plan' subscription.id %}" class="btn btn-a flex-grow-1 me-1">Create Plan</a>
+
+            {% endif %}
             <a href="{% url 'specialists:delete_subscription' subscription.id %}" class="btn btn-a flex-grow-1 ">Cancel</a>
           </div>
         </div>
-        {% endfor %}
       </div>
+      {% endfor %}
     </div>
   </div>
 </section>

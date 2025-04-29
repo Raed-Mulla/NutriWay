@@ -39,16 +39,16 @@ def subscription_to_plan(request: HttpRequest, plan_id: int):
         days = duration_map.get(plan.duration, 30)  
         end_date = start_date + timedelta(days=days)
         
-        subscriber_plan = SubscriberPlan.objects.create(
-            specialist=plan.specialist,
-            name=f"{person.user.username}'s {plan.name}",
-            description=f"Custom plan for {person.user.username} based on {plan.name}"
-        )
+        # subscriber_plan = SubscriberPlan.objects.create(
+        #     specialist=plan.specialist,
+        #     name=f"{person.user.username}'s {plan.name}",
+        #     description=f"Custom plan for {person.user.username} based on {plan.name}"
+        # )
         
         subscription = Subscription.objects.create(
             person=person,
             subscription_plan=plan,
-            subscriber_plan=subscriber_plan,
+            # subscriber_plan=subscriber_plan,
             start_date=start_date,
             end_date=end_date,
             status='active'
