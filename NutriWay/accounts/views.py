@@ -190,6 +190,9 @@ def vertify_view(request:HttpRequest):
     return render(request, "accounts/vertify.html", {"email": email})
 
 def login_view(request: HttpRequest):
+    if request.user.is_authenticated:
+        messages.error(request, "You are Already logged in ", "alert-warning")
+        return redirect('core:home_view')
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -307,8 +310,6 @@ def update_profile_view(request,user_name):
                 specialist.image = request.FILES['profile_image']
             
             for key in request.POST:
-                print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-                print(f'key: {key}')
                 if key.startswith('certificates-name-'):
                     certificate_number = key.split('-')[-1]
                     certificate_name = request.POST[key]
