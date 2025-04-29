@@ -10,7 +10,15 @@ class GeneralPlanAdmin(admin.ModelAdmin):
     list_display = ('name', 'specialist', 'price')
 
 class SubscriberPlanAdmin(admin.ModelAdmin):
-    list_display = ('name', 'specialist')
+    list_display = ('name', 'specialist', 'get_person')
+
+    def get_person(self, obj):
+        subscription = obj.subscription_set.first()
+        if subscription:
+            return subscription.person.user.username
+        return "No subscriber"
+
+    get_person.short_description = "Subscriber"
 
 class SubscriberMealAdmin(admin.ModelAdmin):
     list_display = ('subscriber_plan', 'day_number', 'meal_type', 'meal_calorie')

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
 from .models import SpecialistRequest
 from .forms import SpecialistRequestForm
-from accounts.models import Specialist, Certificate
+from accounts.models import Specialist, Certificate , Director
 from specialists.models import SubscriptionPlan
 from django.contrib import messages
 
@@ -70,3 +70,34 @@ def activate_specialist(request:HttpRequest , specialist_id):
         except Specialist.DoesNotExist:
             messages.error(request, "Specialist not found.","alert-danger")
         return redirect('directors:specialist_manage')
+
+
+def approve_specialist_request(request: HttpRequest, request_id):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in.", "alert-danger")
+        return redirect('accounts:login_view')
+
+    if not Director.objects.filter(user=request.user).exists():
+        messages.error(request, "You are not authorized to perform this action.", "alert-danger")
+        return redirect('core:home_view')
+
+    try:
+        specialist_request = SpecialistRequest.objects.get(id=request_id)
+    except SpecialistRequest.DoesNotExist:
+        messages.error(request, "Request not found.", "alert-danger")
+        return redirect('core:home_view')
+
+    if specialist_request.status != SpecialistRequest.RequestStatus.PENDING:
+        messages.error(request, "This request has already been processed.", "alert-warning")
+        return redirect('director:view_requests')
+
+    specialist = specialist_request.specialist
+    specialist.user.is_active = True
+    specialist.user.save()
+
+    specialist_request.status = SpecialistRequest.RequestStatus.APPROVED
+    specialist_request.director = Director.objects.get(user=request.user)
+    specialist_request.save()
+
+    messages.success(request, "Specialist approved and activated successfully.", "alert-success")
+    return redirect('director:view_requests')

@@ -119,7 +119,7 @@ def specialist_subscriptions(request: HttpRequest, plan_id):
         messages.error(request, "You are not authorized to access this page.", "alert-danger")
         return redirect('core:home_view')
 
-    subscriptions = Subscription.objects.filter(subscription_plan=subscription_plan)
+    subscriptions = Subscription.objects.filter(subscription_plan=subscription_plan,status=Subscription.StatusChoices.ACTIVE)
     return render(request, 'specialists/view_subscriptions.html', {'subscriptions': subscriptions, 'subscription_plan': subscription_plan})
 
 
