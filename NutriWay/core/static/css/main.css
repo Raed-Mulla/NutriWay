@@ -41,7 +41,7 @@
 }
 
 body {
-font-family: "Roboto Condensed", sans-serif;
+  font-family: "Poppins", sans-serif;
 /* background: linear-gradient(to bottom right, #e0f7fa, #f1f8e9); */
 
 }
@@ -210,7 +210,14 @@ input:focus::placeholder {
 .to-top.show {
   opacity: 1;
 }
-
+/* Reset */
+.btn:active {
+  border: none;
+}
+button.btn:active,
+input.btn:active {
+  color: white !important;
+}
 /* End Main Config */
 /* Start Nav */
 .navbar {
@@ -280,6 +287,13 @@ input:focus::placeholder {
 }
 .navbar .drop-links li:hover  {
   padding-left: 5px;
+}
+.navbar .drop-links li a {
+  color: #276254;
+  transition: var(--t-duration);
+}
+.navbar .drop-links li a:hover {
+  color: var(--link-hover);
 }
 .navbar .drop-links li.logout {
   border-top: 1px solid #c8e0b9;
