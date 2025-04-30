@@ -55,7 +55,6 @@ def user_register_view(request: HttpRequest):
                         birth_date=birth_date,
                         gender=gender
                     )
-                    
                     height = request.POST.get('height')
                     weight = request.POST.get('weight')
                     goal = request.POST.get('goal', '')
@@ -94,7 +93,8 @@ def user_register_view(request: HttpRequest):
             messages.error(request, "Passwords must be the same", "alert-danger")
     
     return render(request, "accounts/register.html", {
-        'specialty_choices': Specialist.SpecialtyChoices.choices
+        'specialty_choices': Specialist.SpecialtyChoices.choices,
+        'gender_choices': Person.GenderChoices.choices
     })
 
 def specialist_register_view(request: HttpRequest):
