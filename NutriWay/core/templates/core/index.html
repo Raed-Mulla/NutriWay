@@ -139,8 +139,8 @@
   <div class="container">
     <div class="row">
       {% for plan in subscription_plan %}
-      <div class="col-lg-4 col-md-6 mb-4">
-        <div class="box bg-white">
+      <div class="col-lg-4 col-md-6 mb-4 d-flex">
+        <div class="box bg-white w-100">
           <div class="name text-center position-relative p-3">{{ plan.specialist.user.username }}<img
               src="{{plan.specialist.image.url}}" alt=""></div>
           <div class="img">
@@ -154,7 +154,7 @@
               <span class="me-1">Duration</span>
               <select name="duration " id="" class="p-1 border form-select">
                 <option value="">Duration</option>
-                {% for val, label in duration_choices %}
+                {% for val, label in DurationChoices %}
                 <option value="{{val}}">{{label}}</option>
                 {% endfor %}
               </select>
@@ -179,107 +179,38 @@
     
     <div class="swiper mySwiper">
       <div class="swiper-wrapper">
-        
-        <!-- Testimonial Slide 1 -->
+        {% for review in reviews %}
         <div class="swiper-slide">
           <div class="testimonial-box p-4 border rounded shadow-sm bg-white">
             <div class="d-flex align-items-center mb-3">
               <img src="static/images/832.jpg" alt="User photo" class="rounded-circle me-3" width="50" height="50">
               <div>
-                <strong>Ali Ahmed</strong><br>
-                <small class="text-muted">Reviewed <span class="text-success">Dr. Sarah</span></small>
+                <strong>{{review.person.user.first_name}} {{review.person.user.last_name}}</strong><br>
+                <small class="text-muted">Reviewed <span class="text-success">Dr.{{review.specialist}}</span></small>
               </div>
             </div>
             <div class="mb-2">
-              <span class="text-warning">★ ★ ★ ★ ☆</span>
+              {% if review.rating == 5 %}
+              <span class="text-warning">★ ★ ★ ★ ★ </span>
+              {% elif review.rating == 4 %}
+              <span class="text-warning">★ ★ ★ ★ ☆ </span>
+              {% elif review.rating == 3 %}
+              <span class="text-warning">★ ★ ★ ☆ ☆ </span>
+              {% elif review.rating == 2 %}
+              <span class="text-warning">★ ★ ☆ ☆ ☆ </span>
+              {% elif review.rating == 1 %}
+              <span class="text-warning">★ ☆ ☆ ☆ ☆</span>
+              {% else %}
+              <span class="text-warning"></span>
+              {% endif %}
             </div>
-            <p class="mb-0">"Dr. Sarah helped me reach my fitness goals with a clear and practical plan. I feel healthier and more energetic!"</p>
+            <p class="mb-0">"{{review.comment}}"</p>
           </div>
         </div>
+        {% endfor %}
 
-        <!-- Testimonial Slide 2 -->
-        <div class="swiper-slide">
-          <div class="testimonial-box p-4 border rounded shadow-sm bg-white">
-            <div class="d-flex align-items-center mb-3">
-              <img src="static/images/832.jpg" alt="User photo" class="rounded-circle me-3" width="50" height="50">
-              <div>
-                <strong>Ali Ahmed</strong><br>
-                <small class="text-muted">Reviewed <span class="text-success">Dr. Sarah</span></small>
-              </div>
-            </div>
-            <div class="mb-2">
-              <span class="text-warning">★ ★ ★ ★ ☆</span>
-            </div>
-            <p class="mb-0">"Dr. Sarah helped me reach my fitness goals with a clear and practical plan. I feel healthier and more energetic!"</p>
-          </div>
-        </div>
 
-        <!-- Testimonial Slide -->
-        <div class="swiper-slide">
-          <div class="testimonial-box p-4 border rounded shadow-sm bg-white">
-            <div class="d-flex align-items-center mb-3">
-              <img src="static/images/832.jpg" alt="User photo" class="rounded-circle me-3" width="50" height="50">
-              <div>
-                <strong>Ali Ahmed</strong><br>
-                <small class="text-muted">Reviewed <span class="text-success">Dr. Sarah</span></small>
-              </div>
-            </div>
-            <div class="mb-2">
-              <span class="text-warning">★ ★ ★ ★ ☆</span>
-            </div>
-            <p class="mb-0">"Dr. Sarah helped me reach my fitness goals with a clear and practical plan. I feel healthier and more energetic!"</p>
-          </div>
-        </div>
-        <!-- Testimonial Slide 1 -->
-        <div class="swiper-slide">
-          <div class="testimonial-box p-4 border rounded shadow-sm bg-white">
-            <div class="d-flex align-items-center mb-3">
-              <img src="static/images/832.jpg" alt="User photo" class="rounded-circle me-3" width="50" height="50">
-              <div>
-                <strong>Ali Ahmed</strong><br>
-                <small class="text-muted">Reviewed <span class="text-success">Dr. Sarah</span></small>
-              </div>
-            </div>
-            <div class="mb-2">
-              <span class="text-warning">★ ★ ★ ★ ☆</span>
-            </div>
-            <p class="mb-0">"Dr. Sarah helped me reach my fitness goals with a clear and practical plan. I feel healthier and more energetic!"</p>
-          </div>
-        </div>
 
-        <!-- Testimonial Slide 2 -->
-        <div class="swiper-slide">
-          <div class="testimonial-box p-4 border rounded shadow-sm bg-white">
-            <div class="d-flex align-items-center mb-3">
-              <img src="static/images/832.jpg" alt="User photo" class="rounded-circle me-3" width="50" height="50">
-              <div>
-                <strong>Ali Ahmed</strong><br>
-                <small class="text-muted">Reviewed <span class="text-success">Dr. Sarah</span></small>
-              </div>
-            </div>
-            <div class="mb-2">
-              <span class="text-warning">★ ★ ★ ★ ☆</span>
-            </div>
-            <p class="mb-0">"Dr. Sarah helped me reach my fitness goals with a clear and practical plan. I feel healthier and more energetic!"</p>
-          </div>
-        </div>
-
-        <!-- Testimonial Slide -->
-        <div class="swiper-slide">
-          <div class="testimonial-box p-4 border rounded shadow-sm bg-white">
-            <div class="d-flex align-items-center mb-3">
-              <img src="static/images/832.jpg" alt="User photo" class="rounded-circle me-3" width="50" height="50">
-              <div>
-                <strong>Ali Ahmed</strong><br>
-                <small class="text-muted">Reviewed <span class="text-success">Dr. Sarah</span></small>
-              </div>
-            </div>
-            <div class="mb-2">
-              <span class="text-warning">★ ★ ★ ★ ☆</span>
-            </div>
-            <p class="mb-0">"Dr. Sarah helped me reach my fitness goals with a clear and practical plan. I feel healthier and more energetic!"</p>
-          </div>
-        </div>
         
 
       </div>

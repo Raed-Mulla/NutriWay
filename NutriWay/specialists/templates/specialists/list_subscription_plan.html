@@ -9,7 +9,7 @@
     <form method="get" class="mb-4 filter">
       <div class="row">
         
-        <div class="col-lg-3 mb-2">
+        <div class="col-lg-3 mb-2 d">
           <label class="form-label fw-semibold">Plan Type</label>
           <select name="type" class="form-select" onchange="this.form.submit()">
             <option value="">All Types</option>
@@ -42,8 +42,8 @@
     
     <div class="row">
       {% for plan in plans %}
-      <div class="col-lg-4 col-md-6 mb-4">
-        <div class="box">
+      <div class="col-lg-4 col-md-6 mb-4 d-flex">
+        <div class="box w-100">
           <div class="name text-center position-relative p-3">{{ plan.specialist.user.username }}<img src="{{plan.specialist.image.url}}" alt=""></div>
           <div class="img">
             <img src="{{plan.image.url}}" alt="" class="img-fluid">
