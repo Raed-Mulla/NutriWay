@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class Person(models.Model):
     class GenderChoices(models.TextChoices):
         Male = "Male" , "Male"
-        Femele = "Femele" , "Femele"
+        Female = "Female" , "Female"
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     birth_date = models.DateField()
     gender = models.CharField(max_length=8,choices= GenderChoices.choices)
@@ -28,7 +28,7 @@ class PersonData(models.Model):
 class Specialist(models.Model):
     class GenderChoices(models.TextChoices):
         Male = "Male" , "Male"
-        Femele = "Femele" , "Femele"
+        Famele = "Female" , "Female"
 
     class SpecialtyChoices(models.TextChoices):
         clinical = 'clinical', 'Clinical Nutrition'
