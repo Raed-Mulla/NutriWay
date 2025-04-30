@@ -1,48 +1,175 @@
 {% extends 'core/base.html' %}
+{% load static %}
 {% block title %} Home {% endblock %}
 {% block content %}
-<section class="landing d-flex justify-content-center align-items-center">
-
-  <div class="container">
-    <div class="row align-items-center">
-      <div class="col-5">
-        <div class="intro">
-          <h1>Heading</h1>
-          <p class="">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Natus corrupti rem delectus cum nesciunt ea similique eveniet numquam, quam sapiente? Laudantium, vel quam! Porro fugit nihil in doloribus! Impedit, quae!</p>
-          <a href="">Button</a>
+<section class="landing">
+  <div class="slider-wrapper">
+    <div class="slider">
+      <div class="slide" style="background-image: url('static/images/home1.jpg');">
+        <div class="overlay">
+          <h2>Welcome to Our Site</h2>
+          <a class="btn-a btn" href="">Learn More</a>
         </div>
       </div>
-      <div class="col-7">
-        <img src="static/images/9650826_7878.jpg" class="img-fluid" alt="">
+      <div class="slide" style="background-image: url('static/images/home2.jpg');">
+        <div class="overlay">
+          <h2>Our Services</h2>
+          <a class="btn-a btn" href="">Learn More</a>
+        </div>
+      </div>
+      <div class="slide" style="background-image: url('static/images/home3.jpg');">
+        <div class="overlay">
+          <h2>Contact Us</h2>
+          <a class="btn-a btn" href="">Learn More</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="prev"><i class="fa-solid fa-chevron-left"></i></button>
+  <button class="next"><i class="fa-solid fa-chevron-right"></i></button>
+</section>
+<section class="about pt-5 pb-5">
+  <h2 class="main-title">About</h2>
+  <div class="container">
+    <p class="text-center text-black-50">
+      NutriWay connects users with certified nutrition specialists to provide personalized nutrition plans, progress tracking tools, secure expert communication, and calorie calculators. Whether your goal is weight loss, muscle gain, or managing health conditions, NutriWay offers a seamless, trusted online experience to help you improve your eating habits.
+
+
+    </p>
+  </div>
+</section>
+<section class="services pt-5 pb-5 text-center" id="services">
+  <h2 class="main-title">Our Services</h2>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-4 col-md-6 d-flex mt-3">
+        <div class="box d-flex flex-column justify-content-between flex-grow-1 rounded-lg bg-white p-4">
+          <div class="img mb-3"><img src="{% static 'images/services1.jpg' %}" alt=""></div>
+          <div class="info">
+            <h3 class="fs-5">Certified Specialists</h3>
+            <span class="text-black-50 d-block mt-2">Get expert guidance from trusted nutrition professionals.</span>
+          </div>
+          <a href="" class="btn btn-a mt-3 d-inline-block w-fit">Details</a>
+        </div>
+      </div>
+        <div class="col-lg-4 col-md-6 d-flex mt-3">
+        <div class="box d-flex flex-column justify-content-between flex-grow-1 rounded-lg bg-white p-4">
+          <div class="img mb-3"><img src="{% static 'images/services2.jpg' %}" alt=""></div>
+          <div class="info">
+          <h3 class="fs-5">Personalized Plans</h3>
+          <span class="text-black-50 d-block mt-2">Subscribe for custom meal plans tailored to your goals.</span>
+        </div>
+          <a href="" class="btn btn-a mt-3 d-inline-block  w-fit">Details</a>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6 d-flex mt-3">
+        <div class="box d-flex flex-column justify-content-between flex-grow-1 rounded-lg bg-white p-4">
+          <div class="img mb-3"><img src="{% static 'images/services3.jpg' %}"  alt=""></div>
+          <div class="info">
+          <h3 class="fs-5">General Nutrition Plans</h3>
+          <span class="text-black-50 d-block mt-2"> Access ready-made plans for common health and fitness goals.</span>
+        </div>
+          <a href="" class="btn btn-a mt-3 d-inline-block">Details</a>
+        </div>
+      </div>
       </div>
     </div>
   </div>
 </section>
-
-<section class="about text-center pt-5 pb-5">
+<section class="specialists pt-5 pb-5" id="specialists">
+  <h2 class="main-title">Our Specialists</h2>
   <div class="container">
-    <h2 class="main-title">About Us</h2>
-    <p>
-      At NutriWay, we believe that better health starts with better nutrition. Our platform is built to connect you with certified nutrition specialists who understand your unique goals and challenges.
-
-Whether you're aiming to lose weight, build muscle, or manage a health condition, NutriWay offers personalized meal plans, smart tracking tools, and expert support—all in one place.
-
-With a focus on simplicity and trust, we’re here to help you make lasting lifestyle changes through nutrition that fits your life.
-    </p>
+    <div class="row">
+      <div class="col-lg-4 col-md-6 mb-3 position-relative one">
+        <div class="box p-3">
+          <div class="head d-flex justify-content-between pb-3 ">
+            <div class="left d-flex  align-items-center">
+              <div class="img me-2"><img src="static/images/profile.jpg" alt=""></div>
+              <div class="name fs-6">Experts Nawaf <span class="fs-6 text-black-50 d-block">Drematology</span></div>
+              
+            </div>
+            <div class="right badge">
+              
+              <span class="rating d-flex align-items-center  "><i class="fa-regular fa-star me-1"></i> 3.9</span>
+            </div>
+          </div>
+          <div class="body text-center">
+            <a href="" class="btn btn-a mt-3 d-inline-block">See Plans</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6 mb-3 position-relative two ">
+        <div class="box p-3">
+          <div class="head d-flex justify-content-between pb-3 ">
+            <div class="left d-flex align-items-center">
+              <div class="img me-2"><img src="static/images/profile.jpg" alt=""></div>
+              <div class="name fs-6">Experts Nawaf <span class="fs-6 text-black-50 d-block">Drematology</span></div>
+              
+            </div>
+            <div class="right badge">
+              
+              <span class="rating d-flex align-items-center  "><i class="fa-regular fa-star me-1"></i> 3.9</span>
+            </div>
+          </div>
+          <div class="body text-center">
+            <a href="" class="btn btn-a mt-3 d-inline-block">See Plans</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6 mb-3 position-relative three">
+        <div class="box p-3">
+          <div class="head d-flex justify-content-between  pb-3 ">
+            <div class="left d-flex align-items-center">
+              <div class="img me-2"><img src="static/images/profile.jpg" alt=""></div>
+              <div class="name fs-6">Experts Nawaf <span class="fs-6 text-black-50 d-block">Drematology</span></div>
+              
+            </div>
+            <div class="right badge">
+              
+              <span class="rating d-flex align-items-center  "><i class="fa-regular fa-star me-1"></i> 3.9</span>
+            </div>
+          </div>
+          <div class="body text-center">
+            <a href="" class="btn btn-a mt-3 d-inline-block">See Plans</a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
+<section class="specialists" id="specialists"></section>
 
 
-  {% if user.is_authenticated %}
-    <h1>Welcome {{user.username}}</h1>
-    
-    {% if user.specialist %}
-      <p>You are logged in as a Specialist</p>
-    {% elif user.person %}
-      <p>You are logged in as a User</p>
-    {% elif user.is_staff %}
-      <p>You are logged in as an Admin</p>
-    {% endif %}
-  {% endif %}
+<script>
+   const slider = document.querySelector('.slider');
+  const slides = document.querySelectorAll('.slide');
+  let index = 0;
+
+  function updateSlidePosition() {
+    slider.style.transform = `translateX(-${index * 100}%)`;
+  }
+
+  document.querySelector('.prev').addEventListener('click', () => {
+    index = (index - 1 + slides.length) % slides.length;
+    updateSlidePosition();
+  });
+
+  document.querySelector('.next').addEventListener('click', () => {
+    index = (index + 1) % slides.length;
+    updateSlidePosition();
+  });
+
+  setInterval(() => {
+    index = (index + 1) % slides.length;
+    updateSlidePosition();
+  }, 5000);
+</script>
+
+
+
+
+
+
   
 {% endblock %}
