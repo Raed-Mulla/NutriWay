@@ -91,7 +91,7 @@ def subscription_detail(request, subscription_id):
     
     
     progress_reports_list = list(ProgressReport.objects.filter(
-        subscription=subscription.subscription_plan
+        subscription=subscription
     ).order_by('-date')[:5])
     
     weight_progress = None

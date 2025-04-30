@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
-
 from accounts.models import Person , Specialist
 from .models import Review
 from .forms import ReviewForm
 from django.contrib import messages
+from users.models import Subscription
 
 
 def add_review(request:HttpRequest , specialist_id):
@@ -14,6 +14,10 @@ def add_review(request:HttpRequest , specialist_id):
   except (Specialist.DoesNotExist, Person.DoesNotExist):
     return redirect("core:home_view")
   
+  if not Subscription.objects.filter(person=person, subscription_plan__specialist=specialist).exists():
+    messages.error(request, "You must be subscribed to this specialist to leave a review.", "alert-danger")
+    return redirect("core:home_view")
+
   if Review.objects.filter(person=person, specialist=specialist).exists():
     messages.warning(request, "You have already submitted a review.")
     return redirect("core:home_view")
