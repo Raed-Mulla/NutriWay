@@ -56,8 +56,10 @@
           <label class="form-label">Gender</label>
           <select class="form-select" name="gender" required>
             <option value="">Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
+            {% for val, label in gender_choices  %}
+  
+            <option value="{{val}}">{{label}}</option>
+            {% endfor %}
           </select>
         </div>
         <div class="mb-3">
@@ -143,8 +145,10 @@
           <label class="form-label">Gender</label>
           <select class="form-select" name="gender" required>
             <option value="">Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
+            {% for val, label in gender_choices  %}
+  
+            <option value="{{val}}">{{label}}</option>
+            {% endfor %}
           </select>
         </div>
         <div class="mb-3">
