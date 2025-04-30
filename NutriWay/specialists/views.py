@@ -7,6 +7,7 @@ from django.contrib import messages
 from users.models import Subscription , ProgressReport
 from datetime import date
 from datetime import datetime
+from django.db.models import Avg
 
 def create_subscription_plan(request: HttpRequest):
     if not request.user.is_authenticated:
@@ -73,27 +74,31 @@ def create_general_plan(request: HttpRequest):
 
 
 def list_general_plan (request:HttpRequest):
-    plans = Generalplan.objects.all()
-    return render(request , 'specialists/list_general_plan.html' , {"plans" : plans})
-
-def list_subscription_plan(request: HttpRequest):
     filter_value = request.GET.get('filter')
-    plans = SubscriptionPlan.objects.select_related('specialist__user')
-
-    type_choices = [choice[0] for choice in SubscriptionPlan.PlanType.choices]
-    gender_choices = [choice[0] for choice in Specialist.GenderChoices.choices]
-
-
-    if filter_value in type_choices:
-        plans = plans.filter(plan_type=filter_value)
-
-
-    elif filter_value in gender_choices:
-        plans = plans.filter(specialist__gender=filter_value)
-
-    elif filter_value == "low":
+    plans = Generalplan.objects.all()
+    if filter_value == "low":
         plans = plans.order_by("price")
     elif filter_value == "high":
+        plans = plans.order_by("-price")
+
+    return render(request , 'specialists/list_general_plan.html' , {"plans" : plans , "selected_filter": filter_value})
+
+def list_subscription_plan(request: HttpRequest):
+    type_filter = request.GET.get('type')
+    gender_filter = request.GET.get('gender')
+    sort_filter = request.GET.get('sort')
+
+    plans = SubscriptionPlan.objects.select_related('specialist__user')
+
+    if type_filter:
+        plans = plans.filter(plan_type=type_filter)
+
+    if gender_filter:
+        plans = plans.filter(specialist__gender=gender_filter)
+
+    if sort_filter == "low":
+        plans = plans.order_by("price")
+    elif sort_filter == "high":
         plans = plans.order_by("-price")
 
     context = {
@@ -101,8 +106,11 @@ def list_subscription_plan(request: HttpRequest):
         "planType": SubscriptionPlan.PlanType.choices,
         "genderChoices": Specialist.GenderChoices.choices,
         "duration_choices": SubscriptionPlan.DurationChoices.choices,
-        "selected_filter": filter_value,
+        "selected_type": type_filter,
+        "selected_gender": gender_filter,
+        "selected_sort": sort_filter,
     }
+
     return render(request, 'specialists/list_subscription_plan.html', context)
 
 def my_plans(request: HttpRequest):
@@ -122,23 +130,30 @@ def my_plans(request: HttpRequest):
 
 
 def all_specialists(request: HttpRequest):
-    filter_value = request.GET.get('filter')
+    gender = request.GET.get('gender')
+    specialty = request.GET.get('specialty')
+    sort = request.GET.get('sort')
 
-    specialists = Specialist.objects.all()
+    specialists = Specialist.objects.annotate(average_rating=Avg('reviews__rating'))
 
-    gender_choices = [choice[0] for choice in Specialist.GenderChoices.choices]
-    specialty_choices = [choice[0] for choice in Specialist.SpecialtyChoices.choices]
+    if gender:
+        specialists = specialists.filter(gender=gender)
 
-    if filter_value in gender_choices:
-        specialists = specialists.filter(gender=filter_value)
-    elif filter_value in specialty_choices:
-        specialists = specialists.filter(specialty=filter_value)
+    if specialty:
+        specialists = specialists.filter(specialty=specialty)
+
+    if sort == 'high rating':
+        specialists = specialists.order_by('-average_rating')
+    elif sort == 'low rating':
+        specialists = specialists.order_by('average_rating')
 
     context = {
         'specialists': specialists,
         'genderChoices': Specialist.GenderChoices.choices,
         'specialtyChoices': Specialist.SpecialtyChoices.choices,
-        'selected_filter': filter_value,
+        'selected_gender': gender,
+        'selected_specialty': specialty,
+        'selected_sort': sort,
     }
 
     return render(request, 'specialists/specialists_list.html', context)

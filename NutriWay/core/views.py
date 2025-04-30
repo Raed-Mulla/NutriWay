@@ -5,6 +5,8 @@ from .models import Review
 from .forms import ReviewForm
 from django.contrib import messages
 from users.models import Subscription
+from specialists.models import Specialist , Generalplan , SubscriptionPlan
+from django.db.models import Avg
 
 
 def add_review(request:HttpRequest , specialist_id):
@@ -38,7 +40,10 @@ def add_review(request:HttpRequest , specialist_id):
 
 
 def home_view(request: HttpRequest):
-  return render(request, "core/index.html")
+  top_specialist = Specialist.objects.annotate(average_rating=Avg('reviews__rating')).order_by('-average_rating')[:6]
+  general_plan = Generalplan.objects.all()[:3]
+  subscription_plan = SubscriptionPlan.objects.all()[:3]
+  return render(request, "core/index.html", {"top_specialist":top_specialist , "general_plan" : general_plan , "subscription_plan" : subscription_plan})
 
 def mode_view(request: HttpRequest, mode):
   next = request.GET.get("next", "/")
@@ -50,4 +55,3 @@ def mode_view(request: HttpRequest, mode):
     response.set_cookie("mode", "light")
 
   return response
-
