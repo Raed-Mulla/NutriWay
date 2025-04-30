@@ -5,7 +5,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ('person', 'subscription_plan', 'subscriber_plan', 'start_date', 'end_date', 'duration', 'status')
     list_filter = ('status', 'duration', 'start_date', 'end_date')
     search_fields = ('person__user__username', 'subscription_plan__name')
-
+    list_editable = ['end_date', 'status']
 class ProgressReportAdmin(admin.ModelAdmin):
     list_display = ('subscription', 'date', 'weight', 'specialist_comment')
     list_filter = ('date',)

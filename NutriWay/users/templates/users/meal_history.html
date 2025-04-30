@@ -1,0 +1,157 @@
+{% extends 'core/base.html' %}
+{% block title %}Meal History{% endblock %}
+{% block content %}
+<section class="progress-sec pt-5 pb-5">
+  <h2 class="main-title">Meal History</h2>
+  <div class="container">
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+      <div class="col-md-3 mb-3">
+        <div class="card text-center">
+          <div class="card-body">
+            <h5 class="card-title">Total Meals</h5>
+            <p class="card-text fs-2">{{ total_meals }}</p>
+          </div>
+        </div>
+      </div>
+  <div class="col-md-3 mb-3">
+    <div class="card text-center">
+      <div class="card-body">
+        <h5 class="card-title">Checked</h5>
+        <p class="card-text fs-2 text-success">{{ checked_count }}</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3 mb-3">
+    <div class="card text-center">
+      <div class="card-body">
+        <h5 class="card-title">Not checked</h5>
+        <p class="card-text fs-2 text-secondary">{{ not_checked_count }}</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3 mb-3">
+    <div class="card text-center">
+      <div class="card-body">
+        <h5 class="card-title">Compliance</h5>
+        <p class="card-text fs-2">{{ compliance_rate }}%</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Replace this section in the template -->
+
+<!-- Month/Week Navigation Tabs -->
+<div class="card custom-card mb-4">
+  <div class="card-header bg-white">
+    <ul class="nav nav-tabs card-header-tabs" id="mealHistoryTabs" role="tablist">
+      {% for month, days in grouped_months %}
+        <li class="nav-item" role="presentation">
+          <button class="nav-link {% if forloop.first %}active{% endif %}" 
+                  id="month-{{ month|date:'Y-m' }}-tab" 
+                  data-bs-toggle="tab" 
+                  data-bs-target="#month-{{ month|date:'Y-m' }}" 
+                  type="button" 
+                  role="tab" 
+                  aria-controls="month-{{ month|date:'Y-m' }}" 
+                  aria-selected="{% if forloop.first %}true{% else %}false{% endif %}">
+            {{ month|date:"F Y" }}
+          </button>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  
+  <div class="card-body">
+    <div class="tab-content" id="mealHistoryTabContent">
+      {% for month_date, days in grouped_months %}
+        <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" 
+             id="month-{{ month_date|date:'Y-m' }}" 
+             role="tabpanel" 
+             aria-labelledby="month-{{ month_date|date:'Y-m' }}-tab">
+          
+          <div class="accordion" id="accordionMonth{{ month_date|date:'Ym' }}">
+            {% for day_number, day_date, day_meals in days %}
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="heading{{ day_date|date:'Ymd' }}">
+                  <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" 
+                          type="button" 
+                          data-bs-toggle="collapse" 
+                          data-bs-target="#collapse{{ day_date|date:'Ymd' }}" 
+                          aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" 
+                          aria-controls="collapse{{ day_date|date:'Ymd' }}">
+                    Day {{ day_number }} - {{ day_date|date:"l, F d, Y" }}
+                  </button>
+                </h2>
+                <div id="collapse{{ day_date|date:'Ymd' }}" 
+                     class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" 
+                     aria-labelledby="heading{{ day_date|date:'Ymd' }}" 
+                     data-bs-parent="#accordionMonth{{ month_date|date:'Ym' }}">
+                  <div class="accordion-body">
+                    <form method="post" action="{% url 'users:update_meal_day' subscription.id day_number %}">
+                      {% csrf_token %}
+                      <div class="list-group">
+                        {% for meal in day_meals %}
+                          <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                              <div class="d-flex align-items-center mb-1">
+                                <h6 class="mb-0">{{ meal.meal.get_meal_type_display }}</h6>
+                                <span class="badge bg-primary ms-2">{{ meal.meal.meal_calorie }} cal</span>
+                              </div>
+                              <p class="mb-1 text-muted small">{{ meal.meal.description }}</p>
+                            </div>
+                            
+                            <div class="form-check form-switch">
+                              {% if request.user.person%}  
+                              <input class="form-check-input" 
+                                     type="checkbox" 
+                                     id="meal-{{ meal.meal.id }}" 
+                                     name="checked_meals" 
+                                     value="{{ meal.meal.id }}" 
+                                     {% if meal.is_checked %}checked{% endif %}>
+                                {%endif%}
+                              <label class="form-check-label" for="meal-{{ meal.meal.id }}">
+                                {% if meal.is_checked %}
+                                  <span class="text-success">Checked</span>
+                                {% else %}
+                                  <span class="text-secondary">Not Checked</span>
+                                {% endif %}
+                              </label>
+                            </div>
+                          </div>
+                        {% empty %}
+                          <div class="alert">
+                            No meals were assigned for this day.
+                          </div>
+                        {% endfor %}
+                      </div>
+                      
+                      {% if day_meals and request.user.person %}
+
+                        <div class="d-grid mt-3">
+                          <button type="submit" class="btn custom-btn">Update Meal Progress</button>
+                        </div>
+                      {% endif %}
+                    </form>
+                  </div>
+                </div>
+              </div>
+            {% empty %}
+              <div class="alert">
+                No meal history available for this month.
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% empty %}
+        <div class="alert">
+          No meal history available yet.
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

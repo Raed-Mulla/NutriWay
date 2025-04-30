@@ -22,11 +22,11 @@
           <!-- Specialist Actions -->
           {% if is_specialist and request.user == specialist.user %}
           <div class="d-flex gap-2">
-            <a href="#" class="btn btn-outline-primary btn-sm">
+            {% if subscription.status == 'active' %}
+            <a href="{% url 'specialists:edit_subscriber_plan' subscription.subscriber_plan.id %}" class="btn btn-outline-primary btn-sm">
               <i class="fas fa-edit me-1"></i> Edit Plan
             </a>
-            {% if subscription.status == 'active' %}
-            <a href="{% url 'users:cancel_subscription' subscription.id %}" class="btn btn-outline-danger btn-sm">
+            <a href="{% url 'specialists:delete_subscription' subscription.id %}" class="btn btn-outline-danger btn-sm">
               <i class="fas fa-times-circle me-1"></i> Cancel
             </a>
             {% endif %}
@@ -99,13 +99,107 @@
 
       <!-- Right Column - Meals & Progress -->
       <div class="col-lg-8">
+        <!-- This meals section will work with the existing models -->
+
         <div class="card custom-card mb-4">
           <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-            <h5 class="mb-0">Today's Meals (Day {{ days_elapsed }})</h5>
-            {% if subscription.status == 'active' and not is_specialist %}
-            <a href="{% url 'users:check_meals' subscription.id %}" class="btn btn-sm custom-btn">
-              <i class="fas fa-check-circle me-1"></i> Update Progress
-            </a>
+            <div class="dropdown">
+              <h5 class="card-title border-bottom pb-3 mb-3">Day {{ display_day }} ({{ display_date|date:"F d, Y" }})</h5>
+
+            </div>
+            
+
+            
+              <a href="{% url 'users:meal_history' subscription.id %}" class="btn custom-btn">
+                <i class="fa fa-history me-1"></i> View Meal History
+              </a>
+          </div>
+          
+          <div class="card-body">
+            {% if day_meals %}
+              {% if subscription.status == 'active' and not is_specialist %}
+                <form method="post" action="{% url 'users:subscription_detail' subscription.id %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="check_day" value="{{ display_day }}">
+                  
+                  <div class="mb-3">
+                    <div class="list-group">
+                      {% for meal in day_meals %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                          <div>
+                            <div class="d-flex align-items-center mb-1">
+                              <h6 class="mb-0">{{ meal.get_meal_type_display }}</h6>
+                              <span class="badge bg-danger ms-2">{{ meal.meal_calorie }} cal</span>
+                            </div>
+                            <p class="mb-1 text-muted small">{{ meal.description }}</p>
+                          </div>
+                          
+                          <div class="form-check form-switch ">
+                            <input class="form-check-input " type="checkbox" 
+                                   id="meal-{{ meal.id }}" name="checked_meals" 
+                                   value="{{ meal.id }}"
+                                   {% for check in meal_checks %}
+                                     {% if check.subscriber_meal.id == meal.id and check.is_checked %}
+                                       checked
+                                     {% endif %}
+                                   {% endfor %}>
+                            <label class="form-check-label " for="meal-{{ meal.id }}">checked</label>
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  
+                  <div class="d-grid">
+                    <button type="submit" class="btn custom-btn">Save Meal Progress</button>
+                  </div>
+                </form>
+              {% elif is_specialist %}
+                <div class="list-group">
+                  {% for meal in day_meals %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                      <div>
+                        <div class="d-flex align-items-center mb-1">
+                          <h6 class="mb-0">{{ meal.get_meal_type_display }}</h6>
+                          <span class="badge bg-danger ms-2">{{ meal.meal_calorie }} cal</span>
+                        </div>
+                        <p class="mb-1 text-muted small">{{ meal.description }}</p>
+                      </div>
+                      
+                      <div>
+                        <!-- Fixed section - replaced the break tag -->
+                        {% if meal_checks %}
+                          {% for check in meal_checks %}
+                            {% if check.subscriber_meal.id == meal.id %}
+                              {% if check.is_checked %}
+                                <span class="badge bg-success">Checked</span>
+                              {% else %}
+                                <span class="badge bg-secondary">Not Checked</span>
+                              {% endif %}
+                            {% endif %}
+                          {% endfor %}
+                        {% else %}
+                          <span class="badge bg-secondary">Not Tracked</span>
+                        {% endif %}
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <div class="alert alert-warning">
+                  <i class="fa fa-exclamation-triangle me-2"></i> Your subscription is not active. You cannot update meal progress.
+                </div>
+              {% endif %}
+            {% else %}
+              <div class="alert">
+
+                {% if subscription.status == 'active' %}
+                <i class="fa fa-info-circle me-2"></i> No meals have been assigned for Day {{ display_day }}.
+                {% if is_specialist%}
+                  <a href="#" class="alert-link">Create a meal plan</a> for this day.
+                {% endif %}
+                {% endif %}
+              </div>
             {% endif %}
           </div>
         </div>
@@ -114,7 +208,6 @@
           <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
             <h5 class="mb-0">Recent Progress</h5>
             <a href="{% url 'users:view_progress' subscription_id %}" class="btn btn-sm custom-btn">
-
               <i class="fas fa-history me-1"></i> View All
             </a>
           </div>
@@ -182,5 +275,6 @@
         </div>
       </div>
     </div>
+  </div>
 </section>
 {% endblock %}
