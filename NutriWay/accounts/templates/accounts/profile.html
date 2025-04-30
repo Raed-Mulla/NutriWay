@@ -65,6 +65,7 @@
       </div>
     </div>
   </section>
+  {% if request.user.specialist %}
   <section class="certificates pt-5 pb-5">
     <h2 class="main-title">Specialization Certificate</h2>
   
@@ -99,4 +100,6 @@
     </div>
   </section>
   {% endif %}
+  {% endif %}
+
 {% endblock %}

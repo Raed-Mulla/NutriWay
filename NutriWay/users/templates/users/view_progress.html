@@ -40,8 +40,9 @@
         </tbody>
       </table>
     </div>
+    {%if request.user.person and not is_cancelled%}
     <a href="{% url 'users:create_progress_report_view' subscription_id %}" class="btn btn-a d-block w-100 mt-5">new progress</a>
-
+    {%endif%}
   </div>
 </section>
 
