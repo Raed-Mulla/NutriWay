@@ -8,30 +8,38 @@
   <div class="container">
     <form method="get" class="mb-4 filter">
       <div class="row">
-        <div class="col-lg-3">
-          <form action="{% url 'specialists:list_subscription_plan' %}" method="get">
-            <label for="filter" class="form-label fw-semibold">Filter by <i class="ms-1 fa-solid fa-filter"></i></label>
-            <select id="filter" name="filter" class="form-select" onchange="this.form.submit()">
-              <option value="">Choose</option>
-                <optgroup label="Type">
-                  {% for val, label in planType %}
-                    <option value="{{ val }}" {% if selected_filter == val %}selected{% endif %}>{{ label }}</option>
-                  {% endfor %}
-                </optgroup>
-                <optgroup label="Sort by price">
-                  <option value="low" {% if selected_filter == 'low' %}selected{% endif %}>Low to High</option>
-                  <option value="high" {% if selected_filter == 'high' %}selected{% endif %}>High to Low</option>
-                </optgroup>
-                <optgroup label="Gender">
-                  {% for val, label in genderChoices %}
-                    <option value="{{ val }}" {% if selected_filter == val %}selected{% endif %}>{{ label }}</option>
-                  {% endfor %}
-                </optgroup>
-            </select>
-          </form>
+        
+        <div class="col-lg-3 mb-2">
+          <label class="form-label fw-semibold">Plan Type</label>
+          <select name="type" class="form-select" onchange="this.form.submit()">
+            <option value="">All Types</option>
+            {% for val, label in planType %}
+              <option value="{{ val }}" {% if selected_type == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+    
+        <div class="col-lg-3 mb-2">
+          <label class="form-label fw-semibold">Specialist Gender</label>
+          <select name="gender" class="form-select" onchange="this.form.submit()">
+            <option value="">All Genders</option>
+            {% for val, label in genderChoices %}
+              <option value="{{ val }}" {% if selected_gender == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+    
+        <div class="col-lg-3 mb-2">
+          <label class="form-label fw-semibold">Sort By</label>
+          <select name="sort" class="form-select" onchange="this.form.submit()">
+            <option value="">Default</option>
+            <option value="low" {% if selected_sort == 'low' %}selected{% endif %}>Price: Low to High</option>
+            <option value="high" {% if selected_sort == 'high' %}selected{% endif %}>Price: High to Low</option>
+          </select>
         </div>
       </div>
     </form>
+    
     <div class="row">
       {% for plan in plans %}
       <div class="col-lg-4 col-md-6 mb-4">

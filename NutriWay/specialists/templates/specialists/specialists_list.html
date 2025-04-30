@@ -13,26 +13,34 @@
     <form method="get" class="mb-4 filter">
       <div class="row">
         <div class="col-lg-3">
-          <form action="{% url 'specialists:all_specialists' %}" method="get">
-            <label for="filter" class="form-label fw-semibold">Filter by <i class="ms-1 fa-solid fa-filter"></i></label>
-            <select id="filter" name="filter" class="form-select" onchange="this.form.submit()">
-              <option value="">Choose</option>
-              <optgroup label="Gender">
-                {% for val, label in genderChoices %}
-                  <option value="{{ val }}" {% if selected_filter == val %}selected{% endif %}>{{ label }}</option>
-                {% endfor %}
-              </optgroup>
-              <optgroup label="Specialty">
-                {% for val, label in specialtyChoices %}
-                  <option value="{{ val }}" {% if selected_filter == val %}selected{% endif %}>{{ label }}</option>
-                {% endfor %}
-              </optgroup>
-              
-            </select>
-          </form>
+          <label for="gender" class="form-label fw-semibold">Gender</label>
+          <select id="gender" name="gender" class="form-select" onchange="this.form.submit()">
+            <option value="">All</option>
+            {% for val, label in genderChoices %}
+            <option value="{{ val }}" {% if selected_gender == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-lg-3">
+          <label for="specialty" class="form-label fw-semibold">Specialty</label>
+          <select id="specialty" name="specialty" class="form-select" onchange="this.form.submit()">
+            <option value="">All</option>
+            {% for val, label in specialtyChoices %}
+            <option value="{{ val }}" {% if selected_specialty == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-lg-3">
+          <label for="sort" class="form-label fw-semibold">Sort By</label>
+          <select id="sort" name="sort" class="form-select" onchange="this.form.submit()">
+            <option value="">Default</option>
+            <option value="high rating" {% if selected_sort == "high rating" %}selected{% endif %}>Highest Rating</option>
+            <option value="low rating" {% if selected_sort == "low rating" %}selected{% endif %}>Lower Rating</option>
+          </select>
         </div>
       </div>
     </form>
+    
 
 
 
