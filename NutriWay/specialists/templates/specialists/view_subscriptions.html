@@ -10,6 +10,15 @@
       {% for subscription in subscriptions %}
       <div class="col-lg-4 col-md-6 col-sm-6">
         <div class="box p-4 text-center position-relative">
+          <div class="d-flex align-items-center gap-3">
+            <h2 class="mb-0">{{ plan.name }}</h2>
+            <span class="badge rounded-pill 
+              {% if subscription.status == 'active' %}bg-success
+              {% elif subscription.status == 'expired' %}bg-secondary
+              {% else %}bg-danger{% endif %}">
+              {{ subscription.get_status_display }}
+            </span>
+          </div>
           <div class="name mb-3">{{ subscription.person.user.first_name }}</div>
           <div class="duration">Duration: <span>{{ subscription.duration }}</span></div>
           <div class="end-date">End Date: <span>{{ subscription.end_date }}</span></div>

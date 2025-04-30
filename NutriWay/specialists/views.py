@@ -6,7 +6,7 @@ from accounts.models import Specialist , Certificate
 from django.contrib import messages
 from users.models import Subscription , ProgressReport
 from datetime import date
-
+from datetime import datetime
 
 def create_subscription_plan(request: HttpRequest):
     if not request.user.is_authenticated:
@@ -164,7 +164,12 @@ def specialist_subscriptions(request: HttpRequest, plan_id):
         messages.error(request, "You are not authorized to access this page.", "alert-danger")
         return redirect('core:home_view')
 
-    subscriptions = Subscription.objects.filter(subscription_plan=subscription_plan,status=Subscription.StatusChoices.ACTIVE)
+    subscriptions = Subscription.objects.filter(subscription_plan=subscription_plan)
+    today = datetime.now().date()
+    for subscription in subscriptions:
+        if today > subscription.end_date:
+            subscription.status = subscription.StatusChoices.EXPIRED
+            subscription.save()
     return render(request, 'specialists/view_subscriptions.html', {'subscriptions': subscriptions, 'subscription_plan': subscription_plan})
 
 

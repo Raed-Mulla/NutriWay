@@ -15,6 +15,12 @@ def my_plans(request: HttpRequest):
     try:
         person = Person.objects.get(user=request.user)
         subscriptions = Subscription.objects.filter(person=person)
+        today = datetime.now().date()
+        for subscription in subscriptions:
+            if today > subscription.end_date:
+                subscription.status = subscription.StatusChoices.EXPIRED
+                subscription.save()
+                
         return render(request, 'users/my_plans.html', {'subscriptions': subscriptions})
     except Person.DoesNotExist:
         messages.error(request, "User profile not found", "alert-danger")
@@ -80,6 +86,8 @@ def subscription_detail(request, subscription_id):
     specialist = plan.specialist
     
     today = datetime.now().date()
+
+    
     days_elapsed = (today - subscription.start_date).days + 1
     total_days = (subscription.end_date - subscription.start_date).days
     days_remaining = max(0, (subscription.end_date - today).days)
@@ -183,7 +191,6 @@ def subscription_detail(request, subscription_id):
         subscription=subscription,
         date=today
     ).exists()
-    
     subscription_detail = {
         'subscription': subscription,
         'subscription_id': subscription_id,
