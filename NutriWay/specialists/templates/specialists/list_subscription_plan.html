@@ -48,22 +48,24 @@
           <div class="img">
             <img src="{{plan.image.url}}" alt="" class="img-fluid">
           </div>
-          <div class="info p-3">
-            <h3 class="subscription-name">{{plan.name}}</h3>
-            <p class="description"><span>Description:</span> {{plan.description}}</p>
-            <p class="type"> <span>Type: </span>{{plan.plan_type}}</p>
-            <div class="duration d-flex align-items-center ">
-              <span class="me-1">Duration</span>
-              <select name="duration " id="" class="p-1 border form-select" >
-                <option value="">Duration</option>
-                {% for val, label in duration_choices %}
-                <option value="{{val}}">{{label}}</option>
+          <form method="get" action="{% url 'payments:subscription_summary' plan.id %}" class="row g-2">
+            <div class="info p-3">
+              <h3 class="subscription-name">{{plan.name}}</h3>
+              <p class="description"><span>Description:</span> {{plan.description}}</p>
+              <p class="type"> <span>Type: </span>{{plan.plan_type}}</p>
+              <div class="duration d-flex align-items-center ">
+
+              <select name="duration" class="p-1 border form-select" required>
+                <option value="">Choose Duration</option>
+                {% for value, label in duration_choices %}
+                  <option value="{{ value }}">{{ label }}</option>
                 {% endfor %}
               </select>
             </div>
             <div class="price text-center mb-3 mt-3 fw-bold"> <img alt="Unicode 0x20C1.svg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/120px-Unicode_0x20C1.svg.png" decoding="async" width="30px" class="mw-file-element" srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/180px-Unicode_0x20C1.svg.png 1.5x, https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/240px-Unicode_0x20C1.svg.png 2x" data-file-width="16" data-file-height="16"> {{plan.price}}</div>
-            <a href="{% url 'payments:subscription_summary' plan.id %}" class="main-btn btn d-block m-auto mb-2">Subscribe</a>
-          </div>
+            <button type="submit" class="btn-a d-block w-100 btn">Subscribe</button>
+            </div>
+          </form>
         </div>
       </div>
       {% endfor %}
