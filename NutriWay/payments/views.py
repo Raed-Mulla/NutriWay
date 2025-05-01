@@ -9,12 +9,14 @@ from django.core.mail import send_mail
 from payments.models import Payment
 import logging
 from users.views import subscription_to_plan
-        
+ 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 logger = logging.getLogger(__name__)
 
 @login_required
-def start_checkout_subscription(request : HttpRequest, plan_id : int) -> HttpResponse: 
+def start_checkout_subscription(request : HttpRequest, plan_id : int) -> HttpResponse:
+    duration_key = request.GET.get('duration')  # or request.POST.get('duration')
+    duration_label = dict(SubscriptionPlan.DurationChoices.choices).get(duration_key, 'N/A') 
     try:
         # Retrieve the subscription plan
         plan = SubscriptionPlan.objects.get(id=plan_id)
@@ -31,19 +33,20 @@ def start_checkout_subscription(request : HttpRequest, plan_id : int) -> HttpRes
                 'price_data': {
                     'currency': 'sar',
                     'product_data': {
-                        'name': f'{plan.get_duration_display()} - {plan.name}'
+                        'name': f'{duration_label} - {plan.name}'
                     },
                     'unit_amount': int(round(plan.price * 100)), 
                 },
                 'quantity': 1,
             }],
             mode='payment',
-            success_url=f'http://127.0.0.1:8000/success/?plan_id={plan.id}', 
+            success_url=f'http://127.0.0.1:8000/success/?plan_id={plan.id}&duration={duration_key}', 
             cancel_url='http://127.0.0.1:8000/cancel/',
             customer_email=request.user.email,
             metadata={
                 "plan_id": plan.id,
-                "user_id": request.user.id
+                "user_id": request.user.id,
+                'duration': duration_key
             }
         )    
     except stripe.StripeError as e:
@@ -57,6 +60,8 @@ def start_checkout_subscription(request : HttpRequest, plan_id : int) -> HttpRes
 
 #This payment success for subscription plan
 def payment_success(request : HttpRequest) -> HttpResponse:
+    duration_key = request.GET.get('duration')  # Retrieve duration from request
+    duration_label = dict(SubscriptionPlan.DurationChoices.choices).get(duration_key, 'N/A')  # Map to label
     try:
         # Retrieve the plan ID from the request query parameters
         plan_id = request.GET.get('plan_id')
@@ -84,10 +89,12 @@ def payment_success(request : HttpRequest) -> HttpResponse:
             general_plan=None,  # No general plan for subscription payments
             amount=plan.price,
             payment_method='visa',
-            status='Paid'
+            status='Paid',
+            selected_duration=duration_key 
         )
         
-        subscription = subscription_to_plan(request, plan_id=int(plan_id))
+        subscription = subscription_to_plan(request, plan_id=int(plan_id), duration=duration_key)
+
 
     except Exception as e:
         logger.error(f"Error creating payment record: {e}")
@@ -99,7 +106,7 @@ def payment_success(request : HttpRequest) -> HttpResponse:
             subject='NutriWay - Payment Confirmation',
             message=(
                 f"Hi {person.user.first_name},\n\n"
-                f"Your payment of {plan.price} ﷼ for {plan.get_duration_display()} plan has been received.\n"
+                f"Your payment of {plan.price} ﷼ for the {duration_key.replace('_', ' ')} {plan.name} plan has been received.\n"
                 f"Your specialist is {plan.specialist.user.username}.\n\n"
                 f"Subscription Plan: {plan.name}\n"
                 f"Description: {plan.description}\n"
@@ -118,6 +125,7 @@ def payment_success(request : HttpRequest) -> HttpResponse:
     return render(request, 'payments/subscription_success.html', {
         'plan': plan,
         'amount': plan.price,
+        'duration': duration_label,
     })
 
 
@@ -254,10 +262,13 @@ def payment_cancel_general(request : HttpRequest) -> HttpResponse:
 @login_required
 def subscription_summary(request : HttpRequest, plan_id : int) -> HttpResponse:
     plan = SubscriptionPlan.objects.get(id=plan_id)
-
+    duration_key = request.GET.get('duration')
+    duration_label = dict(SubscriptionPlan.DurationChoices.choices).get(duration_key or '', 'Not selected')
     context = {
         'plan': plan,
         'specialist_name': plan.specialist.user.get_full_name() or plan.specialist.user.username,
+        'duration': duration_label,
+        'duration_key': duration_key,
         'payment_methods': ['Visa', 'Mastercard'],  
     }
 

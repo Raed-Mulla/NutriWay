@@ -20,7 +20,7 @@
           <strong>Type:</strong> <span>{{ plan.get_plan_type_display }}</span>
         </li>
         <li class="d-flex justify-content-between py-2">
-          <strong>Duration:</strong> <span>{{ plan.get_duration_display }}</span>
+          <strong>Duration:</strong> <span>{{ duration }}</span>
         </li>
         <li class="d-flex justify-content-between py-2">
           <strong>Price:</strong> <span> <img alt="Unicode 0x20C1.svg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/120px-Unicode_0x20C1.svg.png" decoding="async" width="30px" class="mw-file-element" srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/180px-Unicode_0x20C1.svg.png 1.5x, https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/240px-Unicode_0x20C1.svg.png 2x" data-file-width="16" data-file-height="16"> {{ plan.price }}</span>
@@ -34,7 +34,7 @@
           </span>
         </li>
       </ul>
-      <a href="{% url 'payments:start_checkout_subscription' plan.id %}" class="btn btn-a d-block w-100 mt-5">Proceed to Payment</a>
+      <a href="{% url 'payments:start_checkout_subscription' plan.id %}?duration={{ duration_key }}" class="btn btn-a d-block w-100 mt-5">Proceed to Payment</a>
     </div>
   </div>
 </section>
