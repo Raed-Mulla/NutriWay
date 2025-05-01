@@ -27,7 +27,7 @@ def my_plans(request: HttpRequest):
         return redirect('core:home_view')
 
 @login_required
-def subscription_to_plan(request: HttpRequest, plan_id: int):
+def subscription_to_plan(request: HttpRequest, plan_id: int,duration: str):
     try:
         plan = SubscriptionPlan.objects.get(id=plan_id)
         person = Person.objects.get(user=request.user)
@@ -43,7 +43,7 @@ def subscription_to_plan(request: HttpRequest, plan_id: int):
             '12_months': 365
         }
         start_date = datetime.now().date()
-        days = duration_map.get(plan.duration, 30)  
+        days = duration_map.get(duration, 30)  
         end_date = start_date + timedelta(days=days)
         
         subscriber_plan = SubscriberPlan.objects.create(
@@ -58,6 +58,7 @@ def subscription_to_plan(request: HttpRequest, plan_id: int):
             subscriber_plan=subscriber_plan,
             start_date=start_date,
             end_date=end_date,
+            duration=duration,
             status='active'
         )
         

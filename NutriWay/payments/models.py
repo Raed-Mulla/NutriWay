@@ -26,6 +26,13 @@ class Payment(models.Model):
         default=PaymentMethod.VISA 
     )
 
+    selected_duration = models.CharField(
+        max_length=20,
+        choices=SubscriptionPlan.DurationChoices.choices,
+        null=True,
+        blank=True,
+    )
+
     status = models.CharField(
         max_length=10,
         choices=StatusChoices.choices,

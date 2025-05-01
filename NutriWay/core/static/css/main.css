@@ -114,12 +114,12 @@ body {
 .main-title:hover {
   color: white;
   border-color: var(--heading-color);
-  transition-delay: 1s;
+  transition-delay: 0.5s;
 }
 
-@media (max-width:767px) {
+@media (max-width:570px) {
   .main-title {
-    font-size: 20px;
+    font-size: 24px;
   }
 }
 
@@ -132,9 +132,10 @@ body {
 
   100% {
     left: 0;
-    width: 55%;
+    width: 70%;
     height: 100%;
-    border-radius: 0;
+    left: 0;
+    border-radius: 28px;
 
   }
 }
@@ -148,8 +149,8 @@ body {
 
   100% {
     right: 0;
-    border-radius: 0;
-    width: 55%;
+    border-radius: 28px;
+    width: 70%;
     height: 100%;
   }
 }
@@ -234,10 +235,20 @@ input.btn:active,
 a.btn:active {
   color: var(--link-hover) !important;
 }
+.message-container {
+  position: fixed;
+  top: 60px;
+  z-index: 999;
+  left: 50%;
+  transform: translateX(-50%);
+}
 /* End Main Config */
 /* Start Nav */
 .navbar {
   background-color: var(--background-color);
+  position: sticky;
+  top: 0px;
+  z-index: 9999;
 }
 
 .navbar .navbar-brand {
@@ -293,7 +304,7 @@ a.btn:active {
   background-color: transparent;
 }
 .navbar .drop-links {
-  min-width: 250px;
+  /* min-width: 250px; */
   border: 1px solid #90C67C;
   border-radius: 8px;
 
@@ -325,7 +336,6 @@ a.btn:active {
   color: var(--link-hover);
 
 } 
-
 /* End Nav */
 /* Start Home Page */
 .landing {
@@ -646,16 +656,26 @@ a.btn:active {
   width: 30px;
   height: 30px;
   position: absolute;
-  right: 5px;
-  top: 5px;
+  left: 10px;
+  top: 10px;
   border-radius: 50%;
 }
+
 
 .plans .box .img img {
   height: 200px;
   width: 100%;
 }
 
+.plans .box .name .right {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #e0f3ec; 
+}
+.plans .box .name .right span {
+  color: #328e6e;
+}
 .plans .box a {
   background-color: var(--btn-color);
   transition: var(--t-duration);

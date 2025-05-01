@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Payment
+from .models import Payment, SubscriptionPlan
+
 # Register your models here.
 @admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
@@ -9,6 +10,7 @@ class PaymentAdmin(admin.ModelAdmin):
         'specialist',
         'subscription_plan',
         'get_plan_type',
+        'get_duration_display',
         'general_plan',
         'amount',
         'status',
@@ -22,5 +24,11 @@ class PaymentAdmin(admin.ModelAdmin):
     @admin.display(description="Plan Type")  
     def get_plan_type(self, obj: Payment) -> str:
         if obj.subscription_plan:
-            return obj.subscription_plan.get_plan_type_display()  # show label (e.g. "Weight Management")
+            return obj.subscription_plan.get_plan_type_display()  # show label 
         return '—'
+    
+    def get_duration_display(self, obj):
+        if obj.selected_duration:
+            return dict(SubscriptionPlan.DurationChoices.choices).get(obj.selected_duration, 'Unknown')
+    
+    get_duration_display.short_description = "Duration"

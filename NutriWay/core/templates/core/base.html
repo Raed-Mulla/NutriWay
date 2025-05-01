@@ -32,9 +32,6 @@
       </button>
       <div class="collapse navbar-collapse text-center " id="main">
         <ul class="navbar-nav m-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="{% url 'core:home_view' %}">Home</a>
-          </li>
 
           <li class="nav-item">
             <a class="nav-link" href="{% url 'specialists:list_general_plan' %}">General Plans</a>
@@ -44,6 +41,9 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'specialists:all_specialists' %}">Specialists</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'supports:contact_us' %}">Contact Us</a>
           </li>
           <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -82,6 +82,33 @@
               class="fa-solid fa-moon"></i></a>
         </div>
         {% if user.is_authenticated %}
+        {% if user.specialist or user.director %}
+        <div class="dropdown d-none d-lg-block">
+          <button class="btn dropdown-toggle border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-user-doctor"></i>
+          </button>
+
+          <ul class="drop-links dropdown-menu dropdown-menu-end ">
+            <h6 class="dropdown-item mb-2">Welcome Mr.{{request.user.first_name}}</h6>
+            <li><a class="dropdown-item" href="{% url 'accounts:profile_view' user.username %}">Profile</a></li>
+            {% if user.specialist %}
+            <li><a class="dropdown-item" href="{% url 'specialists:my_plans' %}">My Plans</a></li>
+            <li><a class="dropdown-item" href="{% url 'specialists:create_subscription_plan' %}">Craete Subscription Plan</a></li>
+            <li><a class="dropdown-item" href="{% url 'specialists:create_general_plan' %}">Create General Plan</a></li>
+            {% endif %}
+            {% if user.director %}
+            <li><a class="dropdown-item" href="{% url 'directors:Specialist_Request' %}">Specialist Request</a></li>
+            <li><a class="dropdown-item" href="{% url 'directors:specialist_manage' %}">Specialist Manage</a></li>
+            {% endif %}
+            {% if user.person %}
+            <li><a class="dropdown-item" href="{% url 'users:my_plans' %}">My Plans</a></li>
+            {% endif %}
+            <li class="logout"><a class="dropdown-item" href="{% url 'accounts:logout_view' %}">Logout</a></li>
+          </ul>
+        </div>
+        {% endif%}
+        {% if user.person %}
+
         <div class="dropdown d-none d-lg-block">
           <button class="btn dropdown-toggle border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fa-regular fa-user"></i>
@@ -105,13 +132,15 @@
             <li class="logout"><a class="dropdown-item" href="{% url 'accounts:logout_view' %}">Logout</a></li>
           </ul>
         </div>
+        {% endif%}
+
         <div class="btns-sm d-block d-lg-none text-center mt-2">
           <a class="btn me-2 mb-2" href="{% url 'accounts:profile_view' user.username %}">Profile</a>
           <a class="btn mb-2" href="{% url 'accounts:logout_view' %}">Logout</a>
         </div>
         {% else %}
         <div class="drop-links border-0 dropdown d-none d-lg-block">
-          <button class="btn nav-link dropdown-toggle p-md-2 m-auto " type="button" data-bs-toggle="dropdown"
+          <button class="btn nav-link dropdown-toggle p-md-2 " type="button" data-bs-toggle="dropdown"
             aria-expanded="false">
             Sign up/ Sign in
           </button>
@@ -132,8 +161,8 @@
 
   {% if messages %}
   {% for message in messages %}
-  <div class="container mt-2">
-    <div class="message alert {{message.tags}} alert-dismissible fade show" role="alert">
+  <div class="message-container container">
+    <div class="message alert {{message.tags}} alert-dismissible fade show mt-2" role="alert">
       {{message}}
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
@@ -144,7 +173,6 @@
   <a href="#nav" id="scrollToTop" class="to-top position-fixed p-2 d-flex align-items-center justify-content-center">
     <i class="fa-solid fa-arrow-up"></i>
   </a>
-
   {% block content %}
   {% endblock %}
   <!-- Font Awesome JS -->
@@ -154,6 +182,7 @@
   <script src="{% static 'js/bootstrap.bundle.min.js.map' %}"></script>
   <!-- JS Code -->
   <script>
+    
     const scrollBtn = document.getElementById('scrollToTop');
 
     window.addEventListener('scroll', () => {
