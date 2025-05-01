@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 
 def specialist_request (request:HttpRequest):
-    requests = SpecialistRequest.objects.all()
+    requests = SpecialistRequest.objects.filter(status="pending")
     return render(request , 'directors/specialist_request.html' , {"requests" : requests})
 
 
@@ -91,7 +91,7 @@ def approve_specialist_request(request: HttpRequest, request_id):
 
     if specialist_request.status != SpecialistRequest.RequestStatus.PENDING:
         messages.error(request, "This request has already been processed.", "alert-warning")
-        return redirect('director:view_requests')
+        return redirect('directors:Specialist_Request')
 
     specialist = specialist_request.specialist
     specialist.user.is_active = True
@@ -102,7 +102,7 @@ def approve_specialist_request(request: HttpRequest, request_id):
     specialist_request.save()
 
     messages.success(request, "Specialist approved and activated successfully.", "alert-success")
-    return redirect('director:view_requests')
+    return redirect('directors:Specialist_Request')
 
 def reject_specialist_request(request: HttpRequest, request_id):
     if not request.user.is_authenticated:
@@ -121,7 +121,7 @@ def reject_specialist_request(request: HttpRequest, request_id):
 
     if specialist_request.status != SpecialistRequest.RequestStatus.PENDING:
         messages.error(request, "This request has already been processed.", "alert-warning")
-        return redirect('director:view_requests')
+        return redirect('directors:Specialist_Request')
 
     if request.method == "POST":
         feedback = request.POST.get('feedback', '')
@@ -148,6 +148,6 @@ def reject_specialist_request(request: HttpRequest, request_id):
         )
 
         messages.success(request, "Specialist request rejected and feedback sent via email.", "alert-success")
-        return redirect('director:view_requests')
-
+        return redirect('directors:Specialist_Request')
+    return redirect('directors:Specialist_Request')
     return render(request, 'director/reject_request.html', {'specialist_request': specialist_request})

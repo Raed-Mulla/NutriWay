@@ -117,9 +117,9 @@ body {
   transition-delay: 0.5s;
 }
 
-@media (max-width:767px) {
+@media (max-width:570px) {
   .main-title {
-    font-size: 20px;
+    font-size: 24px;
   }
 }
 
@@ -326,7 +326,6 @@ a.btn:active {
   color: var(--link-hover);
 
 } 
-
 /* End Nav */
 /* Start Home Page */
 .landing {
@@ -647,16 +646,26 @@ a.btn:active {
   width: 30px;
   height: 30px;
   position: absolute;
-  right: 5px;
-  top: 5px;
+  left: 10px;
+  top: 10px;
   border-radius: 50%;
 }
+
 
 .plans .box .img img {
   height: 200px;
   width: 100%;
 }
 
+.plans .box .name .right {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #e0f3ec; 
+}
+.plans .box .name .right span {
+  color: #328e6e;
+}
 .plans .box a {
   background-color: var(--btn-color);
   transition: var(--t-duration);
