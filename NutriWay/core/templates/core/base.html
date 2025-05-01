@@ -11,7 +11,9 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet">
   <!-- Bootstrap -->
   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css.map' %}">
@@ -23,7 +25,7 @@
 </head>
 
 <body class="position-relative">
-  <nav id="nav" class="navbar navbar-expand-lg">
+  <nav id="" class="navbar navbar-expand-lg">
     <div class="container">
       <a class="navbar-brand fw-bold" href="{% url 'core:home_view' %}">NutriWay</a>
       <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#main"
@@ -42,7 +44,7 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'specialists:all_specialists' %}">Specialists</a>
           </li>
-          
+
           <li class="nav-item">
             <a class="nav-link" href="{% url 'core:calorie_calculator' %}">Calorie Calculator</a>
           </li>
@@ -60,17 +62,21 @@
               <li><a class="dropdown-item" href="#">Something else here</a></li>
             </ul>
           </li> -->
+          {% if user.director %}
+          <div class="director d-block d-lg-none">
+            <li class="nav-item"><a class="nav-link" href="{% url 'directors:Specialist_Request' %}">Specialist
+                Request</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'directors:specialist_manage' %}">Specialist
+                Manage</a></li>
+          </div>
+          {% endif %}
           {% if user.specialist %}
           <div class="specialist d-block d-lg-none">
             <li class="nav-item"><a class="nav-link" href="{% url 'specialists:my_plans' %}">My Plans</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'specialists:create_subscription_plan' %}">Craete Subscription Plan</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'specialists:create_general_plan' %}">Create General Plan</a></li>
-          </div>
-          {% endif %}
-          {% if user.director %}
-          <div class="director d-block d-lg-none">
-            <li class="nav-item"><a class="nav-link" href="{% url 'directors:Specialist_Request' %}">Specialist Request</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'directors:specialist_manage' %}">Specialist Manage</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'specialists:create_subscription_plan' %}">Craete
+                Subscription Plan</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'specialists:create_general_plan' %}">Create General
+                Plan</a></li>
           </div>
           {% endif %}
           {% if user.person %}
@@ -79,14 +85,32 @@
           </div>
           {% endif %}
         </ul>
-        <div class="mode pe-2">
+        <!-- <div class="mode pe-2">
           <a href="{% url 'core:mode_view' 'light' %}?next={{request.path}}" class="light-mode"><i
               class="fa-solid fa-sun"></i></a>
           <a href="{% url 'core:mode_view' 'dark' %}?next={{request.path}}" class="dark-mode"><i
               class="fa-solid fa-moon"></i></a>
-        </div>
+        </div> -->
         {% if user.is_authenticated %}
-        {% if user.specialist or user.director %}
+        {% if user.specialist %}
+        <div class="dropdown d-none d-lg-block">
+          <button class="btn dropdown-toggle border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-user-doctor"></i>
+          </button>
+
+          <ul class="drop-links d-l dropdown-menu dropdown-menu-end ">
+            <h6 class="dropdown-item mb-2">Welcome Mr.{{request.user.first_name}}</h6>
+            <li><a class="dropdown-item" href="{% url 'accounts:profile_view' user.username %}">Profile</a></li>
+            <li><a class="dropdown-item" href="{% url 'specialists:my_plans' %}">My Plans</a></li>
+            <li><a class="dropdown-item" href="{% url 'specialists:create_subscription_plan' %}">Craete Subscription
+                Plan</a></li>
+            <li><a class="dropdown-item" href="{% url 'specialists:create_general_plan' %}">Create General Plan</a></li>
+            <li class="logout"><a class="dropdown-item" href="{% url 'accounts:logout_view' %}">Logout</a></li>
+          </ul>
+        </div>
+        {% endif%}
+
+        {% if user.director %}
         <div class="dropdown d-none d-lg-block">
           <button class="btn dropdown-toggle border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fa-solid fa-user-doctor"></i>
@@ -95,18 +119,9 @@
           <ul class="drop-links dropdown-menu dropdown-menu-end ">
             <h6 class="dropdown-item mb-2">Welcome Mr.{{request.user.first_name}}</h6>
             <li><a class="dropdown-item" href="{% url 'accounts:profile_view' user.username %}">Profile</a></li>
-            {% if user.specialist %}
             <li><a class="dropdown-item" href="{% url 'specialists:my_plans' %}">My Plans</a></li>
-            <li><a class="dropdown-item" href="{% url 'specialists:create_subscription_plan' %}">Craete Subscription Plan</a></li>
-            <li><a class="dropdown-item" href="{% url 'specialists:create_general_plan' %}">Create General Plan</a></li>
-            {% endif %}
-            {% if user.director %}
-            <li><a class="dropdown-item" href="{% url 'directors:Specialist_Request' %}">Specialist Request</a></li>
+            <li><a class="dropdown-item" href="{% url 'directors:Specialist_Request'%}">Specialist Request</a></li>
             <li><a class="dropdown-item" href="{% url 'directors:specialist_manage' %}">Specialist Manage</a></li>
-            {% endif %}
-            {% if user.person %}
-            <li><a class="dropdown-item" href="{% url 'users:my_plans' %}">My Plans</a></li>
-            {% endif %}
             <li class="logout"><a class="dropdown-item" href="{% url 'accounts:logout_view' %}">Logout</a></li>
           </ul>
         </div>
@@ -121,25 +136,31 @@
           <ul class="drop-links dropdown-menu dropdown-menu-end ">
             <h6 class="dropdown-item mb-2">Welcome Mr.{{request.user.first_name}}</h6>
             <li><a class="dropdown-item" href="{% url 'accounts:profile_view' user.username %}">Profile</a></li>
-            {% if user.specialist %}
-            <li><a class="dropdown-item" href="{% url 'specialists:my_plans' %}">My Plans</a></li>
-            <li><a class="dropdown-item" href="{% url 'specialists:create_subscription_plan' %}">Craete Subscription Plan</a></li>
-            <li><a class="dropdown-item" href="{% url 'specialists:create_general_plan' %}">Create General Plan</a></li>
-            {% endif %}
-            {% if user.director %}
-            <li><a class="dropdown-item" href="{% url 'directors:Specialist_Request' %}">Specialist Request</a></li>
-            <li><a class="dropdown-item" href="{% url 'directors:specialist_manage' %}">Specialist Manage</a></li>
-            {% endif %}
-            {% if user.person %}
+
             <li><a class="dropdown-item" href="{% url 'users:my_plans' %}">My Plans</a></li>
-            {% endif %}
+            <li class="logout"><a class="dropdown-item" href="{% url 'accounts:logout_view' %}">Logout</a></li>
+          </ul>
+        </div>
+        {% endif %}
+        {% if user.is_superuser %}
+
+        <div class="dropdown d-none d-lg-block">
+          <button class="btn dropdown-toggle border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-regular fa-user"></i>
+          </button>
+
+          <ul class="drop-links dropdown-menu dropdown-menu-end ">
+            <h6 class="dropdown-item mb-2">Welcome Mr.{{request.user.first_name}}</h6>
             <li class="logout"><a class="dropdown-item" href="{% url 'accounts:logout_view' %}">Logout</a></li>
           </ul>
         </div>
         {% endif %}
 
         <div class="btns-sm d-block d-lg-none text-center mt-2">
+          {% if not user.is_superuser %}
+
           <a class="btn me-2 mb-2" href="{% url 'accounts:profile_view' user.username %}">Profile</a>
+          {% endif %}
           <a class="btn mb-2" href="{% url 'accounts:logout_view' %}">Logout</a>
         </div>
         {% else %}
@@ -162,6 +183,7 @@
       </div>
     </div>
   </nav>
+  <div id="nav"></div>
 
   {% if messages %}
   {% for message in messages %}
@@ -186,7 +208,7 @@
   <script src="{% static 'js/bootstrap.bundle.min.js.map' %}"></script>
   <!-- JS Code -->
   <script>
-    
+
     const scrollBtn = document.getElementById('scrollToTop');
 
     window.addEventListener('scroll', () => {
@@ -198,7 +220,7 @@
     });
 
   </script>
-  
+
 
 </body>
 
