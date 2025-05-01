@@ -7,18 +7,34 @@ from django.contrib import messages
 from users.models import Subscription
 from specialists.models import Specialist , Generalplan , SubscriptionPlan
 from django.db.models import Avg , Max
-
+from datetime import date
 
 def add_review(request:HttpRequest , specialist_id):
+  if not request.user.is_authenticated:
+    messages.error(request, "You must be logged in to submit a review.", "alert-danger")
+    return redirect("accounts:login_view")
+    
+  if hasattr(request.user, 'specialist') or hasattr(request.user, 'director') or request.user.is_staff:
+    messages.error(request, "You are not authorized to submit reviews.", "alert-danger")
+    return redirect("core:home_view")
   try:
     specialist = Specialist.objects.get(id=specialist_id)
     person = Person.objects.get(user=request.user)
   except (Specialist.DoesNotExist, Person.DoesNotExist):
+    messages.error(request, "Specialist or user profile not found.", "alert-danger")
     return redirect("core:home_view")
   
-  if not Subscription.objects.filter(person=person, subscription_plan__specialist=specialist).exists():
-    messages.error(request, "You must be subscribed to this specialist to leave a review.", "alert-danger")
+  subscriptions = Subscription.objects.filter(person=person, subscription_plan__specialist=specialist)
+  if not subscriptions.exists():
+    messages.error(request, "You must have subscribed to this specialist before to leave a review.", "alert-danger")
     return redirect("core:home_view")
+  
+  latest_subscription = subscriptions.latest('end_date') 
+  remaining_days = (latest_subscription.end_date - date.today()).days
+  if remaining_days > 10:
+    messages.error(request, f"You can only review in the last 10 days of your subscription. ({remaining_days} days left)", "alert-danger")
+    return redirect("core:home_view")
+
 
   if Review.objects.filter(person=person, specialist=specialist).exists():
     messages.warning(request, "You have already submitted a review.", "alert-success")
