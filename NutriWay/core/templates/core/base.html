@@ -199,14 +199,39 @@
   <a href="#nav" id="scrollToTop" class="to-top position-fixed p-2 d-flex align-items-center justify-content-center">
     <i class="fa-solid fa-arrow-up"></i>
   </a>
+
+
   {% block content %}
   {% endblock %}
+  <footer class="pt-5 pb-5">
+    <h2 class="text-center">NutriWay</h2>
+    <div class="container">
+      <!-- <ul class="footer-links list-unstyled d-flex justify-content-center gap-3 mt-4 mb-3">
+        <li><a href="" >Link 1</a></li>
+        <li><a href="" >Link 1</a></li>
+        <li><a href="" >Link 1</a></li>
+        <li><a href="" >Link 1</a></li>
+        <li><a href="" >Link 1</a></li>
+        <li><a href="" >Link 1</a></li>
+      </ul> -->
+      <ul class="social list-unstyled d-flex justify-content-center gap-3 mt-4 mb-3">
+        <li><a href="" ><i class="fa-brands fa-x-twitter"></i></a></li>
+        <li><a href="" ><i class="fa-brands fa-instagram"></i></a></li>
+        <li><a href="" ><i class="fa-brands fa-whatsapp"></i></a></li>
+      </ul>
+      <p class="text-center mb-0">© <span id="year"></span> NutriWay. All rights reserved.</p>
+
+    </div>
+  </footer>
   <!-- Font Awesome JS -->
   <script src="{% static 'js/all.min.js' %}"></script>
   <!-- Bootstarp JS -->
   <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
   <script src="{% static 'js/bootstrap.bundle.min.js.map' %}"></script>
   <!-- JS Code -->
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
   <script>
 
     const scrollBtn = document.getElementById('scrollToTop');

@@ -39,6 +39,12 @@
   /* Button Colors */
   --btn-color: var(--primary-color);
   --btn-hover-color: #276254;
+
+  --footer-bg: #1e3d34; /* deep green */
+--footer-text: #e0f5ec; /* light mint for contrast */
+--footer-link: #90C67C;
+--footer-link-hover: #67AE6E;
+
 }
 
 body {
@@ -912,3 +918,35 @@ input:focus::placeholder {
   background-color: var(--primary-color); 
   border-color: var(--primary-color);
 }
+/* Footer */
+footer {
+  background-color: var(--footer-bg);
+}
+footer h2 {
+  color: var(--footer-text);
+}
+footer .footer-links a,
+footer .social a {
+  color: var(--footer-link);
+  text-decoration: none;
+  transition: var(--t-duration);
+}
+footer .footer-links a:hover,
+footer .social a:hover {
+  color: var(--footer-link-hover);
+}
+footer .social a {
+  font-size: 20px;
+  padding: 19px;
+    border: 1px solid;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+footer p {
+  color:var(--footer-text)
+}
+/* Footer */
