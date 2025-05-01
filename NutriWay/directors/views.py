@@ -9,11 +9,26 @@ from django.core.mail import send_mail
 from django.conf import settings
 
 def specialist_request (request:HttpRequest):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in.", "alert-danger")
+        return redirect('accounts:login_view')
+
+    if not Director.objects.filter(user=request.user).exists():
+        messages.error(request, "You are not authorized to access this page.", "alert-danger")
+        return redirect('core:home_view')
+
     requests = SpecialistRequest.objects.filter(status="pending")
     return render(request , 'directors/specialist_request.html' , {"requests" : requests})
 
 
 def specialist_request_detail(request:HttpRequest, request_id):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in.", "alert-danger")
+        return redirect('accounts:login_view')
+
+    if not Director.objects.filter(user=request.user).exists():
+        messages.error(request, "You are not authorized to access this page.", "alert-danger")
+        return redirect('core:home_view')
     try:
         specialist_request = SpecialistRequest.objects.get(id=request_id)
         specialist = specialist_request.specialist
@@ -30,11 +45,25 @@ def specialist_request_detail(request:HttpRequest, request_id):
     return render(request, 'directors/specialist_request_detail.html', {'specialist_request': specialist_request,'specialist': specialist,'certificates': certificates,'form': form})
 
 def specialist_manage(request:HttpRequest):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in.", "alert-danger")
+        return redirect('accounts:login_view')
+
+    if not Director.objects.filter(user=request.user).exists():
+        messages.error(request, "You are not authorized to access this page.", "alert-danger")
+        return redirect('core:home_view')
     specialists = Specialist.objects.filter(specialistrequest__status="approved").distinct()
     return render(request, 'directors/specialist_manage.html', {'specialists': specialists})
 
 
 def specialist_manage_detail(request:HttpRequest,request_id):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in.", "alert-danger")
+        return redirect('accounts:login_view')
+
+    if not Director.objects.filter(user=request.user).exists():
+        messages.error(request, "You are not authorized to access this page.", "alert-danger")
+        return redirect('core:home_view')
     try:
         specialist = Specialist.objects.get(id=request_id)
         certificates = Certificate.objects.filter(specialist=specialist)
@@ -45,33 +74,56 @@ def specialist_manage_detail(request:HttpRequest,request_id):
     return render(request, 'directors/manage_specialist_detail.html', {'specialist': specialist,'certificates': certificates,'plans': plans})
 
 def inactivate_specialist(request:HttpRequest,specialist_id):
-        try:
-            specialist = Specialist.objects.get(id=specialist_id)
-            specialist.user.is_active = False
-            specialist.user.save()
-            messages.success(request, "Specialist has been inactivated successfully.","alert-success")
-        except Specialist.DoesNotExist:
-            messages.error(request, "Specialist not found.","alert-danger")
-        return redirect('directors:specialist_manage')
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in.", "alert-danger")
+        return redirect('accounts:login_view')
+
+    if not Director.objects.filter(user=request.user).exists():
+        messages.error(request, "You are not authorized to access this page.", "alert-danger")
+        return redirect('core:home_view')
+    
+    try:
+        specialist = Specialist.objects.get(id=specialist_id)
+        specialist.user.is_active = False
+        specialist.user.save()
+        messages.success(request, "Specialist has been inactivated successfully.","alert-success")
+    except Specialist.DoesNotExist:
+        messages.error(request, "Specialist not found.","alert-danger")
+    return redirect('directors:specialist_manage')
 
 def delete_specialist(request:HttpRequest,specialist_id):
-        try:
-            specialist = Specialist.objects.get(id=specialist_id)
-            specialist.user.delete()
-            messages.success(request, "Specialist has been deleted successfully.", "alert-success")
-        except Specialist.DoesNotExist:
-            messages.error(request, "Specialist not found.","alert-danger")
-        return redirect('directors:specialist_manage')
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in.", "alert-danger")
+        return redirect('accounts:login_view')
+
+    if not Director.objects.filter(user=request.user).exists():
+        messages.error(request, "You are not authorized to access this page.", "alert-danger")
+        return redirect('core:home_view')
+    try:
+        specialist = Specialist.objects.get(id=specialist_id)
+        specialist.user.delete()
+        messages.success(request, "Specialist has been deleted successfully.", "alert-success")
+    except Specialist.DoesNotExist:
+        messages.error(request, "Specialist not found.","alert-danger")
+    return redirect('directors:specialist_manage')
 
 def activate_specialist(request:HttpRequest , specialist_id):
-        try:
-            specialist = Specialist.objects.get(id=specialist_id)
-            specialist.user.is_active = True
-            specialist.user.save()
-            messages.success(request, "Specialist has been activated successfully.","alert-success")
-        except Specialist.DoesNotExist:
-            messages.error(request, "Specialist not found.","alert-danger")
-        return redirect('directors:specialist_manage')
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in.", "alert-danger")
+        return redirect('accounts:login_view')
+
+    if not Director.objects.filter(user=request.user).exists():
+        messages.error(request, "You are not authorized to access this page.", "alert-danger")
+        return redirect('core:home_view')
+        
+    try:
+        specialist = Specialist.objects.get(id=specialist_id)
+        specialist.user.is_active = True
+        specialist.user.save()
+        messages.success(request, "Specialist has been activated successfully.","alert-success")
+    except Specialist.DoesNotExist:
+        messages.error(request, "Specialist not found.","alert-danger")
+    return redirect('directors:specialist_manage')
 
 
 def approve_specialist_request(request: HttpRequest, request_id):
@@ -149,5 +201,4 @@ def reject_specialist_request(request: HttpRequest, request_id):
 
         messages.success(request, "Specialist request rejected and feedback sent via email.", "alert-success")
         return redirect('directors:Specialist_Request')
-    return redirect('directors:Specialist_Request')
-    return render(request, 'director/reject_request.html', {'specialist_request': specialist_request})
+    return render(request, 'directors/reject_request.html', {'specialist_request': specialist_request})
