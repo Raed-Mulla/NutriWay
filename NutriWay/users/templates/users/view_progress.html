@@ -13,8 +13,8 @@
             <th>Date</th>
             <th>Weight</th>
             <th>Notes</th>
-            {% if is_specialist %}
-              <th>Action</th>
+            {% if request.user.specialist %}
+              <th>Comment</th>
             {% endif %}
           </tr>
         </thead>
@@ -30,10 +30,24 @@
                   No notes
                 {% endif %}
               </td>
-              {% if is_specialist %}
-                <td>
-                  <a href="#" class="btn d-block m-auto mb-2">Comment</a>
+              <td>
+              {% if report.specialist_comment %}
+                {{report.specialist_comment}}
+              {% else %}
+                {% if request.user.specialist %}
+                <form action="{% url 'specialists:add_comment' subscription_id %}" method="post" class="bg-white p-4">
+                  {% csrf_token %}
+                  <input type="hidden" name="progress_id" value="{{report.id}}">
+                  <div class="mb-3">
+                    <textarea class="form-control" name="specialist_comment" placeholder="write your comment ... "></textarea>
+                  </div>
+                   
+                    <input type="submit" value="Add comment" class="btn d-block w-100 mt-5">
+                </form>
+                {% else %}
+                  No comment 
                 </td>
+                {% endif %}
               {% endif %}
             </tr>
           {% endfor %}
