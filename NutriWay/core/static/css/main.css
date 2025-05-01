@@ -227,17 +227,15 @@ input:focus::placeholder {
   opacity: 1;
 }
 /* Reset */
+
 .btn:active {
   border: none;
+  color: none !important;
 }
-button.btn:active,
-input.btn:active,
-a.btn:active {
-  color: var(--link-hover) !important;
-}
+
 .message-container {
   position: fixed;
-  top: 60px;
+  top: 50px;
   z-index: 999;
   left: 50%;
   transform: translateX(-50%);
@@ -268,12 +266,16 @@ a.btn:active {
 
 .navbar .nav-link:hover,
 .navbar .dropdown:hover,
-.navbar .dropdown-menu .dropdown-item:hover {
-  color: var(--link-hover);
+.navbar .dropdown-menu .dropdown-item:hover,
+.navbar .nav-link:active,
+.navbar .dropdown:active,
+.navbar .dropdown-menu .dropdown-item:active {
+  color: var(--link-hover) !important;
 }
 
 .navbar .dropdown-menu {
   background-color: var(--background-color);
+  min-width: 250px;
 }
 
 .navbar .mode .light-mode {
@@ -578,11 +580,14 @@ a.btn:active {
 
 .form-sec form input[type="submit"] {
   background-color: var(--btn-color);
-  color: white;
+  color: white ;
 }
 
-.form-sec form input[type="submit"]:hover {
-  background-color: var(--btn-hover-color);
+.form-sec form input[type="submit"]:hover,
+.form-sec form input[type="submit"]:active {
+  background-color: var(--btn-hover-color) !important;
+  color: white !important;
+
 }
 
 .form-sec .btns {
@@ -773,20 +778,28 @@ a.btn:active {
   width: 50%;
 }
 
+/* .specialists-request .row .btns .view:active {
+  color: white !important;
+  background-color: var(--primary-color) !important;
+} */
 .specialists-request .row .btns .approve {
   background-color: var(--custom-success);
 }
 
-.specialists-request .row .btns .approve:hover {
-  background-color: var(--custom-success-hover);
+.specialists-request .row .btns .approve:hover,
+.specialists-request .row .btns .approve:active{
+  background-color: var(--custom-success-hover) !important;
+  color: white !important;
 }
 
 .specialists-request .row .btns .reject {
   background-color: var(--custom-danger);
 }
 
-.specialists-request .row .btns .reject:hover {
-  background-color: var(--custom-danger-hover);
+.specialists-request .row .btns .reject:hover,
+.specialists-request .row .btns .reject:active {
+  background-color: var(--custom-danger-hover) !important;
+  color: white !important;
 }
 
 @media (max-width:767px) {

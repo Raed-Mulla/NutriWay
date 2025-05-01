@@ -302,7 +302,7 @@ def edit_subscriber_plan(request: HttpRequest, plan_id):
 
 
 
-def view_progress_reports(request: HttpRequest, subscription_id):
+def add_comment(request: HttpRequest, subscription_id):
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to access this page.", "alert-danger")
         return redirect('accounts:login_view')
@@ -310,8 +310,9 @@ def view_progress_reports(request: HttpRequest, subscription_id):
     try:
         specialist = Specialist.objects.get(user=request.user)
         subscription = Subscription.objects.get(id=subscription_id, subscription_plan__specialist=specialist)
-    except (Specialist.DoesNotExist, Subscription.DoesNotExist):
+    except (Specialist.DoesNotExist, Subscription.DoesNotExist) as e:
         messages.error(request, "You are not authorized to access this page.", "alert-danger")
+
         return redirect('core:home_view')
 
     progress_reports = ProgressReport.objects.filter(subscription=subscription).order_by('date')
@@ -329,9 +330,9 @@ def view_progress_reports(request: HttpRequest, subscription_id):
             progress_report.specialist_comment = comment
             progress_report.save()
 
-        return redirect('specialists:view_progress_reports', subscription_id=subscription_id)
+        return redirect('users:view_progress', subscription_id=subscription_id)
 
-    return render(request, 'specialists/view_progress_reports.html', {'subscription': subscription, 'progress_reports': progress_reports})
+    return render(request, 'users/view_progress.html', {'subscription': subscription, 'progress_reports': progress_reports})
 
 
 

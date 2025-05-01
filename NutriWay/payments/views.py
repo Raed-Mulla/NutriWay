@@ -10,6 +10,7 @@ from payments.models import Payment
 import logging
 from users.views import subscription_to_plan , Subscription
 from django.contrib import messages
+
 stripe.api_key = settings.STRIPE_SECRET_KEY
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,11 @@ def start_checkout_subscription(request : HttpRequest, plan_id : int) -> HttpRes
         return redirect("accounts:login_view")
     
     duration_key = request.GET.get('duration')  # or request.POST.get('duration')
-    duration_label = dict(SubscriptionPlan.DurationChoices.choices).get(duration_key, 'N/A') 
+    duration_label = dict(SubscriptionPlan.DurationChoices.choices).get(duration_key, 'N/A')
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to access this page.", "alert-danger")
+        return redirect('accounts:login_view') 
+
     try:
         # Retrieve the subscription plan
         plan = SubscriptionPlan.objects.get(id=plan_id)
@@ -147,6 +152,7 @@ def start_checkout_general(request: HttpRequest, plan_id: int) -> HttpResponse:
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to access this page.", "alert-danger")
         return redirect("accounts:login_view")
+
     try:
         plan = Generalplan.objects.get(id=plan_id)
     except Generalplan.DoesNotExist:
@@ -266,6 +272,7 @@ def payment_cancel_general(request : HttpRequest) -> HttpResponse:
 
 #This is the summary logic for subscription plan
 # Preview before payment
+
 def subscription_summary(request : HttpRequest, plan_id : int) -> HttpResponse:
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to access this page.", "alert-danger")
@@ -316,6 +323,7 @@ def generalplan_summary(request : HttpRequest, plan_id : int) -> HttpResponse:
         return redirect("accounts:login_view")
     try:
         plan = Generalplan.objects.get(id=plan_id)
+
 
         
         if hasattr(request.user, 'specialist') or hasattr(request.user, 'director') or request.user.is_staff:

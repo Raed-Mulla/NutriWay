@@ -91,6 +91,9 @@
               <a href="{% url 'users:view_progress' subscription.id %}" class="btn custom-btn">
                 <i class="fas fa-chart-line me-1"></i> View Progress History
               </a>
+              <a href="{% url 'core:add_review' specialist.id %}" class="btn custom-btn">
+                <i class="fa-solid fa-comment"></i> Review Specialist
+              </a>
             </div>
           </div>
           {% endif %}
