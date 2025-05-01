@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
-
 from accounts.models import Person , Specialist
 from .models import Review
 from .forms import ReviewForm
 from django.contrib import messages
+from users.models import Subscription
+from specialists.models import Specialist , Generalplan , SubscriptionPlan
+from django.db.models import Avg , Max
 
 
 def add_review(request:HttpRequest , specialist_id):
@@ -14,6 +16,10 @@ def add_review(request:HttpRequest , specialist_id):
   except (Specialist.DoesNotExist, Person.DoesNotExist):
     return redirect("core:home_view")
   
+  if not Subscription.objects.filter(person=person, subscription_plan__specialist=specialist).exists():
+    messages.error(request, "You must be subscribed to this specialist to leave a review.", "alert-danger")
+    return redirect("core:home_view")
+
   if Review.objects.filter(person=person, specialist=specialist).exists():
     messages.warning(request, "You have already submitted a review.")
     return redirect("core:home_view")
@@ -34,7 +40,11 @@ def add_review(request:HttpRequest , specialist_id):
 
 
 def home_view(request: HttpRequest):
-  return render(request, "core/index.html")
+  top_specialist = Specialist.objects.annotate(average_rating=Avg('reviews__rating')).order_by('-average_rating')[:3]
+  general_plan = Generalplan.objects.all()[:3]
+  subscription_plan = SubscriptionPlan.objects.all()[:3]
+  review = Review.objects.select_related('person','specialist').order_by('-rating')[:10]
+  return render(request, "core/index.html", {"top_specialist":top_specialist , "general_plan" : general_plan , "subscription_plan" : subscription_plan , 'review' : review})
 
 def mode_view(request: HttpRequest, mode):
   next = request.GET.get("next", "/")
@@ -47,3 +57,30 @@ def mode_view(request: HttpRequest, mode):
 
   return response
 
+def calorie_calculator(request:HttpRequest):
+  result = None
+
+  if request.method == "POST":
+    gender = request.POST.get('gender')
+    age = int(request.POST.get('age'))
+    weight = float(request.POST.get('weight'))
+    height = float(request.POST.get('height'))
+    activity = request.POST.get('activity')
+
+    if gender == "male":
+      bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5
+    elif gender == "female":
+      bmr = (10 * weight) + (6.25 * height) - (5  * age) - 161
+    else:
+      bmr = 0
+
+  activity_factors = {
+    "sedentary": 1.2,
+    "light": 1.375,
+    "moderate": 1.55,
+    "active": 1.725
+  }
+  daily_calories = bmr * activity_factors.get(activity, 1.2)
+  result = round(daily_calories)
+  
+  return render(request, "core/calorie_calculator.html", {"result": result})

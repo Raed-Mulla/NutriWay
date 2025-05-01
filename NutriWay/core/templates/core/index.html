@@ -7,20 +7,20 @@
     <div class="slider">
       <div class="slide" style="background-image: url('static/images/home1.jpg');">
         <div class="overlay">
-          <h2>Welcome to Our Site</h2>
-          <a class="btn-a btn" href="">Learn More</a>
+          <h2>Explore Our Services</h2>
+          <a class="btn-a btn btn-success" href="#services">Our Services</a>
         </div>
       </div>
       <div class="slide" style="background-image: url('static/images/home2.jpg');">
         <div class="overlay">
-          <h2>Our Services</h2>
-          <a class="btn-a btn" href="">Learn More</a>
+          <h2>Our Bset Specialists</h2>
+          <a class="btn-a btn btn-success" href="#specialists">Specialists</a>
         </div>
       </div>
       <div class="slide" style="background-image: url('static/images/home3.jpg');">
         <div class="overlay">
-          <h2>Contact Us</h2>
-          <a class="btn-a btn" href="">Learn More</a>
+          <h2>Choose a Subscription Plan</h2>
+          <a class="btn-a btn btn-success" href="#plans">Subscription Plan</a>
         </div>
       </div>
     </div>
@@ -33,7 +33,10 @@
   <h2 class="main-title">About</h2>
   <div class="container">
     <p class="text-center text-black-50">
-      NutriWay connects users with certified nutrition specialists to provide personalized nutrition plans, progress tracking tools, secure expert communication, and calorie calculators. Whether your goal is weight loss, muscle gain, or managing health conditions, NutriWay offers a seamless, trusted online experience to help you improve your eating habits.
+      NutriWay connects users with certified nutrition specialists to provide personalized nutrition plans, progress
+      tracking tools, secure expert communication, and calorie calculators. Whether your goal is weight loss, muscle
+      gain, or managing health conditions, NutriWay offers a seamless, trusted online experience to help you improve
+      your eating habits.
 
 
     </p>
@@ -50,99 +53,283 @@
             <h3 class="fs-5">Certified Specialists</h3>
             <span class="text-black-50 d-block mt-2">Get expert guidance from trusted nutrition professionals.</span>
           </div>
-          <a href="" class="btn btn-a mt-3 d-inline-block w-fit">Details</a>
-        </div>
-      </div>
-        <div class="col-lg-4 col-md-6 d-flex mt-3">
-        <div class="box d-flex flex-column justify-content-between flex-grow-1 rounded-lg bg-white p-4">
-          <div class="img mb-3"><img src="{% static 'images/services2.jpg' %}" alt=""></div>
-          <div class="info">
-          <h3 class="fs-5">Personalized Plans</h3>
-          <span class="text-black-50 d-block mt-2">Subscribe for custom meal plans tailored to your goals.</span>
-        </div>
-          <a href="" class="btn btn-a mt-3 d-inline-block  w-fit">Details</a>
+          <a href="{% url 'specialists:all_specialists' %}" class="btn btn-a mt-3 d-inline-block w-fit">More</a>
         </div>
       </div>
       <div class="col-lg-4 col-md-6 d-flex mt-3">
         <div class="box d-flex flex-column justify-content-between flex-grow-1 rounded-lg bg-white p-4">
-          <div class="img mb-3"><img src="{% static 'images/services3.jpg' %}"  alt=""></div>
+          <div class="img mb-3"><img src="{% static 'images/services2.jpg' %}" alt=""></div>
           <div class="info">
-          <h3 class="fs-5">General Nutrition Plans</h3>
-          <span class="text-black-50 d-block mt-2"> Access ready-made plans for common health and fitness goals.</span>
-        </div>
-          <a href="" class="btn btn-a mt-3 d-inline-block">Details</a>
+            <h3 class="fs-5">Personalized Plans</h3>
+            <span class="text-black-50 d-block mt-2">Subscribe for custom meal plans tailored to your goals.</span>
+          </div>
+          <a href="{% url 'specialists:list_subscription_plan'%}" class="btn btn-a mt-3 d-inline-block">More</a>
         </div>
       </div>
+      <div class="col-lg-4 col-md-6 d-flex mt-3">
+        <div class="box d-flex flex-column justify-content-between flex-grow-1 rounded-lg bg-white p-4">
+          <div class="img mb-3"><img src="{% static 'images/services3.jpg' %}" alt=""></div>
+          <div class="info">
+            <h3 class="fs-5">General Nutrition Plans</h3>
+            <span class="text-black-50 d-block mt-2"> Access ready-made plans for common health and fitness
+              goals.</span>
+          </div>
+          <a href="{% url 'specialists:list_general_plan'%}" class="btn btn-a mt-3 d-inline-block">More</a>
+        </div>
       </div>
     </div>
   </div>
+  </div>
 </section>
 <section class="specialists pt-5 pb-5" id="specialists">
-  <h2 class="main-title">Our Specialists</h2>
+  <h2 class="main-title">Our Best Specialists</h2>
   <div class="container">
     <div class="row">
+      {% for specialist in top_specialist%}
       <div class="col-lg-4 col-md-6 mb-3 position-relative one">
         <div class="box p-3">
           <div class="head d-flex justify-content-between pb-3 ">
             <div class="left d-flex  align-items-center">
-              <div class="img me-2"><img src="static/images/profile.jpg" alt=""></div>
-              <div class="name fs-6">Experts Nawaf <span class="fs-6 text-black-50 d-block">Drematology</span></div>
-              
+              <div class="img me-2"><img src="{{specialist.image.url}}" alt=""></div>
+              <div class="name fs-6">Experts {{specialist.user.first_name}} <span class="fs-6 text-black-50 d-block">{{specialist.specialty}}</span></div>
+
             </div>
             <div class="right badge">
-              
-              <span class="rating d-flex align-items-center  "><i class="fa-regular fa-star me-1"></i> 3.9</span>
+
+              <span class="rating d-flex align-items-center  "><i class="fa-regular fa-star me-1"></i> {{specialist.average_rating|floatformat:1}}</span>
             </div>
           </div>
           <div class="body text-center">
-            <a href="" class="btn btn-a mt-3 d-inline-block">See Plans</a>
+            <a href="{% url 'specialists:specialist_detail' specialist.id %}" class="btn btn-a mt-3 d-inline-block">See Plans</a>
           </div>
         </div>
       </div>
-      <div class="col-lg-4 col-md-6 mb-3 position-relative two ">
-        <div class="box p-3">
-          <div class="head d-flex justify-content-between pb-3 ">
-            <div class="left d-flex align-items-center">
-              <div class="img me-2"><img src="static/images/profile.jpg" alt=""></div>
-              <div class="name fs-6">Experts Nawaf <span class="fs-6 text-black-50 d-block">Drematology</span></div>
-              
-            </div>
-            <div class="right badge">
-              
-              <span class="rating d-flex align-items-center  "><i class="fa-regular fa-star me-1"></i> 3.9</span>
-            </div>
-          </div>
-          <div class="body text-center">
-            <a href="" class="btn btn-a mt-3 d-inline-block">See Plans</a>
+      {% endfor %}
+
+    </div>
+  </div>
+</section>
+<section class="plans general pt-5 pb-5">
+  <h2 class="main-title">General Plans</h2>
+  <div class="container">
+    <div class="row">
+      {% for plan in general_plan %}
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="box bg-white">
+          <div class="name text-center position-relative p-3">{{ plan.specialist.user.username }}<img
+              src="{{plan.specialist.image.url}}" alt=""></div>
+          <div class="info p-3">
+            <h3 class="subscription-name">{{plan.name}}</h3>
+            <p class="description"><span>Description:</span> {{plan.description}}</p>
+            <div class="price text-center mb-3 mt-3 fw-bold"> <img alt="Unicode 0x20C1.svg"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/120px-Unicode_0x20C1.svg.png"
+                decoding="async" width="30px" class="mw-file-element"
+                srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/180px-Unicode_0x20C1.svg.png 1.5x, https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/240px-Unicode_0x20C1.svg.png 2x"
+                data-file-width="16" data-file-height="16"> {{plan.price}}</div>
+            <a href="{% url 'payments:generalplan_summary' plan.id %}" class="btn d-block m-auto mb-2">Subscribe</a>
           </div>
         </div>
       </div>
-      <div class="col-lg-4 col-md-6 mb-3 position-relative three">
-        <div class="box p-3">
-          <div class="head d-flex justify-content-between  pb-3 ">
-            <div class="left d-flex align-items-center">
-              <div class="img me-2"><img src="static/images/profile.jpg" alt=""></div>
-              <div class="name fs-6">Experts Nawaf <span class="fs-6 text-black-50 d-block">Drematology</span></div>
-              
-            </div>
-            <div class="right badge">
-              
-              <span class="rating d-flex align-items-center  "><i class="fa-regular fa-star me-1"></i> 3.9</span>
-            </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+<section class="plans subscription pt-5 pb-5" id="plans">
+  <h2 class="main-title">Subscription Plans</h2>
+  <div class="container">
+    <div class="row">
+      {% for plan in subscription_plan %}
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="box bg-white">
+          <div class="name text-center position-relative p-3">{{ plan.specialist.user.username }}<img
+              src="{{plan.specialist.image.url}}" alt=""></div>
+          <div class="img">
+            <img src="{{plan.image.url}}" alt="" class="img-fluid">
           </div>
-          <div class="body text-center">
-            <a href="" class="btn btn-a mt-3 d-inline-block">See Plans</a>
+          <div class="info p-3">
+            <h3 class="subscription-name">{{plan.name}}</h3>
+            <p class="description"><span>Description:</span> {{plan.description}}</p>
+            <p class="type"> <span>Type: </span>{{plan.plan_type}}</p>
+            <div class="duration d-flex align-items-center ">
+              <span class="me-1">Duration</span>
+              <select name="duration " id="" class="p-1 border form-select">
+                <option value="">Duration</option>
+                {% for val, label in duration_choices %}
+                <option value="{{val}}">{{label}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="price text-center mb-3 mt-3 fw-bold"> <img alt="Unicode 0x20C1.svg"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/120px-Unicode_0x20C1.svg.png"
+                decoding="async" width="30px" class="mw-file-element"
+                srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/180px-Unicode_0x20C1.svg.png 1.5x, https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/240px-Unicode_0x20C1.svg.png 2x"
+                data-file-width="16" data-file-height="16"> {{plan.price}}</div>
+            <a href="{% url 'payments:subscription_summary' plan.id %}"
+              class="main-btn btn d-block m-auto mb-2">Subscribe</a>
           </div>
         </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+<section class="testimonials pt-5 pb-5">
+  <h2 class="main-title text-center">What Our Clients Say</h2>
+  <div class="container">
+    
+    <div class="swiper mySwiper">
+      <div class="swiper-wrapper">
+        
+        <!-- Testimonial Slide 1 -->
+        <div class="swiper-slide">
+          <div class="testimonial-box p-4 border rounded shadow-sm bg-white">
+            <div class="d-flex align-items-center mb-3">
+              <img src="static/images/832.jpg" alt="User photo" class="rounded-circle me-3" width="50" height="50">
+              <div>
+                <strong>Ali Ahmed</strong><br>
+                <small class="text-muted">Reviewed <span class="text-success">Dr. Sarah</span></small>
+              </div>
+            </div>
+            <div class="mb-2">
+              <span class="text-warning">★ ★ ★ ★ ☆</span>
+            </div>
+            <p class="mb-0">"Dr. Sarah helped me reach my fitness goals with a clear and practical plan. I feel healthier and more energetic!"</p>
+          </div>
+        </div>
+
+        <!-- Testimonial Slide 2 -->
+        <div class="swiper-slide">
+          <div class="testimonial-box p-4 border rounded shadow-sm bg-white">
+            <div class="d-flex align-items-center mb-3">
+              <img src="static/images/832.jpg" alt="User photo" class="rounded-circle me-3" width="50" height="50">
+              <div>
+                <strong>Ali Ahmed</strong><br>
+                <small class="text-muted">Reviewed <span class="text-success">Dr. Sarah</span></small>
+              </div>
+            </div>
+            <div class="mb-2">
+              <span class="text-warning">★ ★ ★ ★ ☆</span>
+            </div>
+            <p class="mb-0">"Dr. Sarah helped me reach my fitness goals with a clear and practical plan. I feel healthier and more energetic!"</p>
+          </div>
+        </div>
+
+        <!-- Testimonial Slide -->
+        <div class="swiper-slide">
+          <div class="testimonial-box p-4 border rounded shadow-sm bg-white">
+            <div class="d-flex align-items-center mb-3">
+              <img src="static/images/832.jpg" alt="User photo" class="rounded-circle me-3" width="50" height="50">
+              <div>
+                <strong>Ali Ahmed</strong><br>
+                <small class="text-muted">Reviewed <span class="text-success">Dr. Sarah</span></small>
+              </div>
+            </div>
+            <div class="mb-2">
+              <span class="text-warning">★ ★ ★ ★ ☆</span>
+            </div>
+            <p class="mb-0">"Dr. Sarah helped me reach my fitness goals with a clear and practical plan. I feel healthier and more energetic!"</p>
+          </div>
+        </div>
+        <!-- Testimonial Slide 1 -->
+        <div class="swiper-slide">
+          <div class="testimonial-box p-4 border rounded shadow-sm bg-white">
+            <div class="d-flex align-items-center mb-3">
+              <img src="static/images/832.jpg" alt="User photo" class="rounded-circle me-3" width="50" height="50">
+              <div>
+                <strong>Ali Ahmed</strong><br>
+                <small class="text-muted">Reviewed <span class="text-success">Dr. Sarah</span></small>
+              </div>
+            </div>
+            <div class="mb-2">
+              <span class="text-warning">★ ★ ★ ★ ☆</span>
+            </div>
+            <p class="mb-0">"Dr. Sarah helped me reach my fitness goals with a clear and practical plan. I feel healthier and more energetic!"</p>
+          </div>
+        </div>
+
+        <!-- Testimonial Slide 2 -->
+        <div class="swiper-slide">
+          <div class="testimonial-box p-4 border rounded shadow-sm bg-white">
+            <div class="d-flex align-items-center mb-3">
+              <img src="static/images/832.jpg" alt="User photo" class="rounded-circle me-3" width="50" height="50">
+              <div>
+                <strong>Ali Ahmed</strong><br>
+                <small class="text-muted">Reviewed <span class="text-success">Dr. Sarah</span></small>
+              </div>
+            </div>
+            <div class="mb-2">
+              <span class="text-warning">★ ★ ★ ★ ☆</span>
+            </div>
+            <p class="mb-0">"Dr. Sarah helped me reach my fitness goals with a clear and practical plan. I feel healthier and more energetic!"</p>
+          </div>
+        </div>
+
+        <!-- Testimonial Slide -->
+        <div class="swiper-slide">
+          <div class="testimonial-box p-4 border rounded shadow-sm bg-white">
+            <div class="d-flex align-items-center mb-3">
+              <img src="static/images/832.jpg" alt="User photo" class="rounded-circle me-3" width="50" height="50">
+              <div>
+                <strong>Ali Ahmed</strong><br>
+                <small class="text-muted">Reviewed <span class="text-success">Dr. Sarah</span></small>
+              </div>
+            </div>
+            <div class="mb-2">
+              <span class="text-warning">★ ★ ★ ★ ☆</span>
+            </div>
+            <p class="mb-0">"Dr. Sarah helped me reach my fitness goals with a clear and practical plan. I feel healthier and more energetic!"</p>
+          </div>
+        </div>
+        
+
       </div>
     </div>
   </div>
 </section>
-<section class="specialists" id="specialists"></section>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<script>
+  var swiper = new Swiper(".mySwiper", {
+    slidesPerView: 3,   // Default: 3 slides visible
+    spaceBetween: 30,    // Space between slides
+    centeredSlides: true,  // Center the active slide
+    loop: true,          // Loop through slides
+    autoplay: {
+      delay: 3000,       // Change slide every 3 seconds
+      disableOnInteraction: false,
+    },
+    breakpoints: {
+      // When the screen width is 1024px or more (for large screens)
+      1024: {
+        slidesPerView: 3,  // Show 3 slides
+      },
+      // When the screen width is 768px or more (for tablets)
+      768: {
+        slidesPerView: 2,  // Show 2 slides
+      },
+      // When the screen width is 576px or more (for small devices)
+      576: {
+        slidesPerView: 1,  // Show 1 slide
+      },
+      300: {
+        slidesPerView: 1,  // Show 1 slide
+      },
+    },
+  });
+</script>
+
+
+
 
 
 <script>
-   const slider = document.querySelector('.slider');
+  const slider = document.querySelector('.slider');
   const slides = document.querySelectorAll('.slide');
   let index = 0;
 
@@ -171,5 +358,5 @@
 
 
 
-  
+
 {% endblock %}
