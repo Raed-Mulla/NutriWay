@@ -3,12 +3,12 @@ from django.http import HttpRequest, HttpResponse
 import stripe
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from specialists.models import SubscriptionPlan, Generalplan
+from specialists.models import SubscriptionPlan, Generalplan 
 from accounts.models import Person
 from django.core.mail import send_mail
 from payments.models import Payment
 import logging
-from users.views import subscription_to_plan
+from users.views import subscription_to_plan , Subscription
 from django.contrib import messages
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -16,6 +16,10 @@ logger = logging.getLogger(__name__)
 
 
 def start_checkout_subscription(request : HttpRequest, plan_id : int) -> HttpResponse:
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to access this page.", "alert-danger")
+        return redirect("accounts:login_view")
+    
     duration_key = request.GET.get('duration')  # or request.POST.get('duration')
     duration_label = dict(SubscriptionPlan.DurationChoices.choices).get(duration_key, 'N/A')
     if not request.user.is_authenticated:
@@ -147,7 +151,8 @@ def payment_cancel(request : HttpRequest) -> HttpResponse:
 def start_checkout_general(request: HttpRequest, plan_id: int) -> HttpResponse:
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to access this page.", "alert-danger")
-        return redirect('accounts:login_view') 
+        return redirect("accounts:login_view")
+
     try:
         plan = Generalplan.objects.get(id=plan_id)
     except Generalplan.DoesNotExist:
@@ -269,31 +274,74 @@ def payment_cancel_general(request : HttpRequest) -> HttpResponse:
 # Preview before payment
 
 def subscription_summary(request : HttpRequest, plan_id : int) -> HttpResponse:
-    plan = SubscriptionPlan.objects.get(id=plan_id)
-    duration_key = request.GET.get('duration')
-    duration_label = dict(SubscriptionPlan.DurationChoices.choices).get(duration_key or '', 'Not selected')
-    context = {
-        'plan': plan,
-        'specialist_name': plan.specialist.user.get_full_name() or plan.specialist.user.username,
-        'duration': duration_label,
-        'duration_key': duration_key,
-        'payment_methods': ['Visa', 'Mastercard'],  
-    }
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to access this page.", "alert-danger")
+        return redirect("accounts:login_view")
+    try:
+        plan = SubscriptionPlan.objects.get(id=plan_id)
 
-    return render(request, 'payments/subscription_summary.html', context)
+        
+        if hasattr(request.user, 'specialist') or hasattr(request.user, 'director') or request.user.is_staff:
+            messages.error(request, "You are not authorized to subscribe to plans.", "alert-danger")
+            return redirect("specialists:list_subscription_plan")
+
+        person = Person.objects.get(user=request.user)
+
+        
+        if Subscription.objects.filter(person=person, subscription_plan=plan, status='active').exists():
+            messages.warning(request, "You are already subscribed to this plan.", "alert-warning")
+            return redirect("users:my_plans")
+        
+        plan = SubscriptionPlan.objects.get(id=plan_id)
+        duration_key = request.GET.get('duration')
+        duration_label = dict(SubscriptionPlan.DurationChoices.choices).get(duration_key or '', 'Not selected')
+        context = {
+            'plan': plan,
+            'specialist_name': plan.specialist.user.get_full_name() or plan.specialist.user.username,
+            'duration': duration_label,
+            'duration_key': duration_key,
+            'payment_methods': ['Visa', 'Mastercard'],  
+        }
+
+        return render(request, 'payments/subscription_summary.html', context)
+    
+    except SubscriptionPlan.DoesNotExist:
+        messages.error(request, "Subscription plan not found.", "alert-danger")
+    except Person.DoesNotExist:
+        messages.error(request, "You must complete your profile before subscribing.", "alert-danger")
+
+    return redirect("specialists:list_subscription_plan")
 
 
 
 #This summary logic for general plan
 # Preview before payment
+
 def generalplan_summary(request : HttpRequest, plan_id : int) -> HttpResponse:
-   
-    plan = Generalplan.objects.get(id=plan_id)
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to access this page.", "alert-danger")
+        return redirect("accounts:login_view")
+    try:
+        plan = Generalplan.objects.get(id=plan_id)
 
-    context = {
-        'plan': plan,
-        'specialist_name': plan.specialist.user.get_full_name() or plan.specialist.user.username,
-        'payment_methods': ['Visa', 'Mastercard'],
-    }
 
-    return render(request, 'payments/generalplan_summary.html', context)
+        
+        if hasattr(request.user, 'specialist') or hasattr(request.user, 'director') or request.user.is_staff:
+            messages.error(request, "You are not authorized to pay to plans.", "alert-danger")
+            return redirect("specialists:list_general_plan")
+
+        person = Person.objects.get(user=request.user)
+
+        
+        context = {
+            'plan': plan,
+            'specialist_name': plan.specialist.user.get_full_name() or plan.specialist.user.username,
+            'payment_methods': ['Visa', 'Mastercard'],
+        }
+        return render(request, 'payments/generalplan_summary.html', context)
+    except SubscriptionPlan.DoesNotExist:
+        messages.error(request, "Subscription plan not found.", "alert-danger")
+    except Person.DoesNotExist:
+        messages.error(request, "You must complete your profile before subscribing.", "alert-danger")
+
+    return redirect("specialists:list_subscription_plan")
