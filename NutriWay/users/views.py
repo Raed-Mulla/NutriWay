@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpRequest, HttpResponse
 from specialists.models import Specialist
 from django.contrib import messages
-from accounts.models import Person
+from accounts.models import Person , Director
 from specialists.models import *
 from .models import Subscription, ProgressReport
 from django.contrib.auth.decorators import login_required
@@ -10,8 +10,11 @@ from datetime import datetime, timedelta
 from itertools import groupby
 from datetime import date
 
-@login_required
+
 def my_plans(request: HttpRequest):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to access this page.", "alert-danger")
+        return redirect("accounts:login_view")
     try:
         person = Person.objects.get(user=request.user)
         subscriptions = Subscription.objects.filter(person=person)
@@ -26,16 +29,21 @@ def my_plans(request: HttpRequest):
         messages.error(request, "User profile not found", "alert-danger")
         return redirect('core:home_view')
 
-@login_required
+
 def subscription_to_plan(request: HttpRequest, plan_id: int,duration: str):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to access this page.", "alert-danger")
+        return redirect("accounts:login_view")
     try:
         plan = SubscriptionPlan.objects.get(id=plan_id)
+        if Specialist.objects.filter(user=request.user).exists() or Director.objects.filter(user=request.user).exists() or request.user.is_staff:
+            messages.error(request, "You are not allowed to subscribe to plans.", "alert-danger")
+            return redirect('specialists:list_subscription_plan')
         person = Person.objects.get(user=request.user)
-        
+
         if Subscription.objects.filter(person=person, subscription_plan=plan, status='active').exists():
-            messages.warning(request, "You are already subscribed to this plan", "alert-warning")
+            messages.warning(request, "You are already subscribed to this plan.", "alert-warning")
             return redirect('users:my_plans')
-        
         duration_map = {
             '1_month': 30,
             '3_months': 90,
@@ -74,8 +82,11 @@ def subscription_to_plan(request: HttpRequest, plan_id: int,duration: str):
     
     return redirect('specialists:list_subscription_plan')
 
-@login_required
+
 def subscription_detail(request, subscription_id):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to access this page.", "alert-danger")
+        return redirect("accounts:login_view")
     subscription = get_object_or_404(Subscription, id=subscription_id)
     
     if (request.user != subscription.person.user and 
@@ -214,8 +225,11 @@ def subscription_detail(request, subscription_id):
     
     return render(request, 'users/subscription_detail.html', subscription_detail)
 
-@login_required
+
 def create_progress_report_view(request:HttpRequest,subscription_id):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to access this page.", "alert-danger")
+        return redirect("accounts:login_view")
     subscription = get_object_or_404(Subscription, id=subscription_id)
     if subscription.StatusChoices.CANCELLED == subscription.status:
         messages.error(request, "Your subscription is cancelled. ", "alert-danger")
@@ -249,8 +263,11 @@ def create_progress_report_view(request:HttpRequest,subscription_id):
     
     return render(request, 'users/create_progress_report.html', {'subscription': subscription,'subscription_id': subscription_id})
 
-@login_required
+
 def view_progress(request:HttpRequest, subscription_id):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to access this page.", "alert-danger")
+        return redirect("accounts:login_view")
     subscription = get_object_or_404(Subscription, id=subscription_id)   
     if subscription.person.user != request.user and subscription.subscription_plan.specialist.user != request.user:
         messages.error(request, "You don't have permission to view progress for this subscription", "alert-danger")
@@ -272,8 +289,11 @@ def view_progress(request:HttpRequest, subscription_id):
 #     messages.success(request, "Subscription cancelled successfully", "alert-success")
 #     return redirect('users:subscription_detail',subscription_id)
 
-@login_required
+
 def meal_history(request, subscription_id):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to access this page.", "alert-danger")
+        return redirect("accounts:login_view")
     subscription = get_object_or_404(Subscription, id=subscription_id)
     
     if (request.user != subscription.person.user and 
@@ -346,8 +366,11 @@ def meal_history(request, subscription_id):
     
     return render(request, 'users/meal_history.html', meal_data)
 
-@login_required
+
 def update_meal_day(request, subscription_id, day_number):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to access this page.", "alert-danger")
+        return redirect("accounts:login_view")
     subscription = get_object_or_404(Subscription, id=subscription_id)
     
     if request.user != subscription.person.user:

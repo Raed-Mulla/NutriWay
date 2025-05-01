@@ -100,6 +100,7 @@ def list_subscription_plan(request: HttpRequest):
         plans = plans.order_by("price")
     elif sort_filter == "high":
         plans = plans.order_by("-price")
+    
 
     context = {
         "plans": plans,

@@ -21,7 +21,7 @@ def add_review(request:HttpRequest , specialist_id):
     return redirect("core:home_view")
 
   if Review.objects.filter(person=person, specialist=specialist).exists():
-    messages.warning(request, "You have already submitted a review.")
+    messages.warning(request, "You have already submitted a review.", "alert-success")
     return redirect("core:home_view")
   
   if request.method == "POST":
