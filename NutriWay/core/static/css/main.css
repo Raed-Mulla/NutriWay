@@ -235,10 +235,20 @@ input.btn:active,
 a.btn:active {
   color: var(--link-hover) !important;
 }
+.message-container {
+  position: fixed;
+  top: 60px;
+  z-index: 999;
+  left: 50%;
+  transform: translateX(-50%);
+}
 /* End Main Config */
 /* Start Nav */
 .navbar {
   background-color: var(--background-color);
+  position: sticky;
+  top: 0px;
+  z-index: 9999;
 }
 
 .navbar .navbar-brand {
@@ -294,7 +304,7 @@ a.btn:active {
   background-color: transparent;
 }
 .navbar .drop-links {
-  min-width: 250px;
+  /* min-width: 250px; */
   border: 1px solid #90C67C;
   border-radius: 8px;
 
