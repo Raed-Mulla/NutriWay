@@ -56,3 +56,31 @@ def mode_view(request: HttpRequest, mode):
     response.set_cookie("mode", "light")
 
   return response
+
+def calorie_calculator(request:HttpRequest):
+  result = None
+
+  if request.method == "POST":
+    gender = request.POST.get('gender')
+    age = int(request.POST.get('age'))
+    weight = float(request.POST.get('weight'))
+    height = float(request.POST.get('height'))
+    activity = request.POST.get('activity')
+
+    if gender == "male":
+      bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5
+    elif gender == "female":
+      bmr = (10 * weight) + (6.25 * height) - (5  * age) - 161
+    else:
+      bmr = 0
+
+  activity_factors = {
+    "sedentary": 1.2,
+    "light": 1.375,
+    "moderate": 1.55,
+    "active": 1.725
+  }
+  daily_calories = bmr * activity_factors.get(activity, 1.2)
+  result = round(daily_calories)
+  
+  return render(request, "core/calorie_calculator.html", {"result": result})
