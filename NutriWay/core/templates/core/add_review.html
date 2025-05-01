@@ -1,0 +1,30 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %} Add Review {% endblock %}
+
+{% block content %}
+<section class="form-sec review mt-5">
+  <div class="container d-flex flex-column align-items-center">
+    <form action="{% url 'core:add_review' specialist.id %}" method="post" class="bg-white p-4">
+      {% csrf_token %}
+      <h2 class="main-title-2">Review</h2>
+      <div class="mb-3">
+        <label class="form-label">Comment</label>
+        <textarea name="comment" class="form-control" required></textarea>
+      </div>  
+      <div class="mb-3">
+        <label class="form-label">Rating</label>
+        <select name="rating" required class="form-select">
+          <option value="">Rating</option>
+          {% for val, label in ratingChoices %}
+          <option value="{{val}}">{{label}}</option>
+
+          {% endfor %}
+        </select>
+      </div>  
+      <input type="submit" value="Review" class="btn d-block w-100 mt-5">
+    </form>
+  </div>
+</section>
+{% endblock %}

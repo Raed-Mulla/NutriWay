@@ -36,7 +36,7 @@ def add_review(request:HttpRequest , specialist_id):
   else:
     form = ReviewForm()
 
-  return render(request,'core/add_review.html' , {'form' : form , 'specialist' : specialist})
+  return render(request,'core/add_review.html' , {'form' : form , 'specialist' : specialist, 'ratingChoices':Review.RatingCohices.choices})
 
 
 def home_view(request: HttpRequest):
@@ -74,13 +74,14 @@ def calorie_calculator(request:HttpRequest):
     else:
       bmr = 0
 
-  activity_factors = {
-    "sedentary": 1.2,
-    "light": 1.375,
-    "moderate": 1.55,
-    "active": 1.725
-  }
-  daily_calories = bmr * activity_factors.get(activity, 1.2)
-  result = round(daily_calories)
+    activity_factors = {
+      "sedentary": 1.2,
+      "light": 1.375,
+      "moderate": 1.55,
+      "active": 1.725
+    }
+    daily_calories = bmr * activity_factors.get(activity, 1.2)
+    result = round(daily_calories)
   
-  return render(request, "core/calorie_calculator.html", {"result": result})
+    return render(request, "core/calorie_calculator.html", {"result": result})
+  return render(request, "core/calorie_calculator.html")

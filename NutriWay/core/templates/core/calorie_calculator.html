@@ -3,8 +3,48 @@
 
 {% block title %} Calorie Calculator{% endblock %}
 
-
-
-
 {% block content %}
+
+<section class="form-sec mt-5">
+  <div class="container d-flex flex-column align-items-center">
+    <form action="{% url 'core:calorie_calculator' %}" method="post" class="bg-white p-4">
+      {% csrf_token %}
+      <h2 class="main-title-2">Calories calculator</h2>
+      <div class="mb-3">
+        <label class="form-label">Weight</label>
+        <input type="text" class="form-control" name="weight" placeholder="Enter your weight" required>
+      </div>  
+      <div class="mb-3">
+        <label class="form-label">Height</label>
+        <input type="text" class="form-control" name="height" placeholder="Enter your height" required>
+      </div>  
+      <div class="mb-3">
+        <label class="form-label">Age</label>
+        <input type="text" class="form-control" name="age" placeholder="Enter your age" required>
+      </div>  
+      <div class="mb-3">
+        <label class="form-label ">Gender</label>
+        <select name="gender" class="form-select" required>
+          <option value="">Choose</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>  
+      <div class="mb-3">
+        <label class="form-label">Activity</label>
+        <select name="activity" class="form-select">
+          <option value="">Choose</option>
+          <option value="sedentary">Sedentary</option>
+          <option value="light">Light Activity</option>
+          <option value="moderate">Moderate Activity</option>
+          <option value="active">Active Activity</option>
+        </select>
+      </div>  
+      <p class="text-center"> <strong>Result:</strong> {{result}} Cal</p>
+
+      <input type="submit" value="Calculate" class="btn d-block w-100 mt-5">
+    </form>
+  </div>
+</section>
+
 {% endblock %}

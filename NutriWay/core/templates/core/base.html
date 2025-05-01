@@ -42,6 +42,10 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'specialists:all_specialists' %}">Specialists</a>
           </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'core:calorie_calculator' %}">Calorie Calculator</a>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'supports:contact_us' %}">Contact Us</a>
           </li>
@@ -132,7 +136,7 @@
             <li class="logout"><a class="dropdown-item" href="{% url 'accounts:logout_view' %}">Logout</a></li>
           </ul>
         </div>
-        {% endif%}
+        {% endif %}
 
         <div class="btns-sm d-block d-lg-none text-center mt-2">
           <a class="btn me-2 mb-2" href="{% url 'accounts:profile_view' user.username %}">Profile</a>
