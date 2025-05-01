@@ -33,12 +33,12 @@ def add_review(request:HttpRequest , specialist_id):
   remaining_days = (latest_subscription.end_date - date.today()).days
   if remaining_days > 10:
     messages.error(request, f"You can only review in the last 10 days of your subscription. ({remaining_days} days left)", "alert-danger")
-    return redirect("core:home_view")
+    return redirect("users:subscription_detail", subscription_id=latest_subscription.id)
 
 
   if Review.objects.filter(person=person, specialist=specialist).exists():
     messages.warning(request, "You have already submitted a review.", "alert-success")
-    return redirect("core:home_view")
+    return redirect("users:subscription_detail", subscription_id=latest_subscription.id)
   
   if request.method == "POST":
     form = ReviewForm(request.POST)
