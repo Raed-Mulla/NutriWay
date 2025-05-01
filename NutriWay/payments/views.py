@@ -15,7 +15,9 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 logger = logging.getLogger(__name__)
 
 
-def start_checkout_subscription(request : HttpRequest, plan_id : int) -> HttpResponse: 
+def start_checkout_subscription(request : HttpRequest, plan_id : int) -> HttpResponse:
+    duration_key = request.GET.get('duration')  # or request.POST.get('duration')
+    duration_label = dict(SubscriptionPlan.DurationChoices.choices).get(duration_key, 'N/A')
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to access this page.", "alert-danger")
         return redirect('accounts:login_view') 
