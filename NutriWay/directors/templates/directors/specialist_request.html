@@ -3,7 +3,7 @@
 {% block title %} Specialist Requests {% endblock %}
 
 {% block content %}
-<section class="specialists-request pt-5 pb-5">
+<section class="specialists-request specialists-request-sec pt-5 pb-5">
   <div class="container">
     <h2 class="main-title">Specialist Requests </h2>
     {% for request in requests%}
@@ -19,7 +19,7 @@
         </div>
       </div>
       <div class="col-lg-4">
-        <div class="btns d-flex">
+        <div class="btns request d-flex">
           <!-- <a href="{% url 'directors:request_detail' request.id %}" class="view btn btn-a view flex-grow-1 ms-1">View</a>
           <a href="{% url 'directors:approve_specialist_request' request.id %}" class="approve btn btn-a flex-grow-1 ms-1">Approve</a>
           <a href="{% url 'directors:reject_specialist_request' request.id %}" class="reject btn btn-a flex-grow-1 ms-1">Reject</a> -->
@@ -35,6 +35,8 @@
               data-bs-toggle="modal" data-bs-target="#rejectModal{{ request.id }}">
             Reject
             </button>
+
+            <a href="{% url 'directors:specialist_manage_detail' request.id  %}" class="btn btn-a ms-1">View</a>
 
             <!-- Approve Modal -->
 <div class="modal fade" id="approveModal" tabindex="-1" aria-hidden="true">

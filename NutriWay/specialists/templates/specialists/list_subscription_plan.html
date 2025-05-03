@@ -3,7 +3,7 @@
 {% block title %} Subscription Plans {% endblock %}
 
 {% block content %}
-<section class="plans subscription-plans pt-5 pb-5">
+<section class="plans subscription-plans subscription-plans-sec pt-5 pb-5">
   <h2 class="main-title">Subscription Plans</h2>
   <div class="container">
     <form method="get" class="mb-4 filter">
@@ -65,11 +65,9 @@
               <p class="description"><span>Description:</span> {{plan.description}}</p>
               <p class="type"> <span>Type: </span>{{plan.plan_type}}</p>
               <div class="duration d-flex align-items-center ">
-
               <select name="duration" class="p-1 border form-select" required>
-                <option value="">Choose Duration</option>
-                {% for value, label in duration_choices %}
-                  <option value="{{ value }}">{{ label }}</option>
+                {% for val, label in duration_choices %}
+                    <option value="{{ val }}" {% if val == '1_month' %}selected{% endif %}>{{ label }}</option>
                 {% endfor %}
               </select>
             </div>

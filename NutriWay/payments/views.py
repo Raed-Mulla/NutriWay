@@ -147,7 +147,7 @@ def payment_cancel(request : HttpRequest) -> HttpResponse:
 
 
 #This start checkout for general plan
-
+@login_required
 def start_checkout_general(request: HttpRequest, plan_id: int) -> HttpResponse:
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to access this page.", "alert-danger")
@@ -272,7 +272,7 @@ def payment_cancel_general(request : HttpRequest) -> HttpResponse:
 
 #This is the summary logic for subscription plan
 # Preview before payment
-
+@login_required
 def subscription_summary(request : HttpRequest, plan_id : int) -> HttpResponse:
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to access this page.", "alert-danger")

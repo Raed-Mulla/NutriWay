@@ -2,7 +2,7 @@
 {% block title %}Profile - {{profile_user.username}}{% endblock %}
 
 {% block content %}
-  <section class="info-sec  pt-5 pb-5">
+  <section class="info-sec profile pt-5 pb-5">
     <h2 class="main-title">Profile</h2>
     <div class="container">
       <div class="row align-items-center ms-2 me-2 m-lg-0">
@@ -25,10 +25,12 @@
               <div class="w-50 flex-fill">
                 <span>Geneder:</span>
                 {% if profile_user.specialist %}
-                <span>{{profile_user.specialist.gender}}</span>
-                {% else %}
-                <span>{{profile_user.person.gender}}</span>
-                {% endif %}              
+                  <span>{{ profile_user.specialist.gender }}</span>
+                {% elif profile_user.person %}
+                  <span>{{ profile_user.person.gender }}</span>
+                {% elif profile_user.director %}
+                  <span>{{ profile_user.director.gender }}</span>
+                {% endif %}             
               </div>
             </div>
             <div class="profile-info-row p-4 d-flex flex-wrap">
@@ -40,10 +42,12 @@
               <div class="w-50 flex-fill">
                 <span>Date of Birth:</span>
                 {% if profile_user.specialist %}
-                <span>{{profile_user.specialist.birth_date}}</span>
-                {% else %}
-                <span>{{profile_user.person.birth_date}}</span>
-                {% endif %}
+                  <span>{{ profile_user.specialist.birth_date }}</span>
+                {% elif profile_user.person %}
+                  <span>{{ profile_user.person.birth_date }}</span>
+                {% elif profile_user.director %}
+                  <span>{{ profile_user.director.birth_date }}</span>
+                {% endif %}    
               </div>
             </div>
             {% if profile_user.specialist %}
