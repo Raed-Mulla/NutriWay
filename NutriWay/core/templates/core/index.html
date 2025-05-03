@@ -68,7 +68,7 @@
       </div>
       <div class="col-lg-4 col-md-6 d-flex mt-3">
         <div class="box d-flex flex-column justify-content-between flex-grow-1 rounded-lg bg-white p-4">
-          <div class="img mb-3"><img src="{% static 'images/services3.jpg' %}" alt="Not Found"></div>
+          <div class="img mb-3"><img src="static/images/services3.jpg" alt="Not Found"></div>
           <div class="info">
             <h3 class="fs-5">General Nutrition Plans</h3>
             <span class="text-black-50 d-block mt-2"> Access ready-made plans for common health and fitness
@@ -90,7 +90,13 @@
         <div class="box p-3">
           <div class="head d-flex justify-content-between pb-3 ">
             <div class="left d-flex  align-items-center">
-              <div class="img me-2"><img src="{{specialist.image.url}}" alt="Not Found"></div>
+              <div class="img me-2">
+                {%if specialist.image %}
+                <img src="{{specialist.image.url}}" alt="Not Found">
+                {% else %}
+                <img src="{% static 'images/default_profile.jpg' %}" alt="Not Found">
+                {%endif%}
+              </div>
               <div class="name fs-6">Experts {{specialist.user.first_name}} <span class="fs-6 text-black-50 d-block">{{specialist.specialty}}</span></div>
 
             </div>
@@ -141,8 +147,13 @@
       {% for plan in subscription_plan %}
       <div class="col-lg-4 col-md-6 mb-4 d-flex">
         <div class="box bg-white w-100">
-          <div class="name text-center position-relative p-3">{{ plan.specialist.user.username }}<img
-              src="{{plan.specialist.image.url}}" alt="Not Found"></div>
+          <div class="name text-center position-relative p-3">{{ plan.specialist.user.username }}
+            {%if plan.specialist.image%}
+            <img src="{{plan.specialist.image.url}}" alt="Not Found">
+            {% else %}
+            <img src="{% static 'images/default_profile.jpg' %}" alt="Not Found">
+            {%endif%}
+          </div>
           <div class="img">
             <img src="{{plan.image.url}}" alt="Not Found" class="img-fluid">
           </div>
