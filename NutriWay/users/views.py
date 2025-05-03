@@ -189,9 +189,9 @@ def subscription_detail(request, subscription_id):
     ).order_by('-date')[:5])
     
     weight_progress = None
-    if len(progress_reports_list) >= 2:
-        latest_weight = progress_reports_list[0].weight
-        first_weight = progress_reports_list[-1].weight
+    if len(progress_reports_list) >= 1:
+        first_weight = PersonData.objects.filter(person=subscription.person).first().weight
+        latest_weight = progress_reports_list[-1].weight
         weight_change = latest_weight - first_weight
         weight_progress = {
             'first': first_weight,
@@ -266,8 +266,8 @@ def create_progress_report_view(request:HttpRequest,subscription_id):
                     weight=float(weight),
                     height = float(height)
                 )
-            
-        
+            messages.error(request, "Report added successfuly. ", "alert-success")
+            return redirect("users:subscription_detail",subscription_id)
         except ValueError as e:
             messages.error(request, e , "alert-danger")
             messages.error(request, "Please enter a valid weight", "alert-danger")
