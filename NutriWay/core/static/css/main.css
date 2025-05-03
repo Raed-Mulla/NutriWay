@@ -59,7 +59,8 @@ body {
 .general-plans,
 .profile,
 .specialists-request-sec,
-.specialists-manage-sec {
+.specialists-manage-sec,
+.view-subscriptions {
   min-height: calc(100vh - 56px);
   /* min-height: calc(100vh - 56px - 162px); */
 }

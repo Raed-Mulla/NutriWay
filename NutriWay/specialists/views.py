@@ -246,7 +246,7 @@ def create_subscriber_plan(request: HttpRequest, subscription_id):
         messages.success(request, "Subscriber plan and meals created successfully.", "alert-success")
         return redirect('specialists:my_plans')
 
-    return render(request, 'specialists/create_subscriber_plan.html', {'subscription': subscription})
+    return render(request, 'specialists/create_subscriber_plan.html', {'subscription': subscription,"subscriberMeal": SubscriberMeal.MealTypeChoices.choices})
 
 
 
@@ -301,7 +301,8 @@ def edit_subscriber_plan(request: HttpRequest, plan_id):
 
     meals = SubscriberMeal.objects.filter(subscriber_plan=subscriber_plan)
     subscription = Subscription.objects.get(subscriber_plan=subscriber_plan)
-    return render(request, 'specialists/edit_subscriber_plan.html', {'subscriber_plan': subscriber_plan,'meals': meals,'subscription':subscription})
+    return render(request, 'specialists/edit_subscriber_plan.html', {'subscriber_plan': subscriber_plan,'meals': meals,'subscription':subscription , "subscriberMeal": SubscriberMeal.MealTypeChoices.choices
+})
 
 
 

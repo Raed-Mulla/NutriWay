@@ -13,54 +13,58 @@
             <i class="fa fa-arrow-left me-2"></i> Back to Plan
           </a>
         </div>
-      <div class="mb-3">
-        <div class="label d-flex justify-content-between align-items-center">
-          <label class="form-label">Current Meals</label>
-        </div>
-
-        <div class="meals-container">
-          {% for meal in meals %}
-          <div class="row-container mb-3 position-relative">
-            <input type="hidden" name="meal_id-{{ meal.id }}" value="{{ meal.id }}">
-
-            <button class="cancel bg-transparent d-block  ms-auto mb-2 text-danger border-0" type="button" onclick="markDelete('{{ meal.id }}')">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-
-            <div class="row g-0">
-              <div class="col-2 flex-grow-1">
-                <input type="number" name="day_number-{{ meal.id }}" class="form-control" value="{{ meal.day_number }}">
-              </div>
-              <div class="col-2 flex-grow-1">
-                <input type="text" name="meal_type-{{ meal.id }}" class="form-control" value="{{ meal.meal_type }}">
-              </div>
-              <div class="col-5 flex-grow-1">
-                <input type="text" name="description-{{ meal.id }}" class="form-control" value="{{ meal.description }}">
-              </div>
-              <div class="col-2 flex-grow-1">
-                <input type="text" name="meal_calorie-{{ meal.id }}" class="form-control" value="{{ meal.meal_calorie }}">
-              </div>
-              <input type="hidden" name="delete-{{ meal.id }}" id="delete-{{ meal.id }}" value="0">
-            </div>
+        <div class="mb-3">
+          <div class="label d-flex justify-content-between align-items-center">
+            <label class="form-label">Current Meals</label>
           </div>
-          {% empty %}
-          <p class="text-muted">No meals yet.</p>
-          {% endfor %}
-        </div>
-      </div>
 
-      <div class="mb-3">
-        <div class="label d-flex justify-content-between align-items-center">
-          <label class="form-label">Add New Meals</label>
-          <button id="add-meal-btn" class="border-0 bg-transparent" type="button">
-            <i class="fa-solid fa-plus"></i>
-          </button>
-        </div>
-        <div id="new-meals-container">
-        </div>
-      </div>
+          <div class="meals-container">
+            {% for meal in meals %}
+            <div class="row-container mb-3 position-relative">
+              <input type="hidden" name="meal_id-{{ meal.id }}" value="{{ meal.id }}">
 
-      <input type="submit" value="Modify" class="btn d-block w-100 mt-5">
+              <button class="cancel bg-transparent d-block  ms-auto mb-2 text-danger border-0" type="button"
+                onclick="markDelete('{{ meal.id }}')">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+
+              <div class="row g-0">
+                <div class="col-2 flex-grow-1">
+                  <input type="number" name="day_number-{{ meal.id }}" class="form-control"
+                    value="{{ meal.day_number }}">
+                </div>
+                <div class="col-2 flex-grow-1">
+                  <input type="text" name="meal_type-{{ meal.id }}" class="form-control" value="{{ meal.meal_type }}">
+                </div>
+                <div class="col-5 flex-grow-1">
+                  <input type="text" name="description-{{ meal.id }}" class="form-control"
+                    value="{{ meal.description }}">
+                </div>
+                <div class="col-2 flex-grow-1">
+                  <input type="text" name="meal_calorie-{{ meal.id }}" class="form-control"
+                    value="{{ meal.meal_calorie }}">
+                </div>
+                <input type="hidden" name="delete-{{ meal.id }}" id="delete-{{ meal.id }}" value="0">
+              </div>
+            </div>
+            {% empty %}
+            <p class="text-muted">No meals yet.</p>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <div class="label d-flex justify-content-between align-items-center">
+            <label class="form-label">Add New Meals</label>
+            <button id="add-meal-btn" class="border-0 bg-transparent" type="button">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+          <div id="new-meals-container">
+          </div>
+        </div>
+
+        <input type="submit" value="Modify" class="btn d-block w-100 mt-5">
     </form>
   </div>
 </section>
@@ -83,16 +87,21 @@
       </div>
       <div class="row g-0">
         <div class="col-2 flex-grow-1">
-          <input type="number" placeholder="Day" class="form-control" name="day_number-new-${mealCount}">
+          <input type="number" placeholder="Day" class="form-control" required name="day_number-new-${mealCount}">
         </div>
         <div class="col-2 flex-grow-1">
-          <input type="text" placeholder="Type" class="form-control" name="meal_type-new-${mealCount}">
+<select class="form-select" required name="meal_type-new-${mealCount}">
+  <option value="">Type</option>
+  {% for val, label in subscriberMeal %}
+    <option value="{{val}}">{{label}}</option>
+  {% endfor %}
+</select>
         </div>
         <div class="col-5 flex-grow-1">
-          <input type="text" placeholder="Meal" class="form-control" name="description-new-${mealCount}">
+          <input type="text" placeholder="Meal" class="form-control" required name="description-new-${mealCount}">
         </div>
         <div class="col-2 flex-grow-1">
-          <input type="text" placeholder="Calories" class="form-control" name="meal_calorie-new-${mealCount}">
+          <input type="text" placeholder="Calories" class="form-control" required name="meal_calorie-new-${mealCount}">
         </div>
       </div>
     `;
@@ -114,6 +123,6 @@
       mealRow.style.display = "none";
     }
   }
-  
+
 </script>
 {% endblock %}
