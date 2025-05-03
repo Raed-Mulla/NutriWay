@@ -100,7 +100,6 @@ def list_subscription_plan(request: HttpRequest):
         plans = plans.order_by("price")
     elif sort_filter == "high":
         plans = plans.order_by("-price")
-    
 
     context = {
         "plans": plans,
@@ -195,6 +194,7 @@ def create_subscriber_plan(request: HttpRequest, subscription_id):
         return redirect('accounts:login_view')
 
     try:
+        print(f'subscription_id:{subscription_id}, specialist:{request.user}')
         specialist = Specialist.objects.get(user=request.user)
         subscription = Subscription.objects.get(id=subscription_id, subscription_plan__specialist=specialist)
     except (Specialist.DoesNotExist, Subscription.DoesNotExist):
@@ -294,10 +294,11 @@ def edit_subscriber_plan(request: HttpRequest, plan_id):
                 break
 
         messages.success(request, "Meals updated successfully.", "alert-success")
-        return redirect('specialists:my_plans')
+        return redirect('specialists:edit_subscriber_plan',plan_id)
 
     meals = SubscriberMeal.objects.filter(subscriber_plan=subscriber_plan)
-    return render(request, 'specialists/edit_subscriber_plan.html', {'subscriber_plan': subscriber_plan,'meals': meals})
+    subscription = Subscription.objects.get(subscriber_plan=subscriber_plan)
+    return render(request, 'specialists/edit_subscriber_plan.html', {'subscriber_plan': subscriber_plan,'meals': meals,'subscription':subscription})
 
 
 

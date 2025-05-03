@@ -7,7 +7,12 @@
     <form action="{% url 'users:create_progress_report_view' subscription_id %}" method="post" class="bg-white p-4">
       {% csrf_token %}
       <h2 class="main-title-2">Create Progress Report</h2>
-      
+      <div class="container">
+        <div class="mb-4">
+          <a href="{% url 'users:subscription_detail' subscription.id %}" class="btn btn-a">
+            <i class="fa fa-arrow-left me-2"></i> Back to Plan
+          </a>
+        </div>
       <div class="mb-3">
         <label class="form-label">Current Weight (kg)</label>
         <input type="number" class="form-control" name="weight" required>

@@ -20,21 +20,16 @@
           </div>
 
           <div class="img">
-            <img src="{{ subscription.subscription_plan.image.url }}" alt="Not Found" class="img-fluid">
+            <img src="{{ subscription.subscription_plan.image.url }}" alt="" class="img-fluid">
           </div>
 
           <div class="info p-3">
             <p class="card-text"><span>Specialist:</span> {{ subscription.subscription_plan.specialist.user.get_full_name }}</p>
-            <p class="card-text"><span>Start Date:</span> {{ subscription.start_date }}</p>
+            <p class="card-text"><span>Duration:</span> {{ subscription.duration }}</p>
             <p class="card-text"><span>End Date:</span> {{ subscription.end_date }}</p>
             <p class="card-text"><span>Type:</span> {{ subscription.subscription_plan.get_plan_type_display }}</p>
             {% if subscription.status == 'active' %}
-            <p class="card-text">
-              <span>Days Remaining:</span> 
-              {% with days_left=subscription.end_date|timeuntil %}
-                {{ days_left }}
-              {% endwith %}
-            </p>
+            
           {% endif %}
           <a href="{% url 'users:subscription_detail' subscription.id %}" class="main-btn btn d-block m-auto mb-2">View</a>
           </div>
