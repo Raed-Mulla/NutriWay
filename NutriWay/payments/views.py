@@ -9,17 +9,14 @@ from django.core.mail import send_mail
 from payments.models import Payment
 import logging
 from users.views import subscription_to_plan
-from django.contrib import messages
-
+ 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 logger = logging.getLogger(__name__)
 
-
-def start_checkout_subscription(request : HttpRequest, plan_id : int) -> HttpResponse: 
-    if not request.user.is_authenticated:
-        messages.error(request, "You must be logged in to access this page.", "alert-danger")
-        return redirect('accounts:login_view') 
-
+@login_required
+def start_checkout_subscription(request : HttpRequest, plan_id : int) -> HttpResponse:
+    duration_key = request.GET.get('duration')  # or request.POST.get('duration')
+    duration_label = dict(SubscriptionPlan.DurationChoices.choices).get(duration_key, 'N/A') 
     try:
         # Retrieve the subscription plan
         plan = SubscriptionPlan.objects.get(id=plan_id)
@@ -141,11 +138,8 @@ def payment_cancel(request : HttpRequest) -> HttpResponse:
 
 
 #This start checkout for general plan
-
+@login_required
 def start_checkout_general(request: HttpRequest, plan_id: int) -> HttpResponse:
-    if not request.user.is_authenticated:
-        messages.error(request, "You must be logged in to access this page.", "alert-danger")
-        return redirect('accounts:login_view') 
     try:
         plan = Generalplan.objects.get(id=plan_id)
     except Generalplan.DoesNotExist:
@@ -265,7 +259,7 @@ def payment_cancel_general(request : HttpRequest) -> HttpResponse:
 
 #This is the summary logic for subscription plan
 # Preview before payment
-
+@login_required
 def subscription_summary(request : HttpRequest, plan_id : int) -> HttpResponse:
     plan = SubscriptionPlan.objects.get(id=plan_id)
     duration_key = request.GET.get('duration')
@@ -284,8 +278,8 @@ def subscription_summary(request : HttpRequest, plan_id : int) -> HttpResponse:
 
 #This summary logic for general plan
 # Preview before payment
+@login_required
 def generalplan_summary(request : HttpRequest, plan_id : int) -> HttpResponse:
-   
     plan = Generalplan.objects.get(id=plan_id)
 
     context = {
