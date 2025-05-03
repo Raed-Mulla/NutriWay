@@ -61,7 +61,12 @@ class Certificate(models.Model):
         return f"{self.name} - {self.specialist.user.username}"
 
 class Director(models.Model):
+    class GenderChoices(models.TextChoices):
+        Male = "Male" , "Male"
+        Famele = "Female" , "Female"
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    gender = models.CharField(max_length=8,choices= GenderChoices.choices , null=True)
+    birth_date = models.DateField(null=True)
 
 
     def __str__(self):
