@@ -9,8 +9,21 @@
     <div class="row mb-4">
       <div class="col-12">
         <div class="d-flex justify-content-between align-items-center">
+          <div class="mb-4">
+            {%if request.user.specialist %}
+            <a href="{% url 'specialists:specialist_subscriptions' plan.id %}" class="btn btn-a">
+              <i class="fa fa-arrow-left me-2"></i> Back 
+            </a>
+            {% elif request.user.person %}
+            <a href="{% url 'users:my_plans_view' %}" class="btn btn-a">
+              <i class="fa fa-arrow-left me-2"></i> Back 
+            </a>
+            {%endif%}
+          </div>  
           <div class="d-flex align-items-center gap-3">
+            
             <h2 class="mb-0">{{ plan.name }}</h2>
+
             <span class="badge rounded-pill 
               {% if subscription.status == 'active' %}bg-success
               {% elif subscription.status == 'expired' %}bg-secondary
@@ -101,6 +114,9 @@
               </a>
               <a href="{% url 'users:view_progress' subscription.id %}" class="btn custom-btn">
                 <i class="fas fa-chart-line me-1"></i> View Progress History
+              </a>
+              <a href="{% url 'core:add_review' specialist.id %}" class="btn custom-btn">
+                <i class="fa-solid fa-comment"></i> Review Specialist
               </a>
             </div>
           </div>
