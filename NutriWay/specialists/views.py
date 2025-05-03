@@ -165,7 +165,7 @@ def specialist_detail(request:HttpRequest , specialist_id):
         plans = SubscriptionPlan.objects.filter(specialist=specialist)
     except Specialist.DoesNotExist:
         return redirect("core:home_view")
-    return render(request, 'specialists/specialist_detail.html', {'specialist': specialist,'certificate': certificate,'plans': plans})
+    return render(request, 'specialists/specialist_detail.html', {'specialist': specialist,'certificate': certificate,'plans': plans, "DurationChoices":SubscriptionPlan.DurationChoices.choices})
 
 def specialist_subscriptions(request: HttpRequest, plan_id):
     if not request.user.is_authenticated:

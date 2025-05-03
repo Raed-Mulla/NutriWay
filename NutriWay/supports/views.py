@@ -49,10 +49,10 @@ def contact_us_view(request: HttpRequest) -> HttpResponse:
 
 
 
-@login_required
 def contact_messages(request : HttpRequest) -> HttpResponse:
-    if not isinstance(request.user, User) or not request.user.is_staff:
-        return redirect('core:home_view')  # Or a custom unauthorized page
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to access this page.", "alert-danger")
+        return redirect('accounts:login_view')
 
     messages_list = ContactUs.objects.all().order_by('-created_at')
     
@@ -65,7 +65,8 @@ def contact_messages(request : HttpRequest) -> HttpResponse:
 @require_http_methods(["GET", "POST"])
 def reply_message(request : HttpRequest, message_id : int) -> HttpResponse:
     if not request.user.is_staff:
-        return redirect('home')
+        return redirect('core:home_view')
+    
 
     message_obj = ContactUs.objects.get(id=message_id)
 
