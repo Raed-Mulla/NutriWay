@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<section class="form-sec mt-5">
+<section class="form-sec mt-5 mb-5">
   <div class="container d-flex flex-column align-items-center">
     <form action="{% url 'core:calorie_calculator' %}" method="post" class="bg-white p-4">
       {% csrf_token %}
@@ -40,8 +40,9 @@
           <option value="active">Active Activity</option>
         </select>
       </div>  
+      {% if result %}
       <p class="text-center"> <strong>Result:</strong> {{result}} Cal</p>
-
+      {% endif %}
       <input type="submit" value="Calculate" class="btn d-block w-100 mt-5">
     </form>
   </div>

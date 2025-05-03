@@ -20,9 +20,60 @@
       </div>
       <div class="col-lg-4">
         <div class="btns d-flex">
-          <a href="{% url 'directors:request_detail' request.id %}" class="view btn btn-a view flex-grow-1 ms-1">View</a>
+          <!-- <a href="{% url 'directors:request_detail' request.id %}" class="view btn btn-a view flex-grow-1 ms-1">View</a>
           <a href="{% url 'directors:approve_specialist_request' request.id %}" class="approve btn btn-a flex-grow-1 ms-1">Approve</a>
-          <a href="{% url 'directors:reject_specialist_request' request.id %}" class="reject btn btn-a flex-grow-1 ms-1">Reject</a>
+          <a href="{% url 'directors:reject_specialist_request' request.id %}" class="reject btn btn-a flex-grow-1 ms-1">Reject</a> -->
+
+            <!-- Approve Button (Triggers Modal) -->
+              <button type="button" class="approve btn btn-a flex-grow-1 ms-1"
+              data-bs-toggle="modal" data-bs-target="#approveModal">
+            Approve
+            </button>
+
+            <!-- Reject Button (Triggers Modal) -->
+            <button type="button" class="reject btn btn-a flex-grow-1 ms-1"
+              data-bs-toggle="modal" data-bs-target="#rejectModal{{ request.id }}">
+            Reject
+            </button>
+
+            <!-- Approve Modal -->
+<div class="modal fade" id="approveModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Approval</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to approve this request?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <a href="{% url 'directors:approve_specialist_request' request.id %}" class="btn btn-success">Yes, Approve</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Reject Modal -->
+<div class="modal fade " id="rejectModal{{ request.id }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Rejection</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to reject this request?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <a href="{% url 'directors:reject_specialist_request' request.id %}" class="btn btn-danger">Yes, Reject</a>
+      </div>
+    </div>
+  </div>
+</div>
+
         </div>
       </div>
     </div>

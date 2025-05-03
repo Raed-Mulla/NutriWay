@@ -52,6 +52,9 @@ body {
 /* background: linear-gradient(to bottom right, #e0f7fa, #f1f8e9); */
 
 }
+section {
+  min-height: calc(100vh - 56px - 162px);
+}
 ::-webkit-scrollbar {
   width: 15px;
 }
@@ -246,13 +249,16 @@ input:focus::placeholder {
   left: 50%;
   transform: translateX(-50%);
 }
+.modal {
+  z-index: 9999;
+}
 /* End Main Config */
 /* Start Nav */
 .navbar {
   background-color: var(--background-color);
   position: sticky;
   top: 0px;
-  z-index: 9999;
+  z-index: 999;
 }
 
 .navbar .navbar-brand {

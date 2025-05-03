@@ -3,6 +3,7 @@
 <html lang="en">
 
 <head>
+  {% block redirct %} {% endblock %}
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description"
@@ -119,7 +120,6 @@
           <ul class="drop-links dropdown-menu dropdown-menu-end ">
             <h6 class="dropdown-item mb-2">Welcome Mr.{{request.user.first_name}}</h6>
             <li><a class="dropdown-item" href="{% url 'accounts:profile_view' user.username %}">Profile</a></li>
-            <li><a class="dropdown-item" href="{% url 'specialists:my_plans' %}">My Plans</a></li>
             <li><a class="dropdown-item" href="{% url 'directors:Specialist_Request'%}">Specialist Request</a></li>
             <li><a class="dropdown-item" href="{% url 'directors:specialist_manage' %}">Specialist Manage</a></li>
             <li class="logout"><a class="dropdown-item" href="{% url 'accounts:logout_view' %}">Logout</a></li>
@@ -203,7 +203,7 @@
 
   {% block content %}
   {% endblock %}
-  <footer class="pt-5 pb-5">
+  <footer class="pt-3 pb-1">
     <h2 class="text-center">NutriWay</h2>
     <div class="container">
       <!-- <ul class="footer-links list-unstyled d-flex justify-content-center gap-3 mt-4 mb-3">

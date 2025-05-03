@@ -202,3 +202,6 @@ def reject_specialist_request(request: HttpRequest, request_id):
         messages.success(request, "Specialist request rejected and feedback sent via email.", "alert-success")
         return redirect('directors:Specialist_Request')
     return render(request, 'directors/reject_request.html', {'specialist_request': specialist_request})
+
+
+
