@@ -23,7 +23,7 @@ def my_plans_view(request: HttpRequest):
         subscriptions = Subscription.objects.filter(person=person)
         if (request.user != person.user):
             messages.error(request, "You don't have permission to view this subscription", "alert-danger")
-            return redirect('users:my_plans')
+            return redirect('users:my_plans_view')
         today = datetime.now().date()
         for subscription in subscriptions:
             if today > subscription.end_date:
@@ -49,7 +49,7 @@ def subscription_to_plan(request: HttpRequest, plan_id: int,duration: str):
 
         if Subscription.objects.filter(person=person, subscription_plan=plan, status='active').exists():
             messages.warning(request, "You are already subscribed to this plan.", "alert-warning")
-            return redirect('users:my_plans')
+            return redirect('users:my_plans_view')
         
         duration_map = {
             '1_month': 30,
@@ -93,7 +93,7 @@ def subscription_detail(request, subscription_id):
     if (request.user != subscription.person.user and 
         request.user != subscription.subscription_plan.specialist.user):
         messages.error(request, "You don't have permission to view this subscription", "alert-danger")
-        return redirect('users:my_plans')
+        return redirect('users:my_plans_view')
     
     plan = subscription.subscription_plan
     specialist = plan.specialist
@@ -241,10 +241,10 @@ def create_progress_report_view(request:HttpRequest,subscription_id):
         return redirect('core:home_view')
     if subscription.StatusChoices.CANCELLED == subscription.status:
         messages.error(request, "Your subscription is cancelled. ", "alert-danger")
-        return redirect('users:my_plans')
+        return redirect('users:my_plans_view')
     if subscription.person.user != request.user:
         messages.error(request, "You don't have permission to add progress for this subscription", "alert-danger")
-        return redirect('users:my_plans')
+        return redirect('users:my_plans_view')
     
     if request.method == 'POST':
         try:
@@ -312,7 +312,7 @@ def meal_history(request, subscription_id):
     if (request.user != subscription.person.user and 
         request.user != subscription.subscription_plan.specialist.user):
         messages.error(request, "You don't have permission to view this subscription", "alert-danger")
-        return redirect('users:my_plans')
+        return redirect('users:my_plans_view')
     
     meal_checks = MealCheck.objects.filter(
         subscription=subscription
@@ -438,7 +438,7 @@ def update_meal_day(request, subscription_id, day_number):
     
     if request.user != subscription.person.user:
         messages.error(request, "You don't have permission to update this subscription", "alert-danger")
-        return redirect('users:my_plans')
+        return redirect('users:my_plans_view')
     
     if request.method == 'POST':
         # Calculate the date for this day number

@@ -287,7 +287,7 @@ def subscription_summary(request : HttpRequest, plan_id : int) -> HttpResponse:
         
         if Subscription.objects.filter(person=person, subscription_plan=plan, status='active').exists():
             messages.warning(request, "You are already subscribed to this plan.", "alert-warning")
-            return redirect("users:my_plans")
+            return redirect("users:my_plans_view")
         
         plan = SubscriptionPlan.objects.get(id=plan_id)
         duration_key = request.GET.get('duration')

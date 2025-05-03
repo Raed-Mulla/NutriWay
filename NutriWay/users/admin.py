@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Subscription, ProgressReport
+from .models import Subscription, ProgressReport , GeneralPlanPurchase
 
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ('id','person', 'subscription_plan', 'subscriber_plan', 'start_date', 'end_date', 'duration', 'status')
@@ -11,5 +11,9 @@ class ProgressReportAdmin(admin.ModelAdmin):
     list_filter = ('date',)
     search_fields = ('subscription__person__user__username',)
 
+class GeneralPlanPurchaseAdmin(admin.ModelAdmin):
+    list_display =  ('person','general_plan','purchase_date')
+
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(ProgressReport, ProgressReportAdmin)
+admin.site.register(GeneralPlanPurchase, GeneralPlanPurchaseAdmin)
