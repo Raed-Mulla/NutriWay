@@ -4,7 +4,7 @@ from . import views
 app_name = "users"
 
 urlpatterns = [
-    path('my_plans/', views.my_plans, name='my_plans'),
+    path('my_plans/', views.my_plans_view, name='my_plans_view'),
     path('subscribe/<int:subscriptionPlan_id>/', views.subscription_to_plan, name='subscription_to_plan'),
     path('subscription/<int:subscription_id>/', views.subscription_detail, name='subscription_detail'),
     path('subscription/<int:subscription_id>/progress/create/', views.create_progress_report_view, name='create_progress_report_view'),
