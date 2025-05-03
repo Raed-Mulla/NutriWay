@@ -49,9 +49,11 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'core:calorie_calculator' %}">Calorie Calculator</a>
           </li>
+          {% if not user.is_staff %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'supports:contact_us' %}">Contact Us</a>
           </li>
+          {% endif %}
           <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Dropdown
@@ -70,6 +72,12 @@
             <li class="nav-item"><a class="nav-link" href="{% url 'directors:specialist_manage' %}">Specialist
                 Manage</a></li>
           </div>
+          {% endif %}
+          {% if user.is_staff %}
+          <div class="support d-block d-lg-none">
+            <li class="nav-item"><a href="{% url 'supports:contact_messages' %}" class="nav-link">Contact messages</a></li>
+          </div>
+         
           {% endif %}
           {% if user.specialist %}
           <div class="specialist d-block d-lg-none">
@@ -151,6 +159,20 @@
 
           <ul class="drop-links dropdown-menu dropdown-menu-end ">
             <h6 class="dropdown-item mb-2">Welcome Mr.{{request.user.first_name}}</h6>
+            <li class="logout"><a class="dropdown-item" href="{% url 'accounts:logout_view' %}">Logout</a></li>
+          </ul>
+        </div>
+        {% endif %}
+        {% if user.is_staff %}
+        <div class="dropdown d-none d-lg-block">
+          <button class="btn dropdown-toggle border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-regular fa-user"></i>
+          </button>
+
+          <ul class="drop-links dropdown-menu dropdown-menu-end ">
+            <h6 class="dropdown-item mb-2">Welcome Mr.{{request.user.first_name}}</h6>
+            <li><a href="{% url 'supports:contact_messages' %}" class="dropdown-item">Contact messages</a></li>
+
             <li class="logout"><a class="dropdown-item" href="{% url 'accounts:logout_view' %}">Logout</a></li>
           </ul>
         </div>

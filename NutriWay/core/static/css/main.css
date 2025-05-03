@@ -60,7 +60,10 @@ body {
 .profile,
 .specialists-request-sec,
 .specialists-manage-sec,
-.view-subscriptions {
+.view-subscriptions,
+.payment-summary,
+.payment-success,
+.contact-message  {
   min-height: calc(100vh - 56px);
   /* min-height: calc(100vh - 56px - 162px); */
 }

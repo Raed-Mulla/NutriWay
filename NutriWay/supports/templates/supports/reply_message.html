@@ -5,11 +5,11 @@
 {% block content %}
 
 
-<section class="form-sec login mt-5">
+<section class="form-sec login pt-5 pb-5">
     <div class="container d-flex flex-column align-items-center">
         <form action="" method="post" class="bg-white p-4">
         {% csrf_token %}
-        <h2 class="main-title"> Reply to {{ message_obj.name }}</h2>
+        <h2 class="main-title-2"> Reply to {{ message_obj.name }}</h2>
         <div class="mb-3">
             <label for="reply_message" class="form-label">Write Your Reply:</label>
             <textarea name="reply_message" id="reply_message" rows="8" class="form-control" placeholder="Write your custom reply here..." required></textarea>
