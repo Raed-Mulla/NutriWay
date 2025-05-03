@@ -16,11 +16,8 @@ logger = logging.getLogger(__name__)
 
 
 def start_checkout_subscription(request : HttpRequest, plan_id : int) -> HttpResponse:
-    if not request.user.is_authenticated:
-        messages.error(request, "You must be logged in to access this page.", "alert-danger")
-        return redirect("accounts:login_view")
-    
-    duration_key = request.GET.get('duration')  # or request.POST.get('duration')
+    # Check if the user is authenticated and has a profile
+    duration_key = request.GET.get('duration') 
     duration_label = dict(SubscriptionPlan.DurationChoices.choices).get(duration_key, 'N/A')
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to access this page.", "alert-danger")
@@ -60,7 +57,8 @@ def start_checkout_subscription(request : HttpRequest, plan_id : int) -> HttpRes
         )    
     except stripe.StripeError as e:
         logger.error(f"Stripe error: {e}")
-        return HttpResponse("Error creating checkout session", status=500)
+        messages.error(request, "There was an error processing your payment. Please try again.", "alert-danger")
+        return redirect("payments:subscription_summary", plan_id=plan_id)
 
     #Redirect directly to Stripe
     return redirect(session.url)
@@ -115,7 +113,7 @@ def payment_success(request : HttpRequest) -> HttpResponse:
             subject='NutriWay - Payment Confirmation',
             message=(
                 f"Hi {person.user.first_name},\n\n"
-                f"Your payment of {plan.price} ﷼ for the {duration_key.replace('_', ' ')} {plan.name} plan has been received.\n"
+                f"Your payment of {plan.price} SAR for the {duration_key.replace('_', ' ')} {plan.name} plan has been received.\n"
                 f"Your specialist is {plan.specialist.user.username}.\n\n"
                 f"Subscription Plan: {plan.name}\n"
                 f"Description: {plan.description}\n"
@@ -147,7 +145,6 @@ def payment_cancel(request : HttpRequest) -> HttpResponse:
 
 
 #This start checkout for general plan
-@login_required
 def start_checkout_general(request: HttpRequest, plan_id: int) -> HttpResponse:
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to access this page.", "alert-danger")
@@ -246,6 +243,7 @@ def payment_success_general(request: HttpRequest) -> HttpResponse:
             message=(
                 f"Hi {person.user.first_name},\n\n"
                 f"Thank you for purchasing the general plan: {plan.name}.\n\n"
+                f"Price of {plan.price} SAR has been charged to your account.\n\n"
                 f"You can now access the plan file or await specialist instructions.\n\n"
                 f"Best regards,\nNutriWay Team"
             ),
@@ -272,14 +270,13 @@ def payment_cancel_general(request : HttpRequest) -> HttpResponse:
 
 #This is the summary logic for subscription plan
 # Preview before payment
-@login_required
 def subscription_summary(request : HttpRequest, plan_id : int) -> HttpResponse:
-    if not request.user.is_authenticated:
-        messages.error(request, "You must be logged in to access this page.", "alert-danger")
-        return redirect("accounts:login_view")
     try:
         plan = SubscriptionPlan.objects.get(id=plan_id)
 
+        if not request.user.is_authenticated:
+            messages.error(request, "You must be logged in to access this page.", "alert-danger")
+            return redirect("accounts:login_view")
         
         if hasattr(request.user, 'specialist') or hasattr(request.user, 'director') or request.user.is_staff:
             messages.error(request, "You are not authorized to subscribe to plans.", "alert-danger")
@@ -327,7 +324,7 @@ def generalplan_summary(request : HttpRequest, plan_id : int) -> HttpResponse:
 
         
         if hasattr(request.user, 'specialist') or hasattr(request.user, 'director') or request.user.is_staff:
-            messages.error(request, "You are not authorized to pay to plans.", "alert-danger")
+            messages.error(request, "You are not authorized to pay plans.", "alert-danger")
             return redirect("specialists:list_general_plan")
 
         person = Person.objects.get(user=request.user)
