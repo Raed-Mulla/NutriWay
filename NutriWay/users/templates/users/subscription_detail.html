@@ -22,13 +22,19 @@
           <!-- Specialist Actions -->
           {% if is_specialist and request.user == specialist.user %}
           <div class="d-flex gap-2">
-            {% if subscription.status == 'active' %}
-            <a href="{% url 'specialists:edit_subscriber_plan' subscription.subscriber_plan.id %}" class="btn btn-outline-primary btn-sm">
-              <i class="fas fa-edit me-1"></i> Edit Plan
-            </a>
-            <a href="{% url 'specialists:delete_subscription' subscription.id %}" class="btn btn-outline-danger btn-sm">
-              <i class="fas fa-times-circle me-1"></i> Cancel
-            </a>
+            {% if subscription.status == 'active'%}
+                {% if subscriber_plan %}
+                  <a href="{% url 'specialists:edit_subscriber_plan' subscriber_plan.id %}" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-edit me-1"></i> Edit Plan
+                  </a>
+                {% else %}
+                <a href="{% url 'specialists:create_subscriber_plan' subscription.id %}" class="btn btn-outline-primary btn-sm">
+                  <i class="fas fa-edit me-1"></i> create Plan
+                </a>
+                {% endif %}
+              <a href="{% url 'specialists:delete_subscription' subscription.id %}" class="btn btn-outline-danger btn-sm">
+                <i class="fas fa-times-circle me-1"></i> Cancel
+              </a>
             {% endif %}
           </div>
           {% endif %}
@@ -60,8 +66,13 @@
             <!-- Plan Details -->
             <ul class="list-group list-group-flush">
               <li class="list-group-item px-0 d-flex justify-content-between">
-                <span>Specialist</span>
-                <span class="text-muted">{{ specialist.user.get_full_name }}</span>
+                {% if request.user.specialist %}
+                  <span>Person</span>
+                  <span class="text-muted">{{ request.user.get_full_name }}</span>
+                {% elif request.user.person %}
+                  <span>Specialist</span>
+                  <span class="text-muted">{{ specialist.user.get_full_name }}</span>
+                {% endif %}
               </li>
               <li class="list-group-item px-0 d-flex justify-content-between">
                 <span>Plan Type</span>
@@ -196,7 +207,7 @@
                 {% if subscription.status == 'active' %}
                 <i class="fa fa-info-circle me-2"></i> No meals have been assigned for Day {{ display_day }}.
                 {% if is_specialist%}
-                  <a href="#" class="alert-link">Create a meal plan</a> for this day.
+                  <a href="{% url 'specialists:create_subscriber_plan' subscription.id %}" class="alert-link">Create a meal plan</a> for this day.
                 {% endif %}
                 {% endif %}
               </div>
@@ -217,11 +228,11 @@
             <div class="d-flex justify-content-around mb-4 text-center">
               <div>
                 <p class="text-muted mb-1">Starting Weight</p>
-                <h4>{{ weight_progress.first }} kg</h4>
+                <h4>{{ weight_progress.latest}} kg</h4>
               </div>
               <div>
                 <p class="text-muted mb-1">Current Weight</p>
-                <h4>{{ weight_progress.latest }} kg</h4>
+                <h4>{{ weight_progress.first }} kg</h4>
               </div>
             </div>
             {% endif %}
@@ -234,9 +245,7 @@
                     <th>Date</th>
                     <th>Weight</th>
                     <th>Notes</th>
-                    {% if is_specialist %}
-                    <th>Action</th>
-                    {% endif %}
+                    <th>comment</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -251,11 +260,12 @@
                       <span class="text-muted">No notes</span>
                       {% endif %}
                     </td>
-                    {% if is_specialist %}
-                    <td>
-                      <a href="#" class="btn btn-sm custom-btn">Comment</a>
-                    </td>
-                    {% endif %}
+                      {% if report.specialist_comment %}
+                      <td>{{ report.specialist_comment }}</td>
+                      {% elif request.user.specialist and not report.specialist_comment%}                      
+                      <td><a href="{% url 'users:view_progress' subscription_id %}" class="btn btn-sm custom-btn">Comment</a></td>
+                      {% endif %}
+
                   </tr>
                   {% endfor %}
                 </tbody>

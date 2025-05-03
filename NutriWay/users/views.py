@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpRequest, HttpResponse
 from specialists.models import Specialist
 from django.contrib import messages
-from accounts.models import Person
+from accounts.models import Person , Director
 from specialists.models import *
 from .models import Subscription, ProgressReport
 from django.contrib.auth.decorators import login_required
@@ -10,11 +10,20 @@ from datetime import datetime, timedelta
 from itertools import groupby
 from datetime import date
 
-@login_required
+
 def my_plans(request: HttpRequest):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to access this page.", "alert-danger")
+        return redirect("accounts:login_view")
+    if not hasattr(request.user, 'person'):
+        messages.error(request, "You must be a user to view this page", "alert-danger")
+        return redirect('core:home_view')
     try:
         person = Person.objects.get(user=request.user)
         subscriptions = Subscription.objects.filter(person=person)
+        if (request.user != person.user):
+            messages.error(request, "You don't have permission to view this subscription", "alert-danger")
+            return redirect('users:my_plans')
         today = datetime.now().date()
         for subscription in subscriptions:
             if today > subscription.end_date:
@@ -26,14 +35,20 @@ def my_plans(request: HttpRequest):
         messages.error(request, "User profile not found", "alert-danger")
         return redirect('core:home_view')
 
-@login_required
+
 def subscription_to_plan(request: HttpRequest, plan_id: int,duration: str):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to access this page.", "alert-danger")
+        return redirect("accounts:login_view")
     try:
         plan = SubscriptionPlan.objects.get(id=plan_id)
+        if Specialist.objects.filter(user=request.user).exists() or Director.objects.filter(user=request.user).exists() or request.user.is_staff:
+            messages.error(request, "You are not allowed to subscribe to plans.", "alert-danger")
+            return redirect('specialists:list_subscription_plan')
         person = Person.objects.get(user=request.user)
-        
+
         if Subscription.objects.filter(person=person, subscription_plan=plan, status='active').exists():
-            messages.warning(request, "You are already subscribed to this plan", "alert-warning")
+            messages.warning(request, "You are already subscribed to this plan.", "alert-warning")
             return redirect('users:my_plans')
         
         duration_map = {
@@ -46,16 +61,10 @@ def subscription_to_plan(request: HttpRequest, plan_id: int,duration: str):
         days = duration_map.get(duration, 30)  
         end_date = start_date + timedelta(days=days)
         
-        subscriber_plan = SubscriberPlan.objects.create(
-            specialist=plan.specialist,
-            name=f"{person.user.username}'s {plan.name}",
-            description=f"Custom plan for {person.user.username} based on {plan.name}"
-        )
         
         subscription = Subscription.objects.create(
             person=person,
             subscription_plan=plan,
-            subscriber_plan=subscriber_plan,
             start_date=start_date,
             end_date=end_date,
             duration=duration,
@@ -74,8 +83,11 @@ def subscription_to_plan(request: HttpRequest, plan_id: int,duration: str):
     
     return redirect('specialists:list_subscription_plan')
 
-@login_required
+
 def subscription_detail(request, subscription_id):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to access this page.", "alert-danger")
+        return redirect("accounts:login_view")
     subscription = get_object_or_404(Subscription, id=subscription_id)
     
     if (request.user != subscription.person.user and 
@@ -192,6 +204,10 @@ def subscription_detail(request, subscription_id):
         subscription=subscription,
         date=today
     ).exists()
+    if subscription.subscriber_plan:
+        subscriber_plan = subscription.subscriber_plan
+    else:
+        subscriber_plan = None
     subscription_detail = {
         'subscription': subscription,
         'subscription_id': subscription_id,
@@ -210,13 +226,19 @@ def subscription_detail(request, subscription_id):
         'display_date': display_date,
         'available_days': available_days,
         'today_checked': today_checked,
+        'subscriber_plan':subscriber_plan,
     }
     
     return render(request, 'users/subscription_detail.html', subscription_detail)
 
-@login_required
 def create_progress_report_view(request:HttpRequest,subscription_id):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to access this page.", "alert-danger")
+        return redirect("accounts:login_view")
     subscription = get_object_or_404(Subscription, id=subscription_id)
+    if subscription.person.user != request.user and subscription.subscription_plan.specialist.user != request.user:
+        messages.error(request, "You don't have permission to view progress for this subscription", "alert-danger")
+        return redirect('core:home_view')
     if subscription.StatusChoices.CANCELLED == subscription.status:
         messages.error(request, "Your subscription is cancelled. ", "alert-danger")
         return redirect('users:my_plans')
@@ -249,8 +271,10 @@ def create_progress_report_view(request:HttpRequest,subscription_id):
     
     return render(request, 'users/create_progress_report.html', {'subscription': subscription,'subscription_id': subscription_id})
 
-@login_required
 def view_progress(request:HttpRequest, subscription_id):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to access this page.", "alert-danger")
+        return redirect("accounts:login_view")
     subscription = get_object_or_404(Subscription, id=subscription_id)   
     if subscription.person.user != request.user and subscription.subscription_plan.specialist.user != request.user:
         messages.error(request, "You don't have permission to view progress for this subscription", "alert-danger")
@@ -272,8 +296,11 @@ def view_progress(request:HttpRequest, subscription_id):
 #     messages.success(request, "Subscription cancelled successfully", "alert-success")
 #     return redirect('users:subscription_detail',subscription_id)
 
-@login_required
+
 def meal_history(request, subscription_id):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to access this page.", "alert-danger")
+        return redirect("accounts:login_view")
     subscription = get_object_or_404(Subscription, id=subscription_id)
     
     if (request.user != subscription.person.user and 
@@ -293,57 +320,110 @@ def meal_history(request, subscription_id):
     if total_meals > 0:
         compliance_rate = round((checked_count / total_meals) * 100)
     
-    meal_dates = list(meal_checks.values_list('date', flat=True).distinct().order_by('-date'))
-    
     today_date = date.today()
     
+    all_subscriber_meals = SubscriberMeal.objects.filter(
+        subscriber_plan=subscription.subscriber_plan
+    ).order_by('day_number', 'meal_type')
+    
+    if not all_subscriber_meals.exists():
+        meal_data = {
+            'subscription': subscription,
+            'total_meals': 0,
+            'checked_count': 0,
+            'not_checked_count': 0,
+            'compliance_rate': 0,
+            'grouped_months': [],
+            'today_date': today_date,
+            'is_specialist': hasattr(request.user, 'specialist'),
+            'no_meals': True
+        }
+        return render(request, 'users/meal_history.html', meal_data)
+    
+    # Get all dates that have meals assigned (past, present, and future)
+    start_date = subscription.start_date
+    if hasattr(start_date, 'date'):
+        start_date = start_date.date()
+    
+    end_date = subscription.end_date
+    if hasattr(end_date, 'date'):
+        end_date = end_date.date()
+    
+    # Get unique day numbers from meal plan
+    day_numbers = all_subscriber_meals.values_list('day_number', flat=True).distinct().order_by('day_number')
+    
+    # Generate all dates for the subscription period
+    all_dates = []
+    for day_number in day_numbers:
+        day_date = start_date + timedelta(days=day_number - 1)
+        if day_date <= end_date:  # Only include dates within subscription period
+            all_dates.append(day_date)
+    
+    # Function to group by month
     def get_month_key(d):
         return date(d.year, d.month, 1)
     
-    # Sort meal dates by month
-    meal_dates.sort(key=get_month_key, reverse=True)
+    # Sort all dates by month
+    all_dates.sort(reverse=True)  # Most recent first
     
     # Group by month
     grouped_months = []
-    for month, month_dates in groupby(meal_dates, get_month_key):
+    for month, month_dates in groupby(all_dates, get_month_key):
         month_dates = list(month_dates)
         month_dates.sort(reverse=True)  # Sort dates within month in descending order
         
         days = []
         for day_date in month_dates:
-            # Get day number relative to subscription start
-            # Convert subscription.start_date to date object if it's a datetime
-            start_date = subscription.start_date
-            if hasattr(start_date, 'date'):
-                start_date = start_date.date()
-                
+            # Calculate day number from date
             day_number = (day_date - start_date).days + 1
             
-            # Get meals for this day
-            day_meal_checks = meal_checks.filter(date=day_date)
+            # Get meals for this day number
+            day_subscriber_meals = all_subscriber_meals.filter(day_number=day_number)
+            
+            # Get meal checks for this date if it's today or in the past
+            day_meal_checks = meal_checks.filter(date=day_date) if day_date <= today_date else []
             
             day_meals = []
-            for meal_check in day_meal_checks:
+            
+            # Add all meals for this day with their check status
+            for meal in day_subscriber_meals:
+                # Find the corresponding check for this meal on this date
+                meal_check = next((check for check in day_meal_checks if check.subscriber_meal_id == meal.id), None)
+                
+                is_checked = False
+                if meal_check:
+                    is_checked = meal_check.is_checked
+                
                 day_meals.append({
-                    'meal': meal_check.subscriber_meal,
-                    'is_checked': meal_check.is_checked
+                    'meal': meal,
+                    'is_checked': is_checked,
+                    'is_past_or_today': day_date <= today_date
                 })
             
-            days.append((day_number, day_date, day_meals))
+            # Only add days that have meals
+            if day_meals:
+                days.append({
+                    'number': day_number,
+                    'date': day_date,
+                    'meals': day_meals,
+                    'is_future': day_date > today_date,
+                    'is_today': day_date == today_date
+                })
         
-        grouped_months.append((month, days))
+        if days:  # Only add months that have days with meals
+            grouped_months.append((month, days))
     
+    is_specialist = hasattr(request.user, 'specialist')
     meal_data = {
         'subscription': subscription,
-        'meal_checks': meal_checks,
         'total_meals': total_meals,
         'checked_count': checked_count,
         'not_checked_count': not_checked_count,
         'compliance_rate': compliance_rate,
         'grouped_months': grouped_months,
         'today_date': today_date,
+        'is_specialist': is_specialist,
     }
-    
     return render(request, 'users/meal_history.html', meal_data)
 
 @login_required

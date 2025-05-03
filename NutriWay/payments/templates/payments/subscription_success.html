@@ -1,6 +1,7 @@
 {% extends "core/base.html" %}
+{% load static %}
 
-
+{% block redirct %}   <meta http-equiv="refresh" content="5; url={% url 'users:my_plans' %}"> {% endblock %}
 
 {% block title %}Payment Success{% endblock %}
 {% block content %}

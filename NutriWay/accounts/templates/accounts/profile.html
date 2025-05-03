@@ -9,7 +9,7 @@
         <div class="col-lg-4 col-md-4 p-4">
           <div class="personal-info text-center">
             {% if profile_user.specialist %}
-            <img src="{{ profile_user.specialist.image.url }}" width="100px" class="mb-2" alt="">
+            <img src="{{ profile_user.specialist.image.url }}" width="100px" class="mb-2" alt="Not Found">
             {% endif %}
             <div class="full-name fs-3">{{profile_user.first_name}} {{profile_user.last_name}}</div>
           </div>

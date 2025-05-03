@@ -7,22 +7,38 @@ from django.contrib import messages
 from users.models import Subscription
 from specialists.models import Specialist , Generalplan , SubscriptionPlan
 from django.db.models import Avg , Max
-
+from datetime import date
 
 def add_review(request:HttpRequest , specialist_id):
+  if not request.user.is_authenticated:
+    messages.error(request, "You must be logged in to submit a review.", "alert-danger")
+    return redirect("accounts:login_view")
+    
+  if hasattr(request.user, 'specialist') or hasattr(request.user, 'director') or request.user.is_staff:
+    messages.error(request, "You are not authorized to submit reviews.", "alert-danger")
+    return redirect("core:home_view")
   try:
     specialist = Specialist.objects.get(id=specialist_id)
     person = Person.objects.get(user=request.user)
   except (Specialist.DoesNotExist, Person.DoesNotExist):
+    messages.error(request, "Specialist or user profile not found.", "alert-danger")
     return redirect("core:home_view")
   
-  if not Subscription.objects.filter(person=person, subscription_plan__specialist=specialist).exists():
-    messages.error(request, "You must be subscribed to this specialist to leave a review.", "alert-danger")
+  subscriptions = Subscription.objects.filter(person=person, subscription_plan__specialist=specialist)
+  if not subscriptions.exists():
+    messages.error(request, "You must have subscribed to this specialist before to leave a review.", "alert-danger")
     return redirect("core:home_view")
+  
+  latest_subscription = subscriptions.latest('end_date') 
+  remaining_days = (latest_subscription.end_date - date.today()).days
+  if remaining_days > 10:
+    messages.error(request, f"You can only review in the last 10 days of your subscription. ({remaining_days} days left)", "alert-danger")
+    return redirect("users:subscription_detail", subscription_id=latest_subscription.id)
+
 
   if Review.objects.filter(person=person, specialist=specialist).exists():
-    messages.warning(request, "You have already submitted a review.")
-    return redirect("core:home_view")
+    messages.warning(request, "You have already submitted a review.", "alert-success")
+    return redirect("users:subscription_detail", subscription_id=latest_subscription.id)
   
   if request.method == "POST":
     form = ReviewForm(request.POST)
@@ -36,7 +52,7 @@ def add_review(request:HttpRequest , specialist_id):
   else:
     form = ReviewForm()
 
-  return render(request,'core/add_review.html' , {'form' : form , 'specialist' : specialist})
+  return render(request,'core/add_review.html' , {'form' : form , 'specialist' : specialist, 'ratingChoices':Review.RatingCohices.choices})
 
 
 def home_view(request: HttpRequest):
@@ -74,13 +90,14 @@ def calorie_calculator(request:HttpRequest):
     else:
       bmr = 0
 
-  activity_factors = {
-    "sedentary": 1.2,
-    "light": 1.375,
-    "moderate": 1.55,
-    "active": 1.725
-  }
-  daily_calories = bmr * activity_factors.get(activity, 1.2)
-  result = round(daily_calories)
+    activity_factors = {
+      "sedentary": 1.2,
+      "light": 1.375,
+      "moderate": 1.55,
+      "active": 1.725
+    }
+    daily_calories = bmr * activity_factors.get(activity, 1.2)
+    result = round(daily_calories)
   
-  return render(request, "core/calorie_calculator.html", {"result": result})
+    return render(request, "core/calorie_calculator.html", {"result": result})
+  return render(request, "core/calorie_calculator.html")
