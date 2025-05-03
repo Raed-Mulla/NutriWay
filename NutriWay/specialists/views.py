@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
 from .forms import SubscriptionPlanForm , GeneralPlanForm ,SubscriberMealForm, SubscriberPlanForm ,SubscriberMealFormSet
 from .models import SubscriptionPlan , Generalplan ,SubscriberMeal,SubscriberPlan,MealCheck
-from accounts.models import Specialist , Certificate
+from accounts.models import Specialist , Certificate , Person
 from django.contrib import messages
 from users.models import Subscription , ProgressReport
 from datetime import date
@@ -405,3 +405,63 @@ def show_certificate(request, specialist_id):
     specialist = Specialist.objects.get(pk=specialist_id)
     certificates = specialist.Certificates.all()
     return render(request, 'specialists/show_certificates.html', {'specialist': specialist ,'certificates':certificates})
+
+
+def specialist_dashboard(request, specialist_id):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to access the dashboard.", "alert-danger")
+        return redirect("accounts:login_view")
+
+    try:
+        specialist = Specialist.objects.get(id=specialist_id)
+    except Specialist.DoesNotExist:
+        messages.error(request, "Specialist not found.", "alert-danger")
+        return redirect("core:home_view")
+
+    # تحقق إن المستخدم هو أخصائي وصاحب الصفحة
+    if not hasattr(request.user, 'specialist') or request.user != specialist.user:
+        messages.error(request, "You are not authorized to view this dashboard.", "alert-danger")
+        return redirect("core:home_view")
+
+    subscriptions = Subscription.objects.filter(subscription_plan__specialist=specialist)
+    plans = SubscriptionPlan.objects.filter(specialist=specialist)
+
+    total_subscribers = subscriptions.count()
+
+    duration_map = {
+        '1_month': 1,
+        '3_months': 3,
+        '6_months': 6,
+        '12_months': 12
+    }
+
+    total_earnings = 0
+    for sub in subscriptions:
+        months = duration_map.get(sub.duration, 1)
+        total_earnings += sub.subscription_plan.price * months
+
+
+    person_ids = subscriptions.values_list('person_id', flat=True).distinct()
+    persons = Person.objects.filter(id__in=person_ids)
+
+
+    male_count = persons.filter(gender__iexact='male').count()
+    female_count = persons.filter(gender__iexact='female').count()
+    total_persons = male_count + female_count
+
+    male_percentage = round((male_count / total_persons) * 100, 2) if total_persons else 0
+    female_percentage = round((female_count / total_persons) * 100, 2) if total_persons else 0
+
+
+
+
+    context = {
+        'total_subscribers': total_subscribers,
+        'total_plans': plans.count(),
+        'total_earnings': total_earnings,
+        'male_percentage': male_percentage,
+        'female_percentage': female_percentage,
+        'specialist': specialist,
+    }
+
+    return render(request, 'specialists/dashboard.html', context)

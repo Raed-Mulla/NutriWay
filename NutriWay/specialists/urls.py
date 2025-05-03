@@ -18,5 +18,5 @@ urlpatterns = [
     path('subscriptions/delete/<int:subscription_id>/', views.delete_subscription, name="delete_subscription"),
     path('certificate/specialization/<int:specialist_id>/', views.show_certificate_specialization, name='show_specialization_certificate_certificate'),
     path('certificates/<int:specialist_id>/', views.show_certificate, name='show_certificates'),
-
+    path('specialist/<int:specialist_id>/dashboard/', views.specialist_dashboard, name='specialist_dashboard'),
 ]
