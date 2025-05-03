@@ -52,7 +52,8 @@ body {
 /* background: linear-gradient(to bottom right, #e0f7fa, #f1f8e9); */
 
 }
-section {
+.login, 
+.register {
   min-height: calc(100vh - 56px - 162px);
 }
 ::-webkit-scrollbar {
