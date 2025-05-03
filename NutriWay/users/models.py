@@ -1,5 +1,6 @@
 from django.db import models
 from accounts.models import Person
+from specialists.models import Generalplan
 # Create your models here.
 
 class Subscription(models.Model):
@@ -33,3 +34,11 @@ class ProgressReport(models.Model):
     weight = models.FloatField()
     note = models.TextField()
     specialist_comment = models.TextField(blank=True)
+
+class GeneralPlanPurchase(models.Model):
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    general_plan = models.ForeignKey(Generalplan, on_delete=models.CASCADE)
+    purchase_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.person.user.username} bought {self.general_plan.name}"
