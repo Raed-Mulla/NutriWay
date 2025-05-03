@@ -53,8 +53,16 @@ body {
 
 }
 .login, 
-.register {
-  min-height: calc(100vh - 56px - 162px);
+.register,
+.specialists-all,
+.subscription-plans-sec,
+.general-plans,
+.profile,
+.specialists-request-sec,
+.specialists-manage-sec,
+.view-subscriptions {
+  min-height: calc(100vh - 56px);
+  /* min-height: calc(100vh - 56px - 162px); */
 }
 ::-webkit-scrollbar {
   width: 15px;
@@ -795,6 +803,13 @@ input:focus::placeholder {
   color: white !important;
   background-color: var(--primary-color) !important;
 } */
+.specialists-request .row .btns button, 
+.specialists-request .row .btns a {
+  width: 50%;
+}
+
+
+
 .specialists-request .row .btns .approve {
   background-color: var(--custom-success);
 }
@@ -814,6 +829,27 @@ input:focus::placeholder {
   background-color: var(--custom-danger-hover) !important;
   color: white !important;
 }
+.badge-container {
+  align-self: flex-start;
+  position: absolute;
+  transform: translateY(-50%);
+  left: 20px;
+  top: 0;
+}
+.badge-container.active {
+  background-color: #e0f3ec; 
+}
+.badge-container.active span {
+  color: #328e6e;
+}
+.badge-container.deactive {
+  background-color: #fcebea;
+}
+.badge-container.deactive span {
+  color: #e3342f; 
+}
+
+
 
 @media (max-width:767px) {
   .specialists-request .row .data .row-data {

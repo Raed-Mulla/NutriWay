@@ -19,7 +19,7 @@
           <div class="info p-3">
             <h3 class="subscription-name">{{plan.name}}</h3>
             <p class="type"> <span>Type of Subscription: </span>{{plan.plan_type}}</p>
-            <div class="number-of-subscribers mb-3">Number of Subscribers: <span>22</span></div>
+            <div class="number-of-subscribers mb-3">Number of Subscribers: <span>{{plan.subscriber_count}}</span></div>
             <a href="{% url 'specialists:specialist_subscriptions' plan.id %}" class="btn d-block m-auto mb-2">View Subscribers</a>
           </div>
         </div>

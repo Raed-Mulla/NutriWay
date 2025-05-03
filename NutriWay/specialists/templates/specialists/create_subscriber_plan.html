@@ -7,6 +7,11 @@
     <form action="{% url 'specialists:create_subscriber_plan'  subscription.id %}" method="post" class="bg-white p-4">
       {% csrf_token %}
       <h2 class="main-title-2">Create Subscriber Plan</h2>
+      <div class="mb-4">
+        <a href="{% url 'users:subscription_detail' subscription.id %}" class="btn btn-a">
+          <i class="fa fa-arrow-left me-2"></i> Back to Plan
+        </a>
+      </div>
       <div class="mb-3">
         <label class="form-label">Name</label>
         <input type="text" class="form-control" name="name" placeholder="Enter your username" required>
@@ -72,16 +77,21 @@
       </div>
       <div class="row g-0 mb-3">
         <div class="col-2 flex-grow-1">
-          <input type="number" placeholder="Day" class="form-control" name="day_number-${mealCount}">
+          <input type="number" placeholder="Day" class="form-control" required name="day_number-${mealCount}">
         </div>
         <div class="col-2 flex-grow-1">
-          <input type="text" placeholder="Type" class="form-control" name="meal_type-${mealCount}">
+          <select class="form-select" required name="meal_type-new-${mealCount}">
+  <option value="">Type</option>
+  {% for val, label in subscriberMeal %}
+    <option value="{{val}}">{{label}}</option>
+  {% endfor %}
+</select>
         </div>
         <div class="col-5 flex-grow-1">
-          <input type="text" placeholder="Meal" class="form-control" name="description-${mealCount}">
+          <input type="text" placeholder="Meal" class="form-control" required name="description-${mealCount}">
         </div>
         <div class="col-2 flex-grow-1">
-          <input type="text" placeholder="Calories" class="form-control" name="meal_calorie-${mealCount}">
+          <input type="text" placeholder="Calories" class="form-control" required name="meal_calorie-${mealCount}">
         </div>
       </div>
     `;
