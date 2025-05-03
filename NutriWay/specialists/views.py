@@ -8,6 +8,7 @@ from users.models import Subscription , ProgressReport
 from datetime import date
 from datetime import datetime
 from django.db.models import Avg
+from django.db.models import Count
 
 def create_subscription_plan(request: HttpRequest):
     if not request.user.is_authenticated:
@@ -124,7 +125,9 @@ def my_plans(request: HttpRequest):
         messages.error(request, "You are not authorized to access this page.", "alert-danger")
         return redirect('core:home_view')
 
-    plans = SubscriptionPlan.objects.filter(specialist=specialist)
+    plans = SubscriptionPlan.objects.filter(specialist=specialist).annotate(
+        subscriber_count=Count('subscription')
+    )
     return render(request, 'specialists/my_plans.html', {'specialist': specialist, 'plans': plans})
 
 

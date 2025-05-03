@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpRequest, HttpResponse
 from specialists.models import Specialist
 from django.contrib import messages
-from accounts.models import Person , Director
+from accounts.models import Person ,PersonData, Director
 from specialists.models import *
 from .models import Subscription, ProgressReport
 from django.contrib.auth.decorators import login_required
@@ -11,7 +11,7 @@ from itertools import groupby
 from datetime import date
 
 
-def my_plans(request: HttpRequest):
+def my_plans_view(request: HttpRequest):
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to access this page.", "alert-danger")
         return redirect("accounts:login_view")
@@ -258,9 +258,15 @@ def create_progress_report_view(request:HttpRequest,subscription_id):
                 weight=float(weight),
                 note=note
             )
+            person = request.user.person
+            latest_person_data = PersonData.objects.filter(person=person).order_by('-created_at').first()
+            height = latest_person_data.height
+            PersonData.objects.create(
+                    person=person,
+                    weight=float(weight),
+                    height = float(height)
+                )
             
-            messages.success(request, "Progress report added successfully", "alert-success")
-            return redirect('users:subscription_detail', subscription_id=subscription.id)
         
         except ValueError as e:
             messages.error(request, e , "alert-danger")
