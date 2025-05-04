@@ -59,6 +59,7 @@ class Generalplan(models.Model):
     plan_type = models.CharField(max_length=30, choices=PlanType.choices,default='general_health')
     price = models.FloatField()
     plan_file = models.FileField(upload_to='general_plans/')
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"General Plan: {self.name} ({self.specialist.user.username})"

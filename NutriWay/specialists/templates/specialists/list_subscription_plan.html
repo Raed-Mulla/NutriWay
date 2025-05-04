@@ -32,9 +32,9 @@
         <div class="col-lg-3 mb-2">
           <label class="form-label fw-semibold">Sort By</label>
           <select name="sort" class="form-select" onchange="this.form.submit()">
-            <option value="">Default</option>
-            <option value="low" {% if selected_sort == 'low' %}selected{% endif %}>Price: Low to High</option>
-            <option value="high" {% if selected_sort == 'high' %}selected{% endif %}>Price: High to Low</option>
+            <option value="">Price</option>
+            <option value="low" {% if selected_sort == 'low' %}selected{% endif %}>Low to High</option>
+            <option value="high" {% if selected_sort == 'high' %}selected{% endif %}>High to Low</option>
           </select>
         </div>
       </div>

@@ -4,11 +4,15 @@ from .forms import SubscriptionPlanForm , GeneralPlanForm ,SubscriberMealForm, S
 from .models import SubscriptionPlan , Generalplan ,SubscriberMeal,SubscriberPlan,MealCheck
 from accounts.models import Specialist , Certificate , Person
 from django.contrib import messages
-from users.models import Subscription , ProgressReport
+from users.models import Subscription , ProgressReport,GeneralPlanPurchase
 from datetime import date
 from datetime import datetime
-from django.db.models import Avg
-from django.db.models import Count
+from django.db.models import Avg ,  Count,  Sum
+from django.utils.timezone import now
+from calendar import month_name
+import json
+from collections import defaultdict
+from django.core.paginator import Paginator
 
 def create_subscription_plan(request: HttpRequest):
     if not request.user.is_authenticated:
@@ -426,10 +430,16 @@ def specialist_dashboard(request, specialist_id):
         messages.error(request, "You are not authorized to view this dashboard.", "alert-danger")
         return redirect("core:home_view")
 
-    subscriptions = Subscription.objects.filter(subscription_plan__specialist=specialist)
-    plans = SubscriptionPlan.objects.filter(specialist=specialist)
+    subscriptions = Subscription.objects.filter(subscription_plan__specialist=specialist, status="active")
+    subscriber_plans = SubscriptionPlan.objects.filter(specialist=specialist)
+    general_plans = Generalplan.objects.filter(specialist=specialist)
+    general_plan_purchases = GeneralPlanPurchase.objects.filter(general_plan__specialist=specialist)
 
     total_subscribers = subscriptions.count()
+
+    total_earnings = 0
+    monthly_earnings = defaultdict(int)
+    subscriber_counts = defaultdict(int)
 
     duration_map = {
         '1_month': 1,
@@ -438,15 +448,28 @@ def specialist_dashboard(request, specialist_id):
         '12_months': 12
     }
 
-    total_earnings = 0
     for sub in subscriptions:
         months = duration_map.get(sub.duration, 1)
-        total_earnings += sub.subscription_plan.price * months
+        earnings = sub.subscription_plan.price * months
+        total_earnings += earnings
 
+        if sub.start_date:
+            month_label = sub.start_date.strftime("%B")
+            monthly_earnings[month_label] += earnings
+            subscriber_counts[month_label] += 1
+
+    for purchase in general_plan_purchases:
+        total_earnings += purchase.general_plan.price
+        if purchase.purchase_date:
+            month_label = purchase.purchase_date.strftime("%B")
+            monthly_earnings[month_label] += purchase.general_plan.price
+
+    all_months = list(month_name)[1:]
+    monthly_earnings_data = {month: monthly_earnings.get(month, 0) for month in all_months}
+    subscriber_counts_data = {month: subscriber_counts.get(month, 0) for month in all_months}
 
     person_ids = subscriptions.values_list('person_id', flat=True).distinct()
     persons = Person.objects.filter(id__in=person_ids)
-
 
     male_count = persons.filter(gender__iexact='male').count()
     female_count = persons.filter(gender__iexact='female').count()
@@ -455,16 +478,16 @@ def specialist_dashboard(request, specialist_id):
     male_percentage = round((male_count / total_persons) * 100, 2) if total_persons else 0
     female_percentage = round((female_count / total_persons) * 100, 2) if total_persons else 0
 
-
-
-
     context = {
+        'specialist': specialist,
         'total_subscribers': total_subscribers,
-        'total_plans': plans.count(),
+        'subscription_plan_count': subscriber_plans.count(),
+        'general_plan_count': general_plans.count(),
         'total_earnings': total_earnings,
         'male_percentage': male_percentage,
         'female_percentage': female_percentage,
-        'specialist': specialist,
+        'monthly_earnings': json.dumps(monthly_earnings_data),
+        'subscriber_counts': json.dumps(subscriber_counts_data),
     }
 
     return render(request, 'specialists/dashboard.html', context)
@@ -483,5 +506,4 @@ def subscription_plan_detail_view (request:HttpRequest , plan_id:int):
     except SubscriptionPlan.DoesNotExist:
         messages.error(request, "Subscription plan not found.", "alert-danger")
         return redirect("core:home_view")
-    return render(request, 'specialists/subscription_plan_detail.html', {'plan': plan})
-
+    return render(request, 'specialists/supscription_plan_detail.html', {'plan': plan , "duration_choices": SubscriptionPlan.DurationChoices.choices,})

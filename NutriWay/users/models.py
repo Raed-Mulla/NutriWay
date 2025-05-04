@@ -23,6 +23,7 @@ class Subscription(models.Model):
     end_date = models.DateField()
     duration = models.CharField(max_length=20, choices=DurationChoices.choices,default=DurationChoices.ONE_MONTH)
     status = models.CharField(max_length=15 , choices=StatusChoices.choices)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.person.user.username} - {self.subscription_plan.name}"

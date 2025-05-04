@@ -13,7 +13,7 @@
         <div class="col-lg-3">
           <label for="filter" class="form-label fw-semibold">Sort by <i class="ms-1 fa-solid fa-filter"></i></label>
           <select id="filter" name="filter" class="form-select" onchange="this.form.submit()">
-            <option value="">Choose</option>
+            <option value="">Price</option>
             <option value="low" {% if selected_filter == 'low' %}selected{% endif %}>Low to High</option>
             <option value="high" {% if selected_filter == 'high' %}selected{% endif %}>High to Low</option>
           </select>
