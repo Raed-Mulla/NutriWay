@@ -137,7 +137,11 @@ def all_specialists(request: HttpRequest):
     specialty = request.GET.get('specialty')
     sort = request.GET.get('sort')
 
-    specialists = Specialist.objects.annotate(average_rating=Avg('reviews__rating'))
+    
+    specialists = Specialist.objects.annotate(average_rating=Avg('reviews__rating')).filter(specialistrequest__status='approved')
+    
+    
+
 
     if gender:
         specialists = specialists.filter(gender=gender)
@@ -418,7 +422,6 @@ def specialist_dashboard(request, specialist_id):
         messages.error(request, "Specialist not found.", "alert-danger")
         return redirect("core:home_view")
 
-    # تحقق إن المستخدم هو أخصائي وصاحب الصفحة
     if not hasattr(request.user, 'specialist') or request.user != specialist.user:
         messages.error(request, "You are not authorized to view this dashboard.", "alert-danger")
         return redirect("core:home_view")
@@ -465,3 +468,20 @@ def specialist_dashboard(request, specialist_id):
     }
 
     return render(request, 'specialists/dashboard.html', context)
+
+def general_plan_detail_view(request: HttpRequest, plan_id: int):
+    try:
+        plan = Generalplan.objects.get(id=plan_id)
+    except Generalplan.DoesNotExist:
+        messages.error(request, "General plan not found.", "alert-danger")
+        return redirect("core:home_view")
+    return render(request, 'specialists/general_plan_detail.html', {'plan': plan})
+
+def subscription_plan_detail_view (request:HttpRequest , plan_id:int):
+    try:
+        plan = SubscriptionPlan.objects.get(id=plan_id)
+    except SubscriptionPlan.DoesNotExist:
+        messages.error(request, "Subscription plan not found.", "alert-danger")
+        return redirect("core:home_view")
+    return render(request, 'specialists/subscription_plan_detail.html', {'plan': plan})
+

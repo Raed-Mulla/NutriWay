@@ -31,15 +31,19 @@ class Specialist(models.Model):
         Famele = "Female" , "Female"
 
     class SpecialtyChoices(models.TextChoices):
-        clinical = 'clinical', 'Clinical Nutrition'
-        weight_managment = 'weight', 'Weight Management'
-        children = 'children', 'Pediatric Nutrition'
-        women = 'women', 'Womens Nutrition'
-        chronic = 'chronic', 'Chronic Conditions'
-        vegan = 'vegan', 'Vegan/Vegetarian Nutrition'
-        seniors = 'seniors', 'Geriatric Nutrition'
-        disorders = 'disorders', 'Eating Disorders'
-        preventive = 'preventive', 'Preventive Nutrition'
+        WEIGHT_LOSS = 'weight_loss', 'Weight Loss'
+        WEIGHT_GAIN = 'weight_gain', 'Weight Gain'
+        DIABETES = 'diabetes', 'Diabetes Nutrition'
+        HYPERTENSION = 'hypertension', 'Hypertension Nutrition'
+        CHOLESTEROL = 'cholesterol', 'Cholesterol Management Nutrition'
+        WOMEN_HEALTH = 'women_health', 'Women Health'
+        CHILDREN = 'children', 'Children Nutrition'
+        SENIORS = 'seniors', 'Senior Nutrition'
+        VEGAN = 'vegan', 'Vegan / Vegetarian'
+        DIGESTIVE = 'digestive', 'Digestive Health Nutrition'
+        IMMUNE = 'immune', 'Immune Support Nutrition'
+        EATING_DISORDERS = 'eating_disorders', 'Eating Disorders Nutrition'
+        GENERAL_HEALTH = 'general_health', 'General Health'
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     gender = models.CharField(max_length=8,choices= GenderChoices.choices)
