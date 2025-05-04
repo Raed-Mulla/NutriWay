@@ -78,15 +78,32 @@ def create_general_plan(request: HttpRequest):
 
 
 
-def list_general_plan (request:HttpRequest):
+def list_general_plan(request):
     filter_value = request.GET.get('filter')
-    plans = Generalplan.objects.all()
+    type_filter = request.GET.get('type')
+
+    plans = Generalplan.objects.select_related('specialist__user')
+
+    if type_filter:
+        plans = plans.filter(plan_type=type_filter)
+
     if filter_value == "low":
         plans = plans.order_by("price")
     elif filter_value == "high":
         plans = plans.order_by("-price")
 
-    return render(request , 'specialists/list_general_plan.html' , {"plans" : plans , "selected_filter": filter_value})
+    paginator = Paginator(plans, 9)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'specialists/list_general_plan.html', {
+        "plans": page_obj,
+        "page_obj": page_obj,
+        "selected_filter": filter_value,
+        "selected_type": type_filter,
+        "planType": Generalplan.PlanType.choices,
+    })
+
 
 def list_subscription_plan(request: HttpRequest):
     type_filter = request.GET.get('type')
@@ -106,8 +123,12 @@ def list_subscription_plan(request: HttpRequest):
     elif sort_filter == "high":
         plans = plans.order_by("-price")
 
+    paginator = Paginator(plans, 6)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        "plans": plans,
+        "page_obj": page_obj,
         "planType": SubscriptionPlan.PlanType.choices,
         "genderChoices": Specialist.GenderChoices.choices,
         "duration_choices": SubscriptionPlan.DurationChoices.choices,
@@ -117,6 +138,7 @@ def list_subscription_plan(request: HttpRequest):
     }
 
     return render(request, 'specialists/list_subscription_plan.html', context)
+
 
 def my_plans(request: HttpRequest):
     if not request.user.is_authenticated:
