@@ -53,7 +53,7 @@
             <h3 class="fs-5">Certified Specialists</h3>
             <span class="text-black-50 d-block mt-2">Get expert guidance from trusted nutrition professionals.</span>
           </div>
-          <a href="{% url 'specialists:all_specialists' %}" class="btn btn-a mt-3 d-inline-block w-fit">More</a>
+          <a href="{% url 'specialists:all_specialists' %}" class="btn btn-a mt-3 d-inline-block w-fit">Our Specialists</a>
         </div>
       </div>
       <div class="col-lg-4 col-md-6 d-flex mt-3">
@@ -97,7 +97,7 @@
                 <img src="{% static 'images/default_profile.jpg' %}" alt="Not Found">
                 {%endif%}
               </div>
-              <div class="name fs-6">Experts {{specialist.user.first_name}} <span class="fs-6 text-black-50 d-block">{{specialist.specialty}}</span></div>
+              <div class="name fs-6"><a href="{% url 'specialists:specialist_detail' specialist.id %}">{{specialist.user.first_name}}</a> <span class="fs-6 text-black-50 d-block">{{specialist.specialty}}</span></div>
 
             </div>
             <div class="right badge">
@@ -125,7 +125,7 @@
           <div class="name text-center position-relative p-3">{{ plan.specialist.user.username }}<img
               src="{{plan.specialist.image.url}}" alt="Not Found"></div>
           <div class="info p-3">
-            <h3 class="subscription-name">{{plan.name}}</h3>
+            <a href="{% url 'specialists:general_plan_detail' plan.id %}" class="subscription-name">{{plan.name}}</a>
             <p class="description"><span>Description:</span> {{plan.description}}</p>
             <div class="price text-center mb-3 mt-3 fw-bold"> <img alt="Unicode 0x20C1.svg"
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/120px-Unicode_0x20C1.svg.png"
@@ -159,7 +159,7 @@
           </div>
           <div class="info p-3">
             <form method="get" action="{% url 'payments:subscription_summary' plan.id %}">
-              <h3 class="subscription-name">{{ plan.name }}</h3>
+              <a  href="{% url 'specialists:subscription_plan_detail_view' plan.id %}" class="subscription-name">{{ plan.name }}</a>
               <p class="description"><span>Description:</span> {{ plan.description }}</p>
               <p class="type"> <span>Type: </span>{{ plan.plan_type }}</p>
           

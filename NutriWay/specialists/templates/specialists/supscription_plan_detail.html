@@ -1,0 +1,33 @@
+{% extends 'core/base.html' %}
+{% block title %}Subscription Plan Detail{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+<div class="card shadow p-4">
+    <h2>{{ plan.name }}</h2>
+    <p><strong>Specialist:</strong> {{ plan.specialist.user.username }}</p>
+    
+    {% if plan.image %}
+    <img src="{{ plan.image.url }}" alt="Plan Image" class="img-fluid mb-3">
+    {% endif %}
+    
+    <p><strong>Description:</strong> {{ plan.description }}</p>
+
+    {% if plan.detail %}
+    <p><strong>Details:</strong> {{ plan.detail }}</p>
+    {% endif %}
+    
+    <p><strong>Type:</strong> {{ plan.plan_type }}</p>
+    <p><strong>Price:</strong> {{ plan.price }} ﷼</p>
+    <form method="get" action="{% url 'payments:subscription_summary' plan.id %}">
+        <label for="duration" class="form-label">Select Duration</label>
+        <select name="duration" class="form-select mb-3" required>
+        {% for val, label in duration_choices %}
+            <option value="{{ val }}">{{ label }}</option>
+        {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary">Subscribe Now</button>
+    </form>
+</div>
+</div>
+{% endblock %}

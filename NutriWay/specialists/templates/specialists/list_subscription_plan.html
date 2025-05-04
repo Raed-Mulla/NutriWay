@@ -32,53 +32,78 @@
         <div class="col-lg-3 mb-2">
           <label class="form-label fw-semibold">Sort By</label>
           <select name="sort" class="form-select" onchange="this.form.submit()">
-            <option value="">Default</option>
-            <option value="low" {% if selected_sort == 'low' %}selected{% endif %}>Price: Low to High</option>
-            <option value="high" {% if selected_sort == 'high' %}selected{% endif %}>Price: High to Low</option>
+            <option value="">Price</option>
+            <option value="low" {% if selected_sort == 'low' %}selected{% endif %}>Low to High</option>
+            <option value="high" {% if selected_sort == 'high' %}selected{% endif %}>High to Low</option>
           </select>
         </div>
       </div>
     </form>
     
     <div class="row">
-      {% for plan in plans %}
+      {% for plan in page_obj %}
       <div class="col-lg-4 col-md-6 mb-4">
         <div class="box">
           <div class="name text-center position-relative p-3">{{ plan.specialist.user.username }}
-            {% if specialist.image %}
-            <img src="{{ specialist.image.url }}" alt="Not Found">
+            {% if plan.specialist.image %}
+            <img src="{{ plan.specialist.image.url }}" alt="Not Found">
             {% else %}
-            <img src="{% static 'images\default_profile.jpg' %}" alt="Not Found">
-            {%endif%}
+            <img src="{% static 'images/default_profile.jpg' %}" alt="Not Found">
+            {% endif %}
           </div>
-
+    
           <div class="img">
             {% if plan.image %}
-              <img src="{{plan.image.url}}" alt="Not Found" class="img-fluid">
+              <img src="{{ plan.image.url }}" alt="Not Found" class="img-fluid">
             {% else %}
-              <img src="{% static 'images\default_profile.jpg' %}" alt="Not Found">
-            {%endif%}
+              <img src="{% static 'images/default_profile.jpg' %}" alt="Not Found">
+            {% endif %}
           </div>
           <form method="get" action="{% url 'payments:subscription_summary' plan.id %}" class="row g-2">
             <div class="info p-3">
-              <h3 class="subscription-name">{{plan.name}}</h3>
-              <p class="description"><span>Description:</span> {{plan.description}}</p>
-              <p class="type"> <span>Type: </span>{{plan.plan_type}}</p>
-              <div class="duration d-flex align-items-center ">
-              <select name="duration" class="p-1 border form-select" required>
-                {% for val, label in duration_choices %}
+              <h3 class="subscription-name">{{ plan.name }}</h3>
+              <p class="description"><span>Description:</span> {{ plan.description }}</p>
+              <p class="type"><span>Type:</span> {{ plan.plan_type }}</p>
+              <div class="duration d-flex align-items-center">
+                <select name="duration" class="p-1 border form-select" required>
+                  {% for val, label in duration_choices %}
                     <option value="{{ val }}" {% if val == '1_month' %}selected{% endif %}>{{ label }}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="price text-center mb-3 mt-3 fw-bold"> <img alt="Unicode 0x20C1.svg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/120px-Unicode_0x20C1.svg.png" decoding="async" width="30px" class="mw-file-element" srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/180px-Unicode_0x20C1.svg.png 1.5x, https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/240px-Unicode_0x20C1.svg.png 2x" data-file-width="16" data-file-height="16"> {{plan.price | floatformat:0}}</div>
-            <button type="submit" class="btn-a d-block w-100 btn">Subscribe</button>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="price text-center mb-3 mt-3 fw-bold">
+                <img alt="SAR" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/120px-Unicode_0x20C1.svg.png" width="30px">
+                {{ plan.price | floatformat:0 }}
+              </div>
+              <button type="submit" class="btn-a d-block w-100 btn">Subscribe</button>
             </div>
           </form>
         </div>
       </div>
       {% endfor %}
     </div>
+    <div class="mt-4 text-center">
+      <nav>
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if selected_type %}&type={{ selected_type }}{% endif %}{% if selected_gender %}&gender={{ selected_gender }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">Previous</a>
+            </li>
+          {% endif %}
+    
+          <li class="page-item disabled">
+            <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+          </li>
+    
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if selected_type %}&type={{ selected_type }}{% endif %}{% if selected_gender %}&gender={{ selected_gender }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">Next</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+    
   </div>
 </section>
 {% endblock %}
