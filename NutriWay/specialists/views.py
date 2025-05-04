@@ -185,7 +185,7 @@ def all_specialists(request: HttpRequest):
     elif sort == 'low rating':
         specialists = specialists.order_by('average_rating')
 
-    paginator = Paginator(specialists, 6)  # عرض 6 أخصائيين في الصفحة
+    paginator = Paginator(specialists, 6) 
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
