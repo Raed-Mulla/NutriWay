@@ -154,7 +154,16 @@ def my_plans(request: HttpRequest):
     plans = SubscriptionPlan.objects.filter(specialist=specialist).annotate(
         subscriber_count=Count('subscription')
     )
-    return render(request, 'specialists/my_plans.html', {'specialist': specialist, 'plans': plans})
+
+    paginator = Paginator(plans, 6)  
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'specialists/my_plans.html', {
+        'specialist': specialist,
+        'plans': page_obj,
+        'page_obj': page_obj
+    })
 
 
 
@@ -163,11 +172,7 @@ def all_specialists(request: HttpRequest):
     specialty = request.GET.get('specialty')
     sort = request.GET.get('sort')
 
-    
     specialists = Specialist.objects.annotate(average_rating=Avg('reviews__rating')).filter(specialistrequest__status='approved')
-    
-    
-
 
     if gender:
         specialists = specialists.filter(gender=gender)
@@ -180,8 +185,13 @@ def all_specialists(request: HttpRequest):
     elif sort == 'low rating':
         specialists = specialists.order_by('average_rating')
 
+    paginator = Paginator(specialists, 6)  # عرض 6 أخصائيين في الصفحة
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'specialists': specialists,
+        'specialists': page_obj,
+        'page_obj': page_obj,
         'genderChoices': Specialist.GenderChoices.choices,
         'specialtyChoices': Specialist.SpecialtyChoices.choices,
         'selected_gender': gender,
@@ -213,12 +223,21 @@ def specialist_subscriptions(request: HttpRequest, plan_id):
         return redirect('core:home_view')
 
     subscriptions = Subscription.objects.filter(subscription_plan=subscription_plan)
+    
+    
     today = datetime.now().date()
     for subscription in subscriptions:
-        if today > subscription.end_date:
+        if today > subscription.end_date and subscription.status != subscription.StatusChoices.EXPIRED:
             subscription.status = subscription.StatusChoices.EXPIRED
             subscription.save()
-    return render(request, 'specialists/view_subscriptions.html', {'subscriptions': subscriptions, 'subscription_plan': subscription_plan})
+
+    
+    paginator = Paginator(subscriptions, 6)  
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(
+        request,'specialists/view_subscriptions.html',{'subscriptions': page_obj,'subscription_plan': subscription_plan,'page_obj': page_obj})
 
 
 def create_subscriber_plan(request: HttpRequest, subscription_id):
