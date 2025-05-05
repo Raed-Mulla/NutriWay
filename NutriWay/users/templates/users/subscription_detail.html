@@ -226,7 +226,7 @@
                 {% if subscription.status == 'active' %}
                 <i class="fa fa-info-circle me-2"></i> No meals have been assigned for Day {{ display_day }}.
                 {% if is_specialist%}
-                  <a href="{% url 'specialists:create_subscriber_plan' subscription.id %}" class="alert-link">Create a meal plan</a> for this day.
+                  <a href="{% url 'specialists:edit_subscriber_plan' subscriber_plan.id %}" class="alert-link">Create a meal plan</a> for this day.
                 {% endif %}
                 {% endif %}
               </div>
