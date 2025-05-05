@@ -3,85 +3,103 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-  <h2>Specialist Dashboard - {{ specialist.user.username }}</h2>
 
-  <div class="row mt-4">
-    <div class="col-md-4">
-      <div class="card p-3 shadow">
-        <h5>Total Subscribers</h5>
-        <p>{{ total_subscribers }}</p>
-      </div>
-    </div>
-
-    <div class="row mt-4">
-        <div class="col-md-4">
-          <div class="card p-3 shadow">
-            <h5>General Plans</h5>
+<section class="dashboard pt-5 pb-5">
+  <div class="container">
+    <h2 class="dashboard-title">Dashboard</h2>
+    <div class="row">
+      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 d-flex mb-4">
+        <div class="card card-1 general_plan_count p-3">
+          <div class="icon">
+            <!-- <i class="fa-solid fa-users"></i> -->
+             <img src="static/images/11" alt="">
+          </div>
+          <div class="info">
             <p>{{ general_plan_count }}</p>
+            <h5>General Plans</h5>
           </div>
+
         </div>
-      
-        <div class="col-md-4">
-          <div class="card p-3 shadow">
-            <h5>Subscription Plans</h5>
+      </div>
+      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 d-flex mb-4">
+        <div class="card card-1 total_subscribers p-3">
+          <div class="icon">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <div class="info">
+            <p>{{ total_subscribers }}</p>
+            <h5>Total Subscribers</h5>
+          </div>
+
+        </div>
+      </div>
+      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 d-flex mb-4">
+        <div class="card card-1 subscription_plan_count p-3">
+          <div class="icon">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <div class="info">
             <p>{{ subscription_plan_count }}</p>
+            <h5>Subscription Plans</h5>
           </div>
+
         </div>
-      
-        <div class="col-md-4">
-          <div class="card p-3 shadow">
-            <h5>Total Earnings</h5>
+      </div>
+      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 d-flex mb-4">
+        <div class="card card-1 total_earnings p-3">
+          <div class="icon">
+            <i class="fa-solid fa-money-bill-wave"></i>
+          </div>
+          <div class="info">
             <p>{{ total_earnings }} SAR</p>
+            <h5>Total Earnings</h5>
           </div>
+
         </div>
       </div>
-      
 
-
-  <div class="row mt-4">
-    <div class="col-md-6">
-      <div class="card p-3 shadow">
-        <h5>Subscribers by Gender</h5>
-        <canvas id="genderChart" height="300"></canvas>
+    </div>
+    <div class="row">
+      <div class="col-xl-8 col-lg-8   mb-4 d-flex">
+        <div class="card card-2 p-3 shadow">
+          <h5>Monthly Earnings</h5>
+          <canvas id="earningsChart" class="monthly-earnings"></canvas>
+        </div>
+      </div>
+      <div class="col-xl-4 col-lg-4  mb-4 d-flex">
+        <div class="card card-2">
+          <h5>Subscribers by Gender</h5>
+          <canvas id="genderChart" class="gender m-auto"></canvas>
+        </div>
       </div>
     </div>
-
-    <div class="col-md-6">
-      <div class="card p-3 shadow">
-        <h5>Monthly Earnings</h5>
-        <canvas id="earningsChart" height="300"></canvas>
+    <div class="row">
+      <div class="col">
+        <div class="card card-3 p-3 shadow">
+          <h5>Monthly Subscribers</h5>
+          <canvas id="subscribersChart" class="m-auto"></canvas>
+        </div>
       </div>
     </div>
   </div>
+</section>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <div class="row mt-4">
-    <div class="col-md-12">
-      <div class="card p-3 shadow">
-        <h5>Monthly Subscribers</h5>
-        <canvas id="subscribersChart" height="300"></canvas>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Chart.js CDN -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-  // Gender Chart
-  const genderCtx = document.getElementById('genderChart').getContext('2d');
-  new Chart(genderCtx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Male', 'Female'],
-      datasets: [{
-        data: [{{ male_percentage }}, {{ female_percentage }}],
-        backgroundColor: ['#36A2EB', '#FF6384'],
-        borderWidth: 1
-      }]
+  <script>
+    // Gender Chart
+    const genderCtx = document.getElementById('genderChart').getContext('2d');
+    new Chart(genderCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Male', 'Female'],
+        datasets: [{
+          data: [{{ male_percentage }}, {{ female_percentage }}],
+      backgroundColor: ['#36A2EB', '#FF6384'],
+      borderWidth: 1
+    }]
     },
-    options: {
+      options: {
       responsive: true,
       plugins: {
         legend: {
@@ -91,63 +109,122 @@
     }
   });
 
-  // Monthly Earnings Chart
-  const earningsData = {{ monthly_earnings|safe }};
-  const earningsCtx = document.getElementById('earningsChart').getContext('2d');
-  new Chart(earningsCtx, {
-    type: 'line',
-    data: {
-      labels: Object.keys(earningsData),
-      datasets: [{
-        label: 'Monthly Earnings (SAR)',
-        data: Object.values(earningsData),
-        fill: false,
-        tension: 0.3,
-        borderColor: 'rgba(75, 192, 192, 1)',
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      }
-    }
-  });
-
-  // Monthly Subscribers Chart
-  const subscribersData = {{ subscriber_counts|safe }};
-  const subscribersCtx = document.getElementById('subscribersChart').getContext('2d');
-  new Chart(subscribersCtx, {
-    type: 'bar',
-    data: {
-      labels: Object.keys(subscribersData),
-      datasets: [{
-        label: 'Monthly Subscribers',
-        data: Object.values(subscribersData),
-        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-        borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            stepSize: 1
+    // Monthly Earnings Chart
+    const earningsData = {{ monthly_earnings| safe }};
+    const earningsCtx = document.getElementById('earningsChart').getContext('2d');
+    new Chart(earningsCtx, {
+      type: 'line',
+      data: {
+        labels: Object.keys(earningsData),
+        datasets: [{
+          label: 'Monthly Earnings (SAR)',
+          data: Object.values(earningsData),
+          fill: false,
+          tension: 0.3,
+          borderColor: 'rgba(75, 192, 192, 1)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
           }
         }
+      }
+    });
+
+    // Monthly Subscribers Chart
+    const subscribersData = {{ subscriber_counts| safe }};
+    const subscribersCtx = document.getElementById('subscribersChart').getContext('2d');
+    new Chart(subscribersCtx, {
+      type: 'bar',
+      data: {
+        labels: Object.keys(subscribersData),
+        datasets: [{
+          label: 'Monthly Subscribers',
+          data: Object.values(subscribersData),
+          backgroundColor: 'rgba(54, 162, 235, 0.5)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        }]
       },
-      plugins: {
-        legend: {
-          display: false
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          }
         }
       }
-    }
-  });
-</script>
-{% endblock %}
+    });
+  </script>
+  {% endblock %}
+  <div class="container mt-5">
+    <h2>Specialist Dashboard - {{ specialist.user.username }}</h2>
+  
+    <div class="row mt-4">
+      <div class="col-md-4">
+
+      </div>
+  
+      <div class="row mt-4">
+        <div class="col-md-4">
+          <div class="card p-3 shadow">
+            <h5>General Plans</h5>
+            <p>{{ general_plan_count }}</p>
+          </div>
+        </div>
+  
+        <div class="col-md-4">
+          <div class="card p-3 shadow">
+            <h5>Subscription Plans</h5>
+            <p>{{ subscription_plan_count }}</p>
+          </div>
+        </div>
+  
+        <div class="col-md-4">
+          <div class="card p-3 shadow">
+            <h5>Total Earnings</h5>
+            <p>{{ total_earnings }} SAR</p>
+          </div>
+        </div>
+      </div>
+  
+  
+  
+      <div class="row mt-4">
+        <div class="col-md-6">
+          <div class="card p-3 shadow">
+            <h5>Subscribers by Gender</h5>
+            <canvas id="genderChart" height="300"></canvas>
+          </div>
+        </div>
+  
+        <div class="col-md-6">
+          <div class="card p-3 shadow">
+            <h5>Monthly Earnings</h5>
+            <canvas id="earningsChart" height="300"></canvas>
+          </div>
+        </div>
+      </div>
+  
+      <div class="row mt-4">
+        <div class="col-md-12">
+          <div class="card p-3 shadow">
+            <h5>Monthly Subscribers</h5>
+            <canvas id="subscribersChart" height="300"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

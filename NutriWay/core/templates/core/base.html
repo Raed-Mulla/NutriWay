@@ -69,7 +69,7 @@
                 Request</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'directors:specialist_manage' %}">Specialist
                 Manage</a></li>
-            <li class="nav-item"><a class="nav-link" href="">
+            <li class="nav-item"><a class="nav-link" href="{% url 'directors:dashboard' %}">
                 Dashboard</a></li>
           </div>
           {% endif %}
@@ -87,7 +87,7 @@
                 Subscription Plan</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'specialists:create_general_plan' %}">Create General
                 Plan</a></li>
-            <li class="nav-item"><a class="nav-link" href="">Dashboard
+            <li class="nav-item"><a class="nav-link" href="{% url 'specialists:specialist_dashboard' user.specialist.id %}">Dashboard
                 </a></li>
           </div>
           {% endif %}
@@ -117,7 +117,7 @@
             <li><a class="dropdown-item" href="{% url 'specialists:create_subscription_plan' %}">Craete Subscription
                 Plan</a></li>
             <li><a class="dropdown-item" href="{% url 'specialists:create_general_plan' %}">Create General Plan</a></li>
-            <li><a class="dropdown-item" href="">Dashboard</a></li>
+            <li><a class="dropdown-item" href="{% url 'specialists:specialist_dashboard' user.specialist.id %}">Dashboard</a></li>
             <li class="logout"><a class="dropdown-item" href="{% url 'accounts:logout_view' %}">Logout</a></li>
           </ul>
         </div>
@@ -134,7 +134,7 @@
             <li><a class="dropdown-item" href="{% url 'accounts:profile_view' user.username %}">Profile</a></li>
             <li><a class="dropdown-item" href="{% url 'directors:Specialist_Request'%}">Specialist Request</a></li>
             <li><a class="dropdown-item" href="{% url 'directors:specialist_manage' %}">Specialist Manage</a></li>
-            <li><a class="dropdown-item" href="">Dashboard</a></li>
+            <li><a class="dropdown-item" href="{% url 'directors:dashboard' %}">Dashboard</a></li>
             <li class="logout"><a class="dropdown-item" href="{% url 'accounts:logout_view' %}">Logout</a></li>
           </ul>
         </div>

@@ -4,106 +4,104 @@
 {% block title %}Director Dashboard{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-  <h2 class="text-center mb-4">Director Dashboard</h2>
+<section class="dashboard pt-5 pb-5">
+  <div class="container">
+    <h2 class="dashboard-title">Dashboard</h2>
+    <div class="row">
+      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 d-flex mb-4">
+        <div class="card card-1 general_plan_count p-3">
+          <div class="icon">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <div class="info">
+            <p class="fw-bold fs-4">{{ total_subscription_plans }}</p>
+            <h5>Total Subscription Plans</h5>
+          </div>
 
-  <div class="row text-center mb-4">
-    <div class="col-md-3">
-      <div class="card p-3 shadow">
-        <h5>Total General Plans</h5>
-        <p class="fw-bold fs-4">{{ total_general_plans }}</p>
+        </div>
+      </div>
+      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 d-flex mb-4">
+        <div class="card card-1 total_subscribers p-3">
+          <div class="icon">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <div class="info">
+            <p>{{ total_subscribers }}</p>
+            <h5>Total Subscribers</h5>
+          </div>
+
+        </div>
+      </div>
+      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 d-flex mb-4">
+        <div class="card card-1 subscription_plan_count p-3">
+          <div class="icon">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <div class="info">
+            <p class="fw-bold fs-4">{{ total_specialists }}</p>
+            <h5>Total Specialists</h5>
+          </div>
+
+        </div>
+      </div>
+      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 d-flex mb-4">
+        <div class="card card-1 total_earnings p-3">
+          <div class="icon">
+            <i class="fa-solid fa-money-bill-wave"></i>
+          </div>
+          <div class="info">
+            <p class="fw-bold fs-4">{{ total_persons }}</p>
+            <h5>Total Users</h5>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card top_specialist">
+          <h4>Top Specialists (By Subscribers)</h4>
+          
+          <ul>
+            {% for s in top_subscribed_specialists %}
+          <li>
+            <div class="left">
+              <i class="fa-solid fa-medal"></i>
+              <span class="name">{{ s.username }}</span>
+            </div>
+            <span class="score">{{ s.subscriber_count }}</span>
+          </li>
+            {% endfor %}
+        </ul>
+        </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card p-3 shadow">
-        <h5>Total Subscription Plans</h5>
-        <p class="fw-bold fs-4">{{ total_subscription_plans }}</p>
+    <div class="row">
+      <div class="col-xl-6 col-lg-6   mb-4 d-flex">
+        <div class="card card-2 p-3 shadow">
+          <h5>New Users This Month</h5>
+          <canvas id="usersChart"></canvas>
+        </div>
+      </div>
+      <div class="col-xl-6 col-lg-6  mb-4 d-flex">
+        <div class="card card-2">
+          <h5>New Users This Year (by Month)</h5>
+          <canvas id="yearlyChart"></canvas>
+        </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card p-3 shadow">
-        <h5>Total Specialists</h5>
-        <p class="fw-bold fs-4">{{ total_specialists }}</p>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card p-3 shadow">
-        <h5>Total Users</h5>
-        <p class="fw-bold fs-4">{{ total_persons }}</p>
+    <div class="row">
+      <div class="col-6-lg">
+        <div class="card card-3 p-3 shadow">
+          <h5>Monthly Subscribers</h5>
+          <canvas id="subsChart"></canvas>
+        </div>
       </div>
     </div>
   </div>
+</section>
 
-  <div class="alert alert-warning mt-4" role="alert">
-    <strong>Pending Specialist Requests:</strong> {{ pending_requests_count }}
-  </div>
-
-  <h4 class="mb-3">Top Subscribed Specialists</h4>
-  <div class="table-responsive">
-    <table class="table table-bordered table-striped">
-      <thead class="table-light">
-        <tr>
-          <th>#</th>
-          <th>Specialist</th>
-          <th>Subscribers</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for s in top_subscribed_specialists %}
-        <tr>
-          <td>{{ forloop.counter }}</td>
-          <td>{{ s.username }}</td>
-          <td>{{ s.subscriber_count }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="3">No subscriptions found.</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-
-  <h4 class="mb-3">Top Earning Specialists</h4>
-  <table class="table table-bordered table-striped">
-    <thead class="table-light">
-      <tr>
-        <th>#</th>
-        <th>Specialist</th>
-        <th>Total Earnings (SAR)</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for s in top_earning_specialists %}
-      <tr>
-        <td>{{ forloop.counter }}</td>
-        <td>{{ s.username }}</td>
-        <td>{{ s.total }}</td>
-      </tr>
-      {% empty %}
-      <tr>
-        <td colspan="3">No earnings data available.</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  
-
-  <h4 class="text-center mt-5 mb-4">New Users This Month</h4>
-  <div class="card shadow p-4 mb-5">
-    <canvas id="usersChart" height="100"></canvas>
-  </div>
-
-  <h4 class="text-center mt-5 mb-4">New Users This Year (by Month)</h4>
-  <div class="card shadow p-4 mb-5">
-    <canvas id="yearlyChart" height="100"></canvas>
-  </div>
-
-  <h4 class="text-center mt-5 mb-4">New Subscriptions This Year (by Month)</h4>
-  <div class="card shadow p-4 mb-5">
-    <canvas id="subsChart" height="100"></canvas>
-  </div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -172,3 +170,63 @@
   });
 </script>
 {% endblock %}
+<div class="container py-5">
+  <h2 class="text-center mb-4">Director Dashboard</h2>
+
+  <div class="row text-center mb-4">
+    <div class="col-md-3">
+      <div class="card p-3 shadow">
+        <h5>Total General Plans</h5>
+        <p class="fw-bold fs-4">{{ total_general_plans }}</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card p-3 shadow">
+        <h5>Total Subscription Plans</h5>
+        <p class="fw-bold fs-4">{{ total_subscription_plans }}</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card p-3 shadow">
+        <h5>Total Specialists</h5>
+        <p class="fw-bold fs-4">{{ total_specialists }}</p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card p-3 shadow">
+        <h5>Total Users</h5>
+        <p class="fw-bold fs-4">{{ total_persons }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-warning mt-4" role="alert">
+    <strong>Pending Specialist Requests:</strong> {{ pending_requests_count }}
+  </div>
+
+  <h4 class="mb-3">Top Subscribed Specialists</h4>
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Specialist</th>
+          <th>Subscribers</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in top_subscribed_specialists %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ s.username }}</td>
+          <td>{{ s.subscriber_count }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3">No subscriptions found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
