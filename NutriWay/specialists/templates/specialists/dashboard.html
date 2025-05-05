@@ -11,8 +11,8 @@
       <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 d-flex mb-4">
         <div class="card card-1 general_plan_count p-3">
           <div class="icon">
-            <!-- <i class="fa-solid fa-users"></i> -->
-             <img src="static/images/11" alt="">
+            <i class="fa-solid fa-clipboard"></i>
+            <img src="static/images/11" alt="">
           </div>
           <div class="info">
             <p>{{ general_plan_count }}</p>
@@ -36,8 +36,7 @@
       <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 d-flex mb-4">
         <div class="card card-1 subscription_plan_count p-3">
           <div class="icon">
-            <i class="fa-solid fa-users"></i>
-          </div>
+            <i class="fa-solid fa-bullseye"></i>          </div>
           <div class="info">
             <p>{{ subscription_plan_count }}</p>
             <h5>Subscription Plans</h5>
@@ -61,22 +60,22 @@
     </div>
     <div class="row">
       <div class="col-xl-8 col-lg-8   mb-4 d-flex">
-        <div class="card card-2 p-3 shadow">
-          <h5>Monthly Earnings</h5>
+        <div class="card card-2 p-3 monthly-earnings">
+          <h5 class="mb-3"><i class="fa-solid fa-money-bill-trend-up fs-4"></i> Monthly Earnings</h5>
           <canvas id="earningsChart" class="monthly-earnings"></canvas>
         </div>
       </div>
       <div class="col-xl-4 col-lg-4  mb-4 d-flex">
-        <div class="card card-2">
-          <h5>Subscribers by Gender</h5>
+        <div class="card card-2 gender">
+          <h5 class="mb-3"><i class="fa-solid fa-venus-mars fs-4"></i> Subscribers by Gender</h5>
           <canvas id="genderChart" class="gender m-auto"></canvas>
         </div>
       </div>
     </div>
     <div class="row">
       <div class="col">
-        <div class="card card-3 p-3 shadow">
-          <h5>Monthly Subscribers</h5>
+        <div class="card card-3 p-3 subscribersChart">
+          <h5 class="mb-3"><i class="fa-solid fa-user-plus fs-4"></i> Monthly Subscribers</h5>
           <canvas id="subscribersChart" class="m-auto"></canvas>
         </div>
       </div>
@@ -169,62 +168,3 @@
     });
   </script>
   {% endblock %}
-  <div class="container mt-5">
-    <h2>Specialist Dashboard - {{ specialist.user.username }}</h2>
-  
-    <div class="row mt-4">
-      <div class="col-md-4">
-
-      </div>
-  
-      <div class="row mt-4">
-        <div class="col-md-4">
-          <div class="card p-3 shadow">
-            <h5>General Plans</h5>
-            <p>{{ general_plan_count }}</p>
-          </div>
-        </div>
-  
-        <div class="col-md-4">
-          <div class="card p-3 shadow">
-            <h5>Subscription Plans</h5>
-            <p>{{ subscription_plan_count }}</p>
-          </div>
-        </div>
-  
-        <div class="col-md-4">
-          <div class="card p-3 shadow">
-            <h5>Total Earnings</h5>
-            <p>{{ total_earnings }} SAR</p>
-          </div>
-        </div>
-      </div>
-  
-  
-  
-      <div class="row mt-4">
-        <div class="col-md-6">
-          <div class="card p-3 shadow">
-            <h5>Subscribers by Gender</h5>
-            <canvas id="genderChart" height="300"></canvas>
-          </div>
-        </div>
-  
-        <div class="col-md-6">
-          <div class="card p-3 shadow">
-            <h5>Monthly Earnings</h5>
-            <canvas id="earningsChart" height="300"></canvas>
-          </div>
-        </div>
-      </div>
-  
-      <div class="row mt-4">
-        <div class="col-md-12">
-          <div class="card p-3 shadow">
-            <h5>Monthly Subscribers</h5>
-            <canvas id="subscribersChart" height="300"></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
