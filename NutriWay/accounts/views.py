@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
 from . models import Person,PersonData,Director,Specialist,Certificate
+from users.models import Subscription,GeneralPlanPurchase
+from specialists.models import Generalplan,SubscriptionPlan
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
 from django.contrib.auth import authenticate,login,logout
@@ -10,8 +12,11 @@ from django.db import IntegrityError , transaction
 from django.core.mail import send_mail
 from directors.models import SpecialistRequest
 import random
+from django.db.models import Count
+from django.utils.dateformat import DateFormat
 from django.conf import settings
-  
+from django.utils.timezone import now
+
 verification_codes= {}
 def generate_verification_code():
     return str(random.randint(100000, 999999))
@@ -251,12 +256,71 @@ def profile_view(request, user_name):
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to view profiles.", "alert-danger")
         return redirect('accounts:login_view')
+    
     try:
+        data = {}
+        certificates = None
+        active = None
+        new_this_month = None
+        latest_data = None
+        weight_entries = None
+        labels = None
+        weights = None
+        if hasattr(request.user, 'person'):
+            person = Person.objects.get(user=request.user)
+            subscriptions = Subscription.objects.filter(person=person)
+            general_plans = GeneralPlanPurchase.objects.filter(person=person).values_list('general_plan', flat=True)
+            latest_data = PersonData.objects.filter(person=person).last()
+            weight_entries = PersonData.objects.filter(person=person).order_by('created_at') 
+            labels = [DateFormat(entry.created_at).format('M d') for entry in weight_entries]
+            weights = [entry.weight for entry in weight_entries]        
+            if request.user != person.user:
+                messages.error(request, "You don't have permission to view this subscription", "alert-danger")
+                return redirect('core:home_view')
+        if hasattr(request.user, 'specialist'):
+            specialist = Specialist.objects.get(user=request.user)
+            if request.user != specialist.user:
+                messages.error(request, "You don't have permission to view this subscription", "alert-danger")
+                return redirect('core:home_view')
+            certificates = Certificate.objects.filter(specialist=specialist)
+            subscriptions = SubscriptionPlan.objects.filter(specialist=specialist).annotate(
+            subscriber_count=Count('subscription')
+    )
+            general_plans = Generalplan.objects.filter(specialist=specialist)
+            specialist_plans = specialist.subscription_plans.all()
+            subscriptions = Subscription.objects.filter(subscription_plan__in=specialist_plans)
+
+        today = now().date()
+        start_of_month = today.replace(day=1)
+
+        active_count = subscriptions.filter(status='active', end_date__gte=today).count()
+        expired_count = subscriptions.filter(status='expired').count()
+        new_this_month_count = subscriptions.filter(start_date__gte=start_of_month).count()
+        print('@@@@@@@@@@@@@@@@@@@@@@@@@@@2')
+        print(f'active_count { active_count}' )
+        print(f'expired_count {expired_count}')
+        data.update({
+            'active_count': active_count,
+            'expired_count': expired_count,
+            'new_this_month_count': new_this_month_count
+        })
+               
+        
         profile_user = User.objects.get(username=user_name)
         if request.user.username != user_name:
             messages.error(request, "You can only view your own profile.", "alert-danger")
             return redirect('core:home_view')
-        return render(request, 'accounts/profile.html', {'profile_user': profile_user})
+        data.update({
+        'profile_user': profile_user,
+        'subscriptions': subscriptions,
+        'general_plans': general_plans,
+        'latest_data': latest_data,
+        'certificates': certificates,
+        'weight_labels': labels,
+        'weight_values': weights
+    })
+
+        return render(request, 'accounts/profile.html', data)
 
     except User.DoesNotExist:
         messages.error(request, "User not found.", "alert-danger")
@@ -340,6 +404,6 @@ def update_profile_view(request,user_name):
                 )
         
         messages.success(request, "Profile updated successfully!", "alert-success")
-        return redirect('accounts:update_profile_view',user_name)
+        return redirect('accounts:profile_view',user_name)
     
     return render(request, 'accounts/update_profile.html', context)

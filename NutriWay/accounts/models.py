@@ -28,7 +28,7 @@ class PersonData(models.Model):
 class Specialist(models.Model):
     class GenderChoices(models.TextChoices):
         Male = "Male" , "Male"
-        Famele = "Female" , "Female"
+        Female = "Female" , "Female"
 
     class SpecialtyChoices(models.TextChoices):
         clinical = 'clinical', 'Clinical Nutrition'
@@ -63,7 +63,7 @@ class Certificate(models.Model):
 class Director(models.Model):
     class GenderChoices(models.TextChoices):
         Male = "Male" , "Male"
-        Famele = "Female" , "Female"
+        Female = "Female" , "Female"
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     gender = models.CharField(max_length=8,choices= GenderChoices.choices , null=True)
     birth_date = models.DateField(null=True)
