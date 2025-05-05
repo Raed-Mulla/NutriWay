@@ -13,6 +13,14 @@
         <i class="fa fa-arrow-left me-2"></i> Back 
       </a>
     </div>
+    <form method="get" class="mb-4 filter">
+      <select name="status" class="form-select w-auto" onchange="this.form.submit()">
+        <option value="all" {% if filter_status == 'all' %}selected{% endif %}>All</option>
+        <option value="active" {% if filter_status == 'active' %}selected{% endif %}>Active</option>
+        <option value="expired" {% if filter_status == 'expired' %}selected{% endif %}>Expired</option>
+      </select>
+    </form>
+    
     <div class="row">
       {% for subscription in subscriptions %}
       <div class="col-lg-4 col-md-6 col-sm-6">
@@ -30,12 +38,14 @@
           <div class="duration">Duration: <span>{{ subscription.get_duration_display }}</span></div>
           <div class="end-date">End Date: <span>{{ subscription.end_date }}</span></div>
           <div class="btns d-flex mt-3">
+            {% if subscription.status == 'active' %}
             {% if subscription.subscriber_plan %}
-            <a href="{% url 'specialists:edit_subscriber_plan' subscription.subscriber_plan.id %}" class="btn btn-a flex-grow-1 me-1">Edit Plan</a>
+                <a href="{% url 'specialists:edit_subscriber_plan' subscription.subscriber_plan.id %}" class="btn btn-a flex-grow-1 me-1">Edit Plan</a>
             {% else %}
-            <a href="{% url 'specialists:create_subscriber_plan' subscription.id %}" class="btn btn-a flex-grow-1 me-1">Create Plan</a>
-
+                <a href="{% url 'specialists:create_subscriber_plan' subscription.id %}" class="btn btn-a flex-grow-1 me-1">Create Plan</a>
             {% endif %}
+        {% endif %}
+        
             <a href="{% url 'users:subscription_detail' subscription.id %}" class="btn btn-a flex-grow-1 ">view details</a>
           </div>
         </div>

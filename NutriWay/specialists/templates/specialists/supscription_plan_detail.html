@@ -26,7 +26,14 @@
             <option value="{{ val }}">{{ label }}</option>
         {% endfor %}
         </select>
-        <button type="submit" class="btn btn-primary">Subscribe Now</button>
+        {% if is_subscribed %}
+  <button type="button" class="btn btn-secondary d-block w-100" disabled>
+    You are already subscribed
+  </button>
+{% else %}
+  <button type="submit" class="btn-a d-block w-100 btn">Subscribe Now</button>
+{% endif %}
+
     </form>
 </div>
 </div>

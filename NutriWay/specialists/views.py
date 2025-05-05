@@ -7,7 +7,7 @@ from django.contrib import messages
 from users.models import Subscription , ProgressReport,GeneralPlanPurchase
 from datetime import date
 from datetime import datetime
-from django.db.models import Avg ,  Count,  Sum
+from django.db.models import Avg ,  Count,  Sum , Case,When,Value,IntegerField
 from django.utils.timezone import now
 from calendar import month_name
 import json
@@ -74,7 +74,7 @@ def create_general_plan(request: HttpRequest):
     else:
         form = GeneralPlanForm()
 
-    return render(request, 'specialists/create_general_plan.html', {'form': form})
+    return render(request, 'specialists/create_general_plan.html', {'form': form , 'plan_type_choices': Generalplan.PlanType.choices})
 
 
 
@@ -222,22 +222,49 @@ def specialist_subscriptions(request: HttpRequest, plan_id):
         messages.error(request, "You are not authorized to access this page.", "alert-danger")
         return redirect('core:home_view')
 
-    subscriptions = Subscription.objects.filter(subscription_plan=subscription_plan)
-    
-    
+
+    filter_status = request.GET.get('status', 'all')
+
+
+    subscriptions = Subscription.objects.filter(
+        subscription_plan=subscription_plan,
+        status__in=[Subscription.StatusChoices.ACTIVE, Subscription.StatusChoices.EXPIRED]
+    )
+
+
+    if filter_status == 'active':
+        subscriptions = subscriptions.filter(status=Subscription.StatusChoices.ACTIVE)
+    elif filter_status == 'expired':
+        subscriptions = subscriptions.filter(status=Subscription.StatusChoices.EXPIRED)
+
+    subscriptions = subscriptions.annotate(
+        status_order=Case(
+            When(status=Subscription.StatusChoices.ACTIVE, then=Value(0)),
+            When(status=Subscription.StatusChoices.EXPIRED, then=Value(1)),
+            output_field=IntegerField()
+        )
+    ).order_by('status_order', '-start_date')
+
     today = datetime.now().date()
     for subscription in subscriptions:
-        if today > subscription.end_date and subscription.status != subscription.StatusChoices.EXPIRED:
-            subscription.status = subscription.StatusChoices.EXPIRED
+        if today > subscription.end_date and subscription.status != Subscription.StatusChoices.EXPIRED:
+            subscription.status = Subscription.StatusChoices.EXPIRED
             subscription.save()
 
-    
-    paginator = Paginator(subscriptions, 6)  
+    paginator = Paginator(subscriptions, 6)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
     return render(
-        request,'specialists/view_subscriptions.html',{'subscriptions': page_obj,'subscription_plan': subscription_plan,'page_obj': page_obj})
+        request,
+        'specialists/view_subscriptions.html',
+        {
+            'subscriptions': page_obj,
+            'subscription_plan': subscription_plan,
+            'page_obj': page_obj,
+            'filter_status': filter_status,
+        }
+    )
 
 
 def create_subscriber_plan(request: HttpRequest, subscription_id):
@@ -547,4 +574,8 @@ def subscription_plan_detail_view (request:HttpRequest , plan_id:int):
     except SubscriptionPlan.DoesNotExist:
         messages.error(request, "Subscription plan not found.", "alert-danger")
         return redirect("core:home_view")
-    return render(request, 'specialists/supscription_plan_detail.html', {'plan': plan , "duration_choices": SubscriptionPlan.DurationChoices.choices,})
+    
+    is_subscribed = False
+    if request.user.is_authenticated:
+        is_subscribed = plan.subscription_set.filter(person__user=request.user, status='active').exists()
+    return render(request, 'specialists/supscription_plan_detail.html', {'plan': plan , "duration_choices": SubscriptionPlan.DurationChoices.choices,'is_subscribed': is_subscribed,})

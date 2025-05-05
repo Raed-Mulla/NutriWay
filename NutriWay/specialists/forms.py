@@ -10,7 +10,7 @@ class SubscriptionPlanForm(forms.ModelForm):
 class GeneralPlanForm(forms.ModelForm):
     class Meta:
         model = Generalplan
-        exclude = ['specialist']
+        exclude = ['specialist', 'created_at']
 
 class SubscriberPlanForm(forms.ModelForm):
     class Meta:

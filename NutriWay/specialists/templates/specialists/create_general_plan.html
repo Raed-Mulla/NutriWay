@@ -16,11 +16,25 @@
         <input type="text" class="form-control" name="description" placeholder="Enter plan descriiption" required>
       </div>
       <div class="mb-3">
+        <label class="form-label">Detail</label>
+        <textarea class="form-control" name="detail" placeholder="Enter plan detail" rows="4" required></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Plan Type</label>
+        <select class="form-control" name="plan_type" placeholder="Enter plan descriiption" required>
+          <option value="">Choose</option>
+          {% for val, label in plan_type_choices %} 
+          <option value="{{val}}">{{label}}</option>
+          {% endfor %}
+          
+        </select>
+      </div>
+      <div class="mb-3">
         <label class="form-label">Price</label>
         <input type="number" class="form-control" name="price" placeholder="Enter plan price" required>
       </div>
       <div class="mb-3">
-        <label class="form-label">Plan Image</label>
+        <label class="form-label">Plan File</label>
         <input type="file" class="form-control" name="plan_file" required>
       </div>
       <input type="submit" class="btn w-100" value="Create">
