@@ -45,9 +45,11 @@
                   <i class="fas fa-edit me-1"></i> create Plan
                 </a>
                 {% endif %}
-              <a href="{% url 'specialists:delete_subscription' subscription.id %}" class="btn btn-outline-danger btn-sm">
-                <i class="fas fa-times-circle me-1"></i> Cancel
-              </a>
+                <a href="{% url 'specialists:delete_subscription' subscription.id %}" 
+                class="btn btn-outline-danger btn-sm"
+                onclick="return confirm('Are you sure you want to cancel this subscription?');">
+                 <i class="fas fa-times-circle me-1"></i> Cancel
+             </a>
             {% endif %}
           </div>
           {% endif %}
