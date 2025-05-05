@@ -17,7 +17,7 @@
     <p><strong>Price:</strong> {{ plan.price }} ﷼</p>
     
 
-    <form method="get" action="{% url 'payments:start_checkout_general' plan.id %}">
+    <form method="get" action="{% url 'payments:generalplan_summary' plan.id %}">
         <button type="submit" class="btn btn-success">Buy Now</button>
     </form>
     

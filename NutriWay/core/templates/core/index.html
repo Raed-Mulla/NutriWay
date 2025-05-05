@@ -126,7 +126,7 @@
                 decoding="async" width="30px" class="mw-file-element"
                 srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/180px-Unicode_0x20C1.svg.png 1.5x, https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/240px-Unicode_0x20C1.svg.png 2x"
                 data-file-width="16" data-file-height="16"> {{plan.price | floatformat:0}}</div>
-            <a href="{% url 'payments:generalplan_summary' plan.id %}" class="btn d-block m-auto mb-2">Details</a>
+            <a href="{% url 'specialists:general_plan_detail' plan.id %}" class="btn d-block m-auto mb-2">Details</a>
           </div>
         </div>
       </div>
@@ -168,7 +168,7 @@
                   data-file-width="16" data-file-height="16">
                 {{ plan.price | floatformat:0 }} <span> / per month</span>
               </div>
-              <button type="submit" class="btn-a d-block w-100 btn">Details</button>
+              <a href="{% url 'specialists:subscription_plan_detail_view' plan.id %}" class="btn d-block m-auto mb-2">Details</a>
             </form>
           </div>
         </div>
