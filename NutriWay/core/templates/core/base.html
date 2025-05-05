@@ -46,9 +46,7 @@
             <a class="nav-link" href="{% url 'specialists:all_specialists' %}">Specialists</a>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'core:calorie_calculator' %}">Calorie Calculator</a>
-          </li>
+
           {% if not user.is_staff %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'supports:contact_us' %}">Contact Us</a>
@@ -71,13 +69,16 @@
                 Request</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'directors:specialist_manage' %}">Specialist
                 Manage</a></li>
+            <li class="nav-item"><a class="nav-link" href="">
+                Dashboard</a></li>
           </div>
           {% endif %}
           {% if user.is_staff %}
           <div class="support d-block d-lg-none">
-            <li class="nav-item"><a href="{% url 'supports:contact_messages' %}" class="nav-link">Contact messages</a></li>
+            <li class="nav-item"><a href="{% url 'supports:contact_messages' %}" class="nav-link">Contact messages</a>
+            </li>
           </div>
-         
+
           {% endif %}
           {% if user.specialist %}
           <div class="specialist d-block d-lg-none">
@@ -86,6 +87,8 @@
                 Subscription Plan</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'specialists:create_general_plan' %}">Create General
                 Plan</a></li>
+            <li class="nav-item"><a class="nav-link" href="">Dashboard
+                </a></li>
           </div>
           {% endif %}
           {% if user.person %}
@@ -114,6 +117,7 @@
             <li><a class="dropdown-item" href="{% url 'specialists:create_subscription_plan' %}">Craete Subscription
                 Plan</a></li>
             <li><a class="dropdown-item" href="{% url 'specialists:create_general_plan' %}">Create General Plan</a></li>
+            <li><a class="dropdown-item" href="">Dashboard</a></li>
             <li class="logout"><a class="dropdown-item" href="{% url 'accounts:logout_view' %}">Logout</a></li>
           </ul>
         </div>
@@ -130,6 +134,7 @@
             <li><a class="dropdown-item" href="{% url 'accounts:profile_view' user.username %}">Profile</a></li>
             <li><a class="dropdown-item" href="{% url 'directors:Specialist_Request'%}">Specialist Request</a></li>
             <li><a class="dropdown-item" href="{% url 'directors:specialist_manage' %}">Specialist Manage</a></li>
+            <li><a class="dropdown-item" href="">Dashboard</a></li>
             <li class="logout"><a class="dropdown-item" href="{% url 'accounts:logout_view' %}">Logout</a></li>
           </ul>
         </div>
@@ -228,18 +233,19 @@
   <footer class="pt-3 pb-1">
     <h2 class="text-center">NutriWay</h2>
     <div class="container">
-      <!-- <ul class="footer-links list-unstyled d-flex justify-content-center gap-3 mt-4 mb-3">
-        <li><a href="" >Link 1</a></li>
-        <li><a href="" >Link 1</a></li>
-        <li><a href="" >Link 1</a></li>
-        <li><a href="" >Link 1</a></li>
-        <li><a href="" >Link 1</a></li>
-        <li><a href="" >Link 1</a></li>
-      </ul> -->
+      <ul class="footer-links list-unstyled d-flex justify-content-center gap-3 mt-4 mb-3">
+        <li> <a class="" href="{% url 'core:calorie_calculator' %}">Calorie Calculator</a>
+        </li>
+        <li><a href="">Link 1</a></li>
+        <li><a href="">Link 1</a></li>
+        <li><a href="">Link 1</a></li>
+        <li><a href="">Link 1</a></li>
+        <li><a href="">Link 1</a></li>
+      </ul>
       <ul class="social list-unstyled d-flex justify-content-center gap-3 mt-4 mb-3">
-        <li><a href="" ><i class="fa-brands fa-x-twitter"></i></a></li>
-        <li><a href="" ><i class="fa-brands fa-instagram"></i></a></li>
-        <li><a href="" ><i class="fa-brands fa-whatsapp"></i></a></li>
+        <li><a href=""><i class="fa-brands fa-x-twitter"></i></a></li>
+        <li><a href=""><i class="fa-brands fa-instagram"></i></a></li>
+        <li><a href=""><i class="fa-brands fa-whatsapp"></i></a></li>
       </ul>
       <p class="text-center mb-0">© <span id="year"></span> NutriWay. All rights reserved.</p>
 

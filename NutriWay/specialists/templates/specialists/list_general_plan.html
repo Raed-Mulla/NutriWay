@@ -3,7 +3,6 @@
 
 {% block title %} General Plans {% endblock %}
 
-
 {% block content %}
 <section class="plans subscription-plans general-plans pt-5 pb-5">
   <h2 class="main-title">General Plans</h2>
@@ -11,31 +10,71 @@
     <form method="get" class="mb-4 filter">
       <div class="row">
         <div class="col-lg-3">
+          <label for="type" class="form-label fw-semibold">Plan Type</label>
+          <select id="type" name="type" class="form-select" onchange="this.form.submit()">
+            <option value="">All Types</option>
+            {% for val, label in planType %}
+              <option value="{{ val }}" {% if selected_type == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-lg-3">
           <label for="filter" class="form-label fw-semibold">Sort by <i class="ms-1 fa-solid fa-filter"></i></label>
           <select id="filter" name="filter" class="form-select" onchange="this.form.submit()">
-            <option value="">Choose</option>
+            <option value="">Price</option>
             <option value="low" {% if selected_filter == 'low' %}selected{% endif %}>Low to High</option>
             <option value="high" {% if selected_filter == 'high' %}selected{% endif %}>High to Low</option>
           </select>
         </div>
       </div>
     </form>    
+
     <div class="row">
       {% for plan in plans %}
       <div class="col-lg-4 col-md-6 mb-4">
         <div class="box">
-          <div class="name text-center position-relative p-3">{{ plan.specialist.user.username }}<img src="{{plan.specialist.image.url}}" alt="Not Found"></div>
+          <div class="name text-center position-relative p-3">
+            {{ plan.specialist.user.username }}
+            {% if plan.specialist.image %}
+              <img src="{{ plan.specialist.image.url }}" alt="Not Found">
+            {% endif %}
+          </div>
           <div class="info p-3">
             <h3 class="subscription-name">{{plan.name}}</h3>
             <p class="description"><span>Description:</span> {{plan.description}}</p>
             <div class="price text-center mb-3 mt-3 fw-bold"> <img alt="Unicode 0x20C1.svg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/120px-Unicode_0x20C1.svg.png" decoding="async" width="30px" class="mw-file-element" srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/180px-Unicode_0x20C1.svg.png 1.5x, https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/240px-Unicode_0x20C1.svg.png 2x" data-file-width="16" data-file-height="16"> {{plan.price | floatformat:0}}</div>
-            <a href="{% url 'payments:generalplan_summary' plan.id %}" class="btn d-block m-auto mb-2">Subscribe</a>
+            <a href="{% url 'payments:generalplan_summary' plan.id %}" class="btn d-block m-auto mb-2">Pay</a>
+
           </div>
         </div>
       </div>
+      {% empty %}
+        <p>No plans found.</p>
       {% endfor %}
+    </div>
+
+    <div class="mt-4 text-center">
+      <nav>
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if selected_filter %}&filter={{ selected_filter }}{% endif %}{% if selected_type %}&type={{ selected_type }}{% endif %}">Previous</a>
+            </li>
+          {% endif %}
+
+          <li class="page-item disabled">
+            <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+          </li>
+
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if selected_filter %}&filter={{ selected_filter }}{% endif %}{% if selected_type %}&type={{ selected_type }}{% endif %}">Next</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
     </div>
   </div>
 </section>
 {% endblock %}
-

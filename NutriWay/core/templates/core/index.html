@@ -2,60 +2,36 @@
 {% load static %}
 {% block title %} Home {% endblock %}
 {% block content %}
+
+
 <section class="landing">
-  <div class="slider-wrapper">
-    <div class="slider">
-      <div class="slide" style="background-image: url('static/images/home1.jpg');">
-        <div class="overlay">
-          <h2>Explore Our Services</h2>
-          <a class="btn-a btn btn-success" href="#services">Our Services</a>
-        </div>
+    <div class="content">
+      <div class="left">
+        <h1 class="mb-3">Welcome to NutriWay</h1>
+        <p >Your trusted platform for personalized nutrition, guided by certified specialists.</p>
+        <p >We connect you with experts, tailored diet plans, and smart tools to help you achieve your health goals — the right way, the NutriWay.</p>
+        <a href="#services" class="btn-a d-inline-block mt-3"> Explore Our Services</a>
       </div>
-      <div class="slide" style="background-image: url('static/images/home2.jpg');">
-        <div class="overlay">
-          <h2>Our Bset Specialists</h2>
-          <a class="btn-a btn btn-success" href="#specialists">Specialists</a>
-        </div>
-      </div>
-      <div class="slide" style="background-image: url('static/images/home3.jpg');">
-        <div class="overlay">
-          <h2>Choose a Subscription Plan</h2>
-          <a class="btn-a btn btn-success" href="#plans">Subscription Plan</a>
-        </div>
-      </div>
-    </div>
+
   </div>
-
-  <button class="prev"><i class="fa-solid fa-chevron-left"></i></button>
-  <button class="next"><i class="fa-solid fa-chevron-right"></i></button>
+    
 </section>
-<section class="about pt-5 pb-5">
-  <h2 class="main-title">About</h2>
-  <div class="container">
-    <p class="text-center text-black-50 lh-lg">
-      NutriWay connects users with certified nutrition specialists to provide personalized nutrition plans, progress
-      tracking tools, secure expert communication, and calorie calculators. Whether your goal is weight loss, muscle
-      gain, or managing health conditions, NutriWay offers a seamless, trusted online experience to help you improve
-      your eating habits.
 
+<section class="about pt-5 pb-5">
+  <div class="container">
+    <h2 class="main-title">Why Choose Us</h2>
+
+    <p class="text-center text-black-50 lh-lg">
+      NutriWay provides users with structured access to certified nutrition professionals through a secure, web-based platform. It incorporates personalized nutrition planning, dietary progress monitoring, and calorie calculation tools. The system is designed to support a range of nutritional objectives, including weight management, muscle development, and the dietary needs associated with specific health conditions.
 
     </p>
   </div>
 </section>
+
 <section class="services pt-5 pb-5 text-center" id="services">
   <h2 class="main-title">Our Services</h2>
   <div class="container">
     <div class="row">
-      <div class="col-lg-4 col-md-6 d-flex mt-3">
-        <div class="box d-flex flex-column justify-content-between flex-grow-1 rounded-lg bg-white p-4">
-          <div class="img mb-3"><img src="{% static 'images/services1.jpg' %}" alt="Not Found"></div>
-          <div class="info">
-            <h3 class="fs-5">Certified Specialists</h3>
-            <span class="text-black-50 d-block mt-2">Get expert guidance from trusted nutrition professionals.</span>
-          </div>
-          <a href="{% url 'specialists:all_specialists' %}" class="btn btn-a mt-3 d-inline-block w-fit">More</a>
-        </div>
-      </div>
       <div class="col-lg-4 col-md-6 d-flex mt-3">
         <div class="box d-flex flex-column justify-content-between flex-grow-1 rounded-lg bg-white p-4">
           <div class="img mb-3"><img src="{% static 'images/services2.jpg' %}" alt="Not Found"></div>
@@ -63,7 +39,19 @@
             <h3 class="fs-5">Personalized Plans</h3>
             <span class="text-black-50 d-block mt-2">Subscribe for custom meal plans tailored to your goals.</span>
           </div>
-          <a href="{% url 'specialists:list_subscription_plan'%}" class="btn btn-a mt-3 d-inline-block">More</a>
+
+          <a href="{% url 'specialists:all_specialists' %}" class="btn btn-a mt-3 d-inline-block w-fit">Our Specialists</a>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6 d-flex mt-3">
+        <div class="box d-flex flex-column justify-content-between flex-grow-1 rounded-lg bg-white p-4">
+          <div class="img mb-3"><img src="{% static 'images/services1.jpg' %}" alt="Not Found"></div>
+          <div class="info">
+            <h3 class="fs-5">Certified Specialists</h3>
+            <span class="text-black-50 d-block mt-2">Get expert guidance from trusted nutrition professionals.</span>
+          </div>
+
+          <a href="{% url 'specialists:list_subscription_plan'%}" class="btn btn-a mt-3 d-inline-block">Discover Your Custom Plan</a>
         </div>
       </div>
       <div class="col-lg-4 col-md-6 d-flex mt-3">
@@ -74,15 +62,17 @@
             <span class="text-black-50 d-block mt-2"> Access ready-made plans for common health and fitness
               goals.</span>
           </div>
-          <a href="{% url 'specialists:list_general_plan'%}" class="btn btn-a mt-3 d-inline-block">More</a>
+
+          <a href="{% url 'specialists:list_general_plan'%}" class="btn btn-a mt-3 d-inline-block">Browse Ready-Made Plans</a>
         </div>
       </div>
     </div>
   </div>
   </div>
 </section>
+
 <section class="specialists pt-5 pb-5" id="specialists">
-  <h2 class="main-title">Our Best Specialists</h2>
+  <h2 class="main-title">Top Rated Specialists</h2>
   <div class="container">
     <div class="row">
       {% for specialist in top_specialist%}
@@ -97,7 +87,8 @@
                 <img src="{% static 'images/default_profile.jpg' %}" alt="Not Found">
                 {%endif%}
               </div>
-              <div class="name fs-6">Experts {{specialist.user.first_name}} <span class="fs-6 text-black-50 d-block">{{specialist.specialty}}</span></div>
+
+              <div class="name "><a href="{% url 'specialists:specialist_detail' specialist.id %}">{{specialist.user.first_name}}</a> <span class=" d-block badge">{{specialist.get_specialty_display}}</span></div>
 
             </div>
             <div class="right badge">
@@ -115,6 +106,9 @@
     </div>
   </div>
 </section>
+<section class="spikes"></section>
+
+
 <section class="plans general pt-5 pb-5">
   <h2 class="main-title">General Plans</h2>
   <div class="container">
@@ -125,14 +119,14 @@
           <div class="name text-center position-relative p-3">{{ plan.specialist.user.username }}<img
               src="{{plan.specialist.image.url}}" alt="Not Found"></div>
           <div class="info p-3">
-            <h3 class="subscription-name">{{plan.name}}</h3>
+            <a href="{% url 'specialists:general_plan_detail' plan.id %}" class="subscription-name">{{plan.name}}</a>
             <p class="description"><span>Description:</span> {{plan.description}}</p>
             <div class="price text-center mb-3 mt-3 fw-bold"> <img alt="Unicode 0x20C1.svg"
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/120px-Unicode_0x20C1.svg.png"
                 decoding="async" width="30px" class="mw-file-element"
                 srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/180px-Unicode_0x20C1.svg.png 1.5x, https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/240px-Unicode_0x20C1.svg.png 2x"
                 data-file-width="16" data-file-height="16"> {{plan.price | floatformat:0}}</div>
-            <a href="{% url 'payments:generalplan_summary' plan.id %}" class="btn d-block m-auto mb-2">Subscribe</a>
+            <a href="{% url 'payments:generalplan_summary' plan.id %}" class="btn d-block m-auto mb-2">Details</a>
           </div>
         </div>
       </div>
@@ -140,6 +134,8 @@
     </div>
   </div>
 </section>
+<section class="spikes1"></section>
+
 <section class="plans subscription pt-5 pb-5" id="plans">
   <h2 class="main-title">Subscription Plans</h2>
   <div class="container">
@@ -159,26 +155,20 @@
           </div>
           <div class="info p-3">
             <form method="get" action="{% url 'payments:subscription_summary' plan.id %}">
-              <h3 class="subscription-name">{{ plan.name }}</h3>
+              <a  href="{% url 'specialists:subscription_plan_detail_view' plan.id %}" class="subscription-name">{{ plan.name }}</a>
               <p class="description"><span>Description:</span> {{ plan.description }}</p>
               <p class="type"> <span>Type: </span>{{ plan.plan_type }}</p>
           
-              <div class="duration d-flex align-items-center">
-                <select name="duration" class="p-1 border form-select" required>
-                  {% for val, label in DurationChoices %}
-                    <option value="{{ val }}" {% if val == '1_month' %}selected{% endif %}>{{ label }}</option>
-                  {% endfor %}
-                </select>
-              </div>
+
               <div class="price text-center mb-3 mt-3 fw-bold">
                 <img alt="Unicode 0x20C1.svg"
                   src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/120px-Unicode_0x20C1.svg.png"
                   decoding="async" width="30px" class="mw-file-element"
                   srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/180px-Unicode_0x20C1.svg.png 1.5x, https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/240px-Unicode_0x20C1.svg.png 2x"
                   data-file-width="16" data-file-height="16">
-                {{ plan.price | floatformat:0 }}
+                {{ plan.price | floatformat:0 }} <span> / per month</span>
               </div>
-              <button type="submit" class="btn-a d-block w-100 btn">Subscribe</button>
+              <button type="submit" class="btn-a d-block w-100 btn">Details</button>
             </form>
           </div>
         </div>
@@ -187,6 +177,8 @@
     </div>
   </div>
 </section>
+<section class="spikes"></section>
+
 <section class="testimonials pt-5 pb-5">
   <h2 class="main-title text-center">What Our Clients Say</h2>
   <div class="container">
@@ -231,6 +223,7 @@
     </div>
   </div>
 </section>
+<section class="spikes1"></section>
 
 
 

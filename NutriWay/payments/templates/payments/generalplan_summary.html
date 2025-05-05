@@ -1,39 +1,58 @@
 {% extends "core/base.html" %}
 
-
-{% block title %} General Plan Summary {% endblock %}
+{% block title %} General Bill Summary {% endblock %}
 
 {% block content %}
-<section class="payment-summary py-5">
+<!-- Animate.css  -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<section class="py-5 bg-light" style="min-height: 80vh;">
   <div class="container">
-    <div class="summary-card card shadow-sm border-light p-4">
-      <h4 class="card-title mb-4 text-center">Bill Summary</h4>
-      <ul class="list-unstyled">
-        <li class="d-flex justify-content-between py-2">
-          <strong>Plan Name:</strong> <span>{{ plan.name }}</span>
-        </li>
-        <li class="d-flex justify-content-between py-2">
-          <strong>Specialist:</strong> <span>{{ specialist_name }}</span>
-        </li>
-        <li class="d-flex justify-content-between py-2">
-          <strong>Description:</strong> <span>{{ plan.description }}</span>
-        </li>
-        <li class="d-flex justify-content-between py-2">
-          <strong>Price:</strong> <span> <img alt="Unicode 0x20C1.svg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/120px-Unicode_0x20C1.svg.png" decoding="async" width="30px" class="mw-file-element" srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/180px-Unicode_0x20C1.svg.png 1.5x, https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/240px-Unicode_0x20C1.svg.png 2x" data-file-width="16" data-file-height="16"> {{ plan.price | floatformat:0 }}</span>
-        </li>
-        <li class="d-flex justify-content-between py-2">
-          <strong>Payment Method:</strong>
-          <span>
-            {% for method in payment_methods %}
-              {{ method }}{% if not forloop.last %} or {% endif %}
-            {% endfor %}
-          </span>
-        </li>
-      </ul>
-      <a href="{% url 'payments:start_checkout_general' plan.id %}" class="btn btn-a d-block w-100 mt-5">Proceed to Payment</a>
+    <div class="card shadow-sm border-0 rounded-4 animate__animated animate__fadeInUp animate__faster overflow-hidden">
+      <div class="row g-0">
+
+        <div class="col-md-12 p-4">
+          <h4 class="card-title text-center mb-4"><i class="fas fa-clipboard-list text-success me-2"></i>Bill Summary</h4>
+          <ul class="list-unstyled fs-5">
+            <li class="d-flex justify-content-between py-2 border-bottom">
+              <span><i class="fas fa-file-alt text-muted me-2"></i>Plan Name:</span>
+              <span>{{ plan.name }}</span>
+            </li>
+            <li class="d-flex justify-content-between py-2 border-bottom">
+              <span><i class="fas fa-user-md text-muted me-2"></i>Specialist:</span>
+              <span>{{ specialist_name }}</span>
+            </li>
+
+           
+            <li class="d-flex justify-content-between py-2 border-bottom align-items-center">
+              <span><i class="fas fa-coins text-muted me-2"></i>Price:</span>
+              <span class="d-flex align-items-center gap-2">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/120px-Unicode_0x20C1.svg.png" width="20" />
+                {{ plan.price|floatformat:0 }}
+              </span>
+            </li>
+
+            <li class="d-flex flex-column flex-md-row justify-content-between py-2 border-bottom">
+              <span class="mb-2 mb-md-0">
+                <i class="fas fa-credit-card text-muted me-2"></i>Payment Method:
+              </span>
+              <span class="text-md-end">
+                {% for method in payment_methods %}
+                  {{ method }}{% if not forloop.last %} or {% endif %}
+                {% endfor %}
+              </span>
+            </li>
+          </ul>
+
+          <a href="{% url 'payments:start_checkout_general' plan.id %}" class="btn-a d-block w-100 btn">
+            <i class="fas fa-lock me-2"></i> Proceed to Secure Payment
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-    
-    {% endblock %}
+{% endblock %}

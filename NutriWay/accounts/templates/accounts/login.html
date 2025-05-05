@@ -2,7 +2,7 @@
 {% block title %} Login {% endblock %}
 
 {% block content %}
-<section class="form-sec login mt-5">
+<section class="form-sec login pt-5 pb-5">
   <div class="container d-flex flex-column align-items-center">
     <form action="{% url 'accounts:login_view' %}" method="post" class="bg-white p-4">
       {% csrf_token %}

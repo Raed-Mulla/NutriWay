@@ -229,6 +229,12 @@ def login_view(request: HttpRequest):
             if user.is_active:
                 login(request, user)
                 messages.success(request, f"Welcome {user.username}, you logged in successfully!", "alert-success")
+                
+                if hasattr(user, 'specialist'):
+                    return redirect('specialists:specialist_dashboard', specialist_id=user.specialist.id)
+                elif hasattr(user, 'director'):
+                    return redirect('directors:dashboard')
+                
                 return redirect('core:home_view')
             else:
                 messages.error(request, "Your account is not active. Please verify your email.", "alert-danger")

@@ -1,0 +1,153 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2>Specialist Dashboard - {{ specialist.user.username }}</h2>
+
+  <div class="row mt-4">
+    <div class="col-md-4">
+      <div class="card p-3 shadow">
+        <h5>Total Subscribers</h5>
+        <p>{{ total_subscribers }}</p>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-4">
+          <div class="card p-3 shadow">
+            <h5>General Plans</h5>
+            <p>{{ general_plan_count }}</p>
+          </div>
+        </div>
+      
+        <div class="col-md-4">
+          <div class="card p-3 shadow">
+            <h5>Subscription Plans</h5>
+            <p>{{ subscription_plan_count }}</p>
+          </div>
+        </div>
+      
+        <div class="col-md-4">
+          <div class="card p-3 shadow">
+            <h5>Total Earnings</h5>
+            <p>{{ total_earnings }} SAR</p>
+          </div>
+        </div>
+      </div>
+      
+
+
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <div class="card p-3 shadow">
+        <h5>Subscribers by Gender</h5>
+        <canvas id="genderChart" height="300"></canvas>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card p-3 shadow">
+        <h5>Monthly Earnings</h5>
+        <canvas id="earningsChart" height="300"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <div class="card p-3 shadow">
+        <h5>Monthly Subscribers</h5>
+        <canvas id="subscribersChart" height="300"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  // Gender Chart
+  const genderCtx = document.getElementById('genderChart').getContext('2d');
+  new Chart(genderCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Male', 'Female'],
+      datasets: [{
+        data: [{{ male_percentage }}, {{ female_percentage }}],
+        backgroundColor: ['#36A2EB', '#FF6384'],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }
+  });
+
+  // Monthly Earnings Chart
+  const earningsData = {{ monthly_earnings|safe }};
+  const earningsCtx = document.getElementById('earningsChart').getContext('2d');
+  new Chart(earningsCtx, {
+    type: 'line',
+    data: {
+      labels: Object.keys(earningsData),
+      datasets: [{
+        label: 'Monthly Earnings (SAR)',
+        data: Object.values(earningsData),
+        fill: false,
+        tension: 0.3,
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+  // Monthly Subscribers Chart
+  const subscribersData = {{ subscriber_counts|safe }};
+  const subscribersCtx = document.getElementById('subscribersChart').getContext('2d');
+  new Chart(subscribersCtx, {
+    type: 'bar',
+    data: {
+      labels: Object.keys(subscribersData),
+      datasets: [{
+        label: 'Monthly Subscribers',
+        data: Object.values(subscribersData),
+        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          display: false
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}

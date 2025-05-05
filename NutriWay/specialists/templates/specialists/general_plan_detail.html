@@ -1,0 +1,26 @@
+{% extends 'core/base.html' %}
+{% block title %}General Plan Detail{% endblock %}
+
+{% block content %}
+<div class="container general_detail mt-5">
+<div class="card shadow p-4">
+    <h2>{{ plan.name }}</h2>
+    <p><strong>Specialist:</strong> {{ plan.specialist.user.username }}</p>
+
+
+    <p><strong>Description:</strong> {{ plan.description }}</p>
+
+    {% if plan.detail %}
+    <p><strong>Details:</strong> {{ plan.detail }}</p>
+    {% endif %}
+    
+    <p><strong>Price:</strong> {{ plan.price }} ﷼</p>
+    
+
+    <form method="get" action="{% url 'payments:start_checkout_general' plan.id %}">
+        <button type="submit" class="btn btn-success">Buy Now</button>
+    </form>
+    
+</div>
+</div>
+{% endblock %}
