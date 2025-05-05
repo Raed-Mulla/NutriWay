@@ -45,9 +45,11 @@
                   <i class="fas fa-edit me-1"></i> create Plan
                 </a>
                 {% endif %}
-              <a href="{% url 'specialists:delete_subscription' subscription.id %}" class="btn btn-outline-danger btn-sm">
-                <i class="fas fa-times-circle me-1"></i> Cancel
-              </a>
+                <a href="{% url 'specialists:delete_subscription' subscription.id %}" 
+                class="btn btn-outline-danger btn-sm"
+                onclick="return confirm('Are you sure you want to cancel this subscription?');">
+                 <i class="fas fa-times-circle me-1"></i> Cancel
+             </a>
             {% endif %}
           </div>
           {% endif %}
@@ -224,7 +226,7 @@
                 {% if subscription.status == 'active' %}
                 <i class="fa fa-info-circle me-2"></i> No meals have been assigned for Day {{ display_day }}.
                 {% if is_specialist%}
-                  <a href="{% url 'specialists:create_subscriber_plan' subscription.id %}" class="alert-link">Create a meal plan</a> for this day.
+                  <a href="{% url 'specialists:edit_subscriber_plan' subscriber_plan.id %}" class="alert-link">Create a meal plan</a> for this day.
                 {% endif %}
                 {% endif %}
               </div>
