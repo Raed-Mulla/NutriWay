@@ -83,10 +83,10 @@
               <li class="list-group-item px-0 d-flex justify-content-between">
                 {% if request.user.specialist %}
                   <span>Person</span>
-                  <span class="text-muted">{{ request.user.get_full_name }}</span>
+                  <a href="{% url 'accounts:profile_view' person_username %}"><span class="text-muted">{{ person_username }} </span></a>
                 {% elif request.user.person %}
                   <span>Specialist</span>
-                  <span class="text-muted">{{ specialist.user.get_full_name }}</span>
+                  <a href="{% url 'specialists:specialist_detail' specialist.id %}"><span class="text-muted">{{ specialist.user.get_full_name }}</span></a>
                 {% endif %}
               </li>
               <li class="list-group-item px-0 d-flex justify-content-between">
@@ -225,8 +225,12 @@
 
                 {% if subscription.status == 'active' %}
                 <i class="fa fa-info-circle me-2"></i> No meals have been assigned for Day {{ display_day }}.
-                {% if is_specialist%}
-                  <a href="{% url 'specialists:edit_subscriber_plan' subscriber_plan.id %}" class="alert-link">Create a meal plan</a> for this day.
+                {% if is_specialist %}
+                  {% if subscriber_plan %}
+                    <a href="{% url 'specialists:edit_subscriber_plan' subscriber_plan.id %}" class="alert-link">add a meals</a> for this day.
+                    {%else %}
+                    <a href="{% url 'specialists:create_subscriber_plan' subscription.id %}" class="alert-link">Create a meal plan</a> for this day.
+                    {% endif %}
                 {% endif %}
                 {% endif %}
               </div>

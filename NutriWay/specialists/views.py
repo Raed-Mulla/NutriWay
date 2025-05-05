@@ -70,7 +70,7 @@ def create_general_plan(request: HttpRequest):
             except Exception as e:
                 messages.error(request, "Failed to create general plan.", "alert-danger")
         else:
-            messages.error(request, "Please correct the errors in the form.", "alert-danger")
+            messages.error(request, f"Please correct the errors in the form.", "alert-danger")
     else:
         form = GeneralPlanForm()
 
@@ -293,7 +293,7 @@ def create_subscriber_plan(request: HttpRequest, subscription_id):
             SubscriberMeal.objects.bulk_create(meals)
 
         messages.success(request, "Subscriber plan and meals created successfully.", "alert-success")
-        return redirect('specialists:my_plans')
+        return redirect('users:subscription_detail',subscription_id)
 
     return render(request, 'specialists/create_subscriber_plan.html', {'subscription': subscription,"subscriberMeal": SubscriberMeal.MealTypeChoices.choices})
 

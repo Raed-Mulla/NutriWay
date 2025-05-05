@@ -41,7 +41,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="charts-container">
-                                    {% if request.user.person %}
+                                    {% if request.user.person or is_person %}
                                     <div class="weight-chart mb-3">
                                         <h5 class="mb-3">Weight Progress</h5>
                                         <canvas id="weightChart" height="200"></canvas>
@@ -216,6 +216,7 @@
                         </div>
 
                         <!-- Bottom Actions -->
+                        {%if is_himself%}
                         <div class="profile-actions mt-5 pt-4 border-top">
                             <div class="row">
                                 {% if request.user.person %}
@@ -233,6 +234,7 @@
                                 {% endif %}
                             </div>
                         </div>
+                        {%endif%}
                     </div>
                 </div>
             </main>

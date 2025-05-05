@@ -268,21 +268,31 @@ def profile_view(request, user_name):
         certificates = None
         active = None
         new_this_month = None
-        latest_data = None
-        weight_entries = None
-        labels = None
-        weights = None
+        user = User.objects.filter(username=user_name).first()
+        if not user:
+            # Handle missing user (redirect, raise 404, etc.)
+            ...
+        person = Person.objects.get(user=user)
+        latest_data = PersonData.objects.filter(person=person).last()
+        weight_entries = PersonData.objects.filter(person=person).order_by('created_at') 
+        labels = [DateFormat(entry.created_at).format('M d') for entry in weight_entries]
+        weights = [entry.weight for entry in weight_entries]   
         if hasattr(request.user, 'person'):
             person = Person.objects.get(user=request.user)
+            subscriptions = Subscription.objects.filter(person=person)
+            person_specialist = [a.subscription_plan.specialist for a in subscriptions]
+            print(f'########## \n{person_specialist}')
+            print(f'########## \n{request.user}')
+            if request.user != person.user and request.user not in person_specialist :
+                messages.error(request, "You don't have permission to view this subscription", "alert-danger")
+                return redirect('core:home_view')
             subscriptions = Subscription.objects.filter(person=person)
             general_plans = GeneralPlanPurchase.objects.filter(person=person).values_list('general_plan', flat=True)
             latest_data = PersonData.objects.filter(person=person).last()
             weight_entries = PersonData.objects.filter(person=person).order_by('created_at') 
             labels = [DateFormat(entry.created_at).format('M d') for entry in weight_entries]
             weights = [entry.weight for entry in weight_entries]        
-            if request.user != person.user:
-                messages.error(request, "You don't have permission to view this subscription", "alert-danger")
-                return redirect('core:home_view')
+          
         if hasattr(request.user, 'specialist'):
             specialist = Specialist.objects.get(user=request.user)
             if request.user != specialist.user:
@@ -313,9 +323,6 @@ def profile_view(request, user_name):
                
         
         profile_user = User.objects.get(username=user_name)
-        if request.user.username != user_name:
-            messages.error(request, "You can only view your own profile.", "alert-danger")
-            return redirect('core:home_view')
         data.update({
         'profile_user': profile_user,
         'subscriptions': subscriptions,
@@ -323,7 +330,9 @@ def profile_view(request, user_name):
         'latest_data': latest_data,
         'certificates': certificates,
         'weight_labels': labels,
-        'weight_values': weights
+        'weight_values': weights,
+        'is_person':hasattr(user, 'person'),
+        'is_himself':request.user.username == user_name
     })
 
         return render(request, 'accounts/profile.html', data)
