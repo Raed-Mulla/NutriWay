@@ -4,11 +4,15 @@ from .forms import SubscriptionPlanForm , GeneralPlanForm ,SubscriberMealForm, S
 from .models import SubscriptionPlan , Generalplan ,SubscriberMeal,SubscriberPlan,MealCheck
 from accounts.models import Specialist , Certificate , Person
 from django.contrib import messages
-from users.models import Subscription , ProgressReport
+from users.models import Subscription , ProgressReport,GeneralPlanPurchase
 from datetime import date
 from datetime import datetime
-from django.db.models import Avg
-from django.db.models import Count
+from django.db.models import Avg ,  Count,  Sum
+from django.utils.timezone import now
+from calendar import month_name
+import json
+from collections import defaultdict
+from django.core.paginator import Paginator
 
 def create_subscription_plan(request: HttpRequest):
     if not request.user.is_authenticated:
@@ -74,15 +78,32 @@ def create_general_plan(request: HttpRequest):
 
 
 
-def list_general_plan (request:HttpRequest):
+def list_general_plan(request):
     filter_value = request.GET.get('filter')
-    plans = Generalplan.objects.all()
+    type_filter = request.GET.get('type')
+
+    plans = Generalplan.objects.select_related('specialist__user')
+
+    if type_filter:
+        plans = plans.filter(plan_type=type_filter)
+
     if filter_value == "low":
         plans = plans.order_by("price")
     elif filter_value == "high":
         plans = plans.order_by("-price")
 
-    return render(request , 'specialists/list_general_plan.html' , {"plans" : plans , "selected_filter": filter_value})
+    paginator = Paginator(plans, 9)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'specialists/list_general_plan.html', {
+        "plans": page_obj,
+        "page_obj": page_obj,
+        "selected_filter": filter_value,
+        "selected_type": type_filter,
+        "planType": Generalplan.PlanType.choices,
+    })
+
 
 def list_subscription_plan(request: HttpRequest):
     type_filter = request.GET.get('type')
@@ -102,8 +123,12 @@ def list_subscription_plan(request: HttpRequest):
     elif sort_filter == "high":
         plans = plans.order_by("-price")
 
+    paginator = Paginator(plans, 6)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        "plans": plans,
+        "page_obj": page_obj,
         "planType": SubscriptionPlan.PlanType.choices,
         "genderChoices": Specialist.GenderChoices.choices,
         "duration_choices": SubscriptionPlan.DurationChoices.choices,
@@ -113,6 +138,7 @@ def list_subscription_plan(request: HttpRequest):
     }
 
     return render(request, 'specialists/list_subscription_plan.html', context)
+
 
 def my_plans(request: HttpRequest):
     if not request.user.is_authenticated:
@@ -128,7 +154,16 @@ def my_plans(request: HttpRequest):
     plans = SubscriptionPlan.objects.filter(specialist=specialist).annotate(
         subscriber_count=Count('subscription')
     )
-    return render(request, 'specialists/my_plans.html', {'specialist': specialist, 'plans': plans})
+
+    paginator = Paginator(plans, 6)  
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'specialists/my_plans.html', {
+        'specialist': specialist,
+        'plans': page_obj,
+        'page_obj': page_obj
+    })
 
 
 
@@ -137,7 +172,7 @@ def all_specialists(request: HttpRequest):
     specialty = request.GET.get('specialty')
     sort = request.GET.get('sort')
 
-    specialists = Specialist.objects.annotate(average_rating=Avg('reviews__rating'))
+    specialists = Specialist.objects.annotate(average_rating=Avg('reviews__rating')).filter(specialistrequest__status='approved')
 
     if gender:
         specialists = specialists.filter(gender=gender)
@@ -150,8 +185,13 @@ def all_specialists(request: HttpRequest):
     elif sort == 'low rating':
         specialists = specialists.order_by('average_rating')
 
+    paginator = Paginator(specialists, 6) 
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'specialists': specialists,
+        'specialists': page_obj,
+        'page_obj': page_obj,
         'genderChoices': Specialist.GenderChoices.choices,
         'specialtyChoices': Specialist.SpecialtyChoices.choices,
         'selected_gender': gender,
@@ -183,12 +223,21 @@ def specialist_subscriptions(request: HttpRequest, plan_id):
         return redirect('core:home_view')
 
     subscriptions = Subscription.objects.filter(subscription_plan=subscription_plan)
+    
+    
     today = datetime.now().date()
     for subscription in subscriptions:
-        if today > subscription.end_date:
+        if today > subscription.end_date and subscription.status != subscription.StatusChoices.EXPIRED:
             subscription.status = subscription.StatusChoices.EXPIRED
             subscription.save()
-    return render(request, 'specialists/view_subscriptions.html', {'subscriptions': subscriptions, 'subscription_plan': subscription_plan})
+
+    
+    paginator = Paginator(subscriptions, 6)  
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(
+        request,'specialists/view_subscriptions.html',{'subscriptions': page_obj,'subscription_plan': subscription_plan,'page_obj': page_obj})
 
 
 def create_subscriber_plan(request: HttpRequest, subscription_id):
@@ -418,15 +467,20 @@ def specialist_dashboard(request, specialist_id):
         messages.error(request, "Specialist not found.", "alert-danger")
         return redirect("core:home_view")
 
-    # تحقق إن المستخدم هو أخصائي وصاحب الصفحة
     if not hasattr(request.user, 'specialist') or request.user != specialist.user:
         messages.error(request, "You are not authorized to view this dashboard.", "alert-danger")
         return redirect("core:home_view")
 
-    subscriptions = Subscription.objects.filter(subscription_plan__specialist=specialist)
-    plans = SubscriptionPlan.objects.filter(specialist=specialist)
+    subscriptions = Subscription.objects.filter(subscription_plan__specialist=specialist, status="active")
+    subscriber_plans = SubscriptionPlan.objects.filter(specialist=specialist)
+    general_plans = Generalplan.objects.filter(specialist=specialist)
+    general_plan_purchases = GeneralPlanPurchase.objects.filter(general_plan__specialist=specialist)
 
     total_subscribers = subscriptions.count()
+
+    total_earnings = 0
+    monthly_earnings = defaultdict(int)
+    subscriber_counts = defaultdict(int)
 
     duration_map = {
         '1_month': 1,
@@ -435,15 +489,28 @@ def specialist_dashboard(request, specialist_id):
         '12_months': 12
     }
 
-    total_earnings = 0
     for sub in subscriptions:
         months = duration_map.get(sub.duration, 1)
-        total_earnings += sub.subscription_plan.price * months
+        earnings = sub.subscription_plan.price * months
+        total_earnings += earnings
 
+        if sub.start_date:
+            month_label = sub.start_date.strftime("%B")
+            monthly_earnings[month_label] += earnings
+            subscriber_counts[month_label] += 1
+
+    for purchase in general_plan_purchases:
+        total_earnings += purchase.general_plan.price
+        if purchase.purchase_date:
+            month_label = purchase.purchase_date.strftime("%B")
+            monthly_earnings[month_label] += purchase.general_plan.price
+
+    all_months = list(month_name)[1:]
+    monthly_earnings_data = {month: monthly_earnings.get(month, 0) for month in all_months}
+    subscriber_counts_data = {month: subscriber_counts.get(month, 0) for month in all_months}
 
     person_ids = subscriptions.values_list('person_id', flat=True).distinct()
     persons = Person.objects.filter(id__in=person_ids)
-
 
     male_count = persons.filter(gender__iexact='male').count()
     female_count = persons.filter(gender__iexact='female').count()
@@ -452,16 +519,32 @@ def specialist_dashboard(request, specialist_id):
     male_percentage = round((male_count / total_persons) * 100, 2) if total_persons else 0
     female_percentage = round((female_count / total_persons) * 100, 2) if total_persons else 0
 
-
-
-
     context = {
+        'specialist': specialist,
         'total_subscribers': total_subscribers,
-        'total_plans': plans.count(),
+        'subscription_plan_count': subscriber_plans.count(),
+        'general_plan_count': general_plans.count(),
         'total_earnings': total_earnings,
         'male_percentage': male_percentage,
         'female_percentage': female_percentage,
-        'specialist': specialist,
+        'monthly_earnings': json.dumps(monthly_earnings_data),
+        'subscriber_counts': json.dumps(subscriber_counts_data),
     }
 
     return render(request, 'specialists/dashboard.html', context)
+
+def general_plan_detail_view(request: HttpRequest, plan_id: int):
+    try:
+        plan = Generalplan.objects.get(id=plan_id)
+    except Generalplan.DoesNotExist:
+        messages.error(request, "General plan not found.", "alert-danger")
+        return redirect("core:home_view")
+    return render(request, 'specialists/general_plan_detail.html', {'plan': plan})
+
+def subscription_plan_detail_view (request:HttpRequest , plan_id:int):
+    try:
+        plan = SubscriptionPlan.objects.get(id=plan_id)
+    except SubscriptionPlan.DoesNotExist:
+        messages.error(request, "Subscription plan not found.", "alert-danger")
+        return redirect("core:home_view")
+    return render(request, 'specialists/supscription_plan_detail.html', {'plan': plan , "duration_choices": SubscriptionPlan.DurationChoices.choices,})

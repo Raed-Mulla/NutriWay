@@ -4,15 +4,19 @@ from accounts.models import Specialist
 # Create your models here.
 class SubscriptionPlan(models.Model):
     class PlanType(models.TextChoices):
-        CLINICAL = 'clinical', 'Clinical Nutrition'
-        WEIGHT_MANAGEMENT = 'weight', 'Weight Management'
-        CHILDREN = 'children', 'Pediatric Nutrition'
-        WOMEN = 'women', 'Womens Nutrition'
-        CHRONIC = 'chronic', 'Chronic Conditions'
-        VEGAN = 'vegan', 'Vegan/Vegetarian Nutrition'
-        SENIORS = 'seniors', 'Geriatric Nutrition'
-        DISORDERS = 'disorders', 'Eating Disorders'
-        PREVENTIVE = 'preventive', 'Preventive Nutrition'
+        WEIGHT_LOSS = 'weight_loss', 'Weight Loss'
+        WEIGHT_GAIN = 'weight_gain', 'Weight Gain'
+        DIABETES = 'diabetes', 'Diabetes Nutrition'
+        HYPERTENSION = 'hypertension', 'Hypertension Nutrition'
+        CHOLESTEROL = 'cholesterol', 'Cholesterol Management Nutrition'
+        WOMEN_HEALTH = 'women_health', 'Women Health'
+        CHILDREN = 'children', 'Children Nutrition'
+        SENIORS = 'seniors', 'Senior Nutrition'
+        VEGAN = 'vegan', 'Vegan / Vegetarian'
+        DIGESTIVE = 'digestive', 'Digestive Health Nutrition'
+        IMMUNE = 'immune', 'Immune Support Nutrition'
+        EATING_DISORDERS = 'eating_disorders', 'Eating Disorders Nutrition'
+        GENERAL_HEALTH = 'general_health', 'General Health'
 
     class DurationChoices(models.TextChoices):
         ONE_MONTH = '1_month', '1 Month'
@@ -23,6 +27,7 @@ class SubscriptionPlan(models.Model):
     specialist = models.ForeignKey(Specialist,on_delete=models.CASCADE, related_name="subscription_plans")
     name = models.CharField(max_length=128)
     description  = models.TextField()
+    detail = models.TextField(blank=True, null=True)
     plan_type = models.CharField(max_length=30, choices=PlanType.choices)
     duration = models.CharField(max_length=20, choices=DurationChoices.choices,null=True , blank=True)
     price = models.FloatField()
@@ -32,11 +37,29 @@ class SubscriptionPlan(models.Model):
         return f"{self.name} - {self.specialist.user.username}"
 
 class Generalplan(models.Model):
+    class PlanType(models.TextChoices):
+        WEIGHT_LOSS = 'weight_loss', 'Weight Loss'
+        WEIGHT_GAIN = 'weight_gain', 'Weight Gain'
+        DIABETES = 'diabetes', 'Diabetes Nutrition'
+        HYPERTENSION = 'hypertension', 'Hypertension Nutrition'
+        CHOLESTEROL = 'cholesterol', 'Cholesterol Management Nutrition'
+        WOMEN_HEALTH = 'women_health', 'Women Health'
+        CHILDREN = 'children', 'Children Nutrition'
+        SENIORS = 'seniors', 'Senior Nutrition'
+        VEGAN = 'vegan', 'Vegan / Vegetarian'
+        DIGESTIVE = 'digestive', 'Digestive Health Nutrition'
+        IMMUNE = 'immune', 'Immune Support Nutrition'
+        EATING_DISORDERS = 'eating_disorders', 'Eating Disorders Nutrition'
+        GENERAL_HEALTH = 'general_health', 'General Health'
+    
     specialist = models.ForeignKey(Specialist,on_delete=models.CASCADE, related_name="general_plans")
     name = models.CharField(max_length=128)
     description  = models.TextField()
+    detail = models.TextField(blank=True, null=True)
+    plan_type = models.CharField(max_length=30, choices=PlanType.choices,default='general_health')
     price = models.FloatField()
     plan_file = models.FileField(upload_to='general_plans/')
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"General Plan: {self.name} ({self.specialist.user.username})"

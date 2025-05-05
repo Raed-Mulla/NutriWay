@@ -19,4 +19,6 @@ urlpatterns = [
     path('certificate/specialization/<int:specialist_id>/', views.show_certificate_specialization, name='show_specialization_certificate_certificate'),
     path('certificates/<int:specialist_id>/', views.show_certificate, name='show_certificates'),
     path('specialist/<int:specialist_id>/dashboard/', views.specialist_dashboard, name='specialist_dashboard'),
+    path('general/<int:plan_id>/detail/', views.general_plan_detail_view, name='general_plan_detail'),
+    path('subscription/<int:plan_id>/detail/', views.subscription_plan_detail_view, name='subscription_plan_detail_view'),
 ]
