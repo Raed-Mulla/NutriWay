@@ -34,21 +34,23 @@
     <div class="row">
       <div class="col-lg-4 col-md-6 d-flex mt-3">
         <div class="box d-flex flex-column justify-content-between flex-grow-1 rounded-lg bg-white p-4">
-          <div class="img mb-3"><img src="{% static 'images/services1.jpg' %}" alt="Not Found"></div>
-          <div class="info">
-            <h3 class="fs-5">Certified Specialists</h3>
-            <span class="text-black-50 d-block mt-2">Get expert guidance from trusted nutrition professionals.</span>
-          </div>
-          <a href="{% url 'specialists:all_specialists' %}" class="btn btn-a mt-3 d-inline-block w-fit">Our Specialists</a>
-        </div>
-      </div>
-      <div class="col-lg-4 col-md-6 d-flex mt-3">
-        <div class="box d-flex flex-column justify-content-between flex-grow-1 rounded-lg bg-white p-4">
           <div class="img mb-3"><img src="{% static 'images/services2.jpg' %}" alt="Not Found"></div>
           <div class="info">
             <h3 class="fs-5">Personalized Plans</h3>
             <span class="text-black-50 d-block mt-2">Subscribe for custom meal plans tailored to your goals.</span>
           </div>
+
+          <a href="{% url 'specialists:all_specialists' %}" class="btn btn-a mt-3 d-inline-block w-fit">Our Specialists</a>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6 d-flex mt-3">
+        <div class="box d-flex flex-column justify-content-between flex-grow-1 rounded-lg bg-white p-4">
+          <div class="img mb-3"><img src="{% static 'images/services1.jpg' %}" alt="Not Found"></div>
+          <div class="info">
+            <h3 class="fs-5">Certified Specialists</h3>
+            <span class="text-black-50 d-block mt-2">Get expert guidance from trusted nutrition professionals.</span>
+          </div>
+
           <a href="{% url 'specialists:list_subscription_plan'%}" class="btn btn-a mt-3 d-inline-block">Discover Your Custom Plan</a>
         </div>
       </div>
@@ -60,6 +62,7 @@
             <span class="text-black-50 d-block mt-2"> Access ready-made plans for common health and fitness
               goals.</span>
           </div>
+
           <a href="{% url 'specialists:list_general_plan'%}" class="btn btn-a mt-3 d-inline-block">Browse Ready-Made Plans</a>
         </div>
       </div>
@@ -84,6 +87,7 @@
                 <img src="{% static 'images/default_profile.jpg' %}" alt="Not Found">
                 {%endif%}
               </div>
+
               <div class="name "><a href="{% url 'specialists:specialist_detail' specialist.id %}">{{specialist.user.first_name}}</a> <span class=" d-block badge">{{specialist.get_specialty_display}}</span></div>
 
             </div>
@@ -162,7 +166,7 @@
                   decoding="async" width="30px" class="mw-file-element"
                   srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/180px-Unicode_0x20C1.svg.png 1.5x, https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/240px-Unicode_0x20C1.svg.png 2x"
                   data-file-width="16" data-file-height="16">
-                {{ plan.price | floatformat:0 }}
+                {{ plan.price | floatformat:0 }} <span> / per month</span>
               </div>
               <button type="submit" class="btn-a d-block w-100 btn">Details</button>
             </form>

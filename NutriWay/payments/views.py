@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
 import stripe
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
 from specialists.models import SubscriptionPlan, Generalplan 
 from accounts.models import Person
 from django.core.mail import send_mail
@@ -17,8 +16,6 @@ logger = logging.getLogger(__name__)
 
 def start_checkout_subscription(request : HttpRequest, plan_id : int) -> HttpResponse:
     # Check if the user is authenticated and has a profile
-    duration_key = request.GET.get('duration') 
-    duration_label = dict(SubscriptionPlan.DurationChoices.choices).get(duration_key, 'N/A')
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to access this page.", "alert-danger")
         return redirect('accounts:login_view') 
@@ -33,15 +30,24 @@ def start_checkout_subscription(request : HttpRequest, plan_id : int) -> HttpRes
 
     # Create a Stripe checkout session
     try:
+            duration_key = request.GET.get('duration') 
+            DURATION_MULTIPLIERS = {
+                '1_month': 1,
+                '3_months': 3,
+                '6_months': 6,
+                '12_months': 12
+            }
+            multiplier = DURATION_MULTIPLIERS.get(duration_key, 1)
+            total_price = int(plan.price * multiplier * 100)
             session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
                 'price_data': {
                     'currency': 'sar',
                     'product_data': {
-                        'name': f'{duration_label} - {plan.name}'
+                        'name': f'{dict(SubscriptionPlan.DurationChoices.choices).get(duration_key, "")} Plan - {plan.name}',
                     },
-                    'unit_amount': int(round(plan.price * 100)), 
+                    'unit_amount': total_price, 
                 },
                 'quantity': 1,
             }],
@@ -76,6 +82,16 @@ def payment_success(request : HttpRequest) -> HttpResponse:
             logger.error("Plan ID is missing in the request")
             return HttpResponse("Plan ID is required", status=400)
         plan = SubscriptionPlan.objects.get(id=plan_id)
+
+        # Calculate total price based on duration
+        DURATION_MULTIPLIERS = {
+            '1_month': 1,
+            '3_months': 3,
+            '6_months': 6,
+            '12_months': 12
+        }
+        multiplier = DURATION_MULTIPLIERS.get(duration_key, 1)
+        total_price = plan.price * multiplier
     except SubscriptionPlan.DoesNotExist:
         logger.error(f"Plan with ID {plan_id} does not exist")
         return HttpResponse("Invalid plan ID", status=400)
@@ -94,7 +110,7 @@ def payment_success(request : HttpRequest) -> HttpResponse:
             specialist=plan.specialist,
             subscription_plan=plan,
             general_plan=None,  # No general plan for subscription payments
-            amount=plan.price,
+            amount=total_price,
             payment_method='visa',
             status='Paid',
             selected_duration=duration_key 
@@ -113,7 +129,7 @@ def payment_success(request : HttpRequest) -> HttpResponse:
             subject='NutriWay - Payment Confirmation',
             message=(
                 f"Hi {person.user.first_name},\n\n"
-                f"Your payment of {plan.price} SAR for the {duration_key.replace('_', ' ')} {plan.name} plan has been received.\n"
+                f"Your payment of {total_price} SAR for the {duration_key.replace('_', ' ')} {plan.name} plan has been received.\n"
                 f"Your specialist is {plan.specialist.user.username}.\n\n"
                 f"Subscription Plan: {plan.name}\n"
                 f"Description: {plan.description}\n"
@@ -290,13 +306,25 @@ def subscription_summary(request : HttpRequest, plan_id : int) -> HttpResponse:
             return redirect("users:my_plans_view")
         
         plan = SubscriptionPlan.objects.get(id=plan_id)
+        
+        DURATION_MULTIPLIERS = {
+        '1_month': 1,
+        '3_months': 3,
+        '6_months': 6,
+        '12_months': 12
+        }
+        
         duration_key = request.GET.get('duration')
         duration_label = dict(SubscriptionPlan.DurationChoices.choices).get(duration_key or '', 'Not selected')
+        multiplier = DURATION_MULTIPLIERS.get(duration_key, 1) # default to 1 month
+        total_price = plan.price * multiplier 
+        
         context = {
             'plan': plan,
             'specialist_name': plan.specialist.user.get_full_name() or plan.specialist.user.username,
             'duration': duration_label,
             'duration_key': duration_key,
+            'total_price': total_price,
             'payment_methods': ['Visa', 'Mastercard'],  
         }
 
