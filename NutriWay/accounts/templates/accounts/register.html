@@ -21,7 +21,7 @@
           <label class="form-label">Last Name</label>
           <input type="text" class="form-control" name="last_name" placeholder="Enter your last name" required>
         </div>
-        <button type="button" onclick="nextUserStep()">Next</button>
+        <button type="button" onclick="nextUserStep()" class="btn w-100">Next</button>
       </div>
 
       <div class="form-step" id="user-step-2" style="display:none;">
@@ -33,8 +33,8 @@
           <label class="form-label">Email address</label>
           <input type="email" class="form-control" name="email" placeholder="Enter your e-mail" required>
         </div>
-        <button type="button" onclick="prevUserStep()">Previous</button>
-        <button type="button" onclick="nextUserStep()">Next</button>
+        <button type="button" onclick="prevUserStep()" class="btn w-49">Previous</button>
+        <button type="button" onclick="nextUserStep()" class="btn w-49">Next</button>
       </div>
 
       <div class="form-step" id="user-step-3" style="display:none;">
@@ -44,11 +44,10 @@
         </div>
         <div class="mb-3">
           <label class="form-label">Repeat Password</label>
-          <input type="password" class="form-control" name="repeat-password" placeholder="Repeat your password"
-            required>
+          <input type="password" class="form-control" name="repeat-password" placeholder="Repeat your password" required>
         </div>
-        <button type="button" onclick="prevUserStep()">Previous</button>
-        <button type="button" onclick="nextUserStep()">Next</button>
+        <button type="button" onclick="prevUserStep()" class="btn w-49">Previous</button>
+        <button type="button" onclick="nextUserStep()" class="btn w-49">Next</button>
       </div>
 
       <div class="form-step" id="user-step-4" style="display:none;">
@@ -57,7 +56,6 @@
           <select class="form-select" name="gender" required>
             <option value="">Gender</option>
             {% for val, label in gender_choices  %}
-  
             <option value="{{val}}">{{label}}</option>
             {% endfor %}
           </select>
@@ -66,8 +64,8 @@
           <label class="form-label">Birth Date</label>
           <input type="date" class="form-control" name="birth_date" required>
         </div>
-        <button type="button" onclick="prevUserStep()">Previous</button>
-        <button type="button" onclick="nextUserStep()">Next</button>
+        <button type="button" onclick="prevUserStep()" class="btn w-49">Previous</button>
+        <button type="button" onclick="nextUserStep()" class="btn w-49">Next</button>
       </div>
 
       <div class="form-step" id="user-step-5" style="display:none;">
@@ -79,8 +77,8 @@
           <label class="form-label">Height</label>
           <input type="number" class="form-control" name="height" placeholder="Enter your height" required>
         </div>
-        <button type="button" onclick="prevUserStep()">Previous</button>
-        <button type="button" onclick="nextUserStep()">Next</button>
+        <button type="button" onclick="prevUserStep()" class="btn w-49">Previous</button>
+        <button type="button" onclick="nextUserStep()" class="btn w-49">Next</button>
       </div>
 
       <div class="form-step" id="user-step-6" style="display:none;">
@@ -92,11 +90,10 @@
           <label class="form-label">Chronic Diseases</label>
           <textarea class="form-control" name="chronic-diseases" placeholder="Enter any chronic diseases"></textarea>
         </div>
-        <button type="button" onclick="prevUserStep()">Previous</button>
-        <input type="submit" class="btn d-block w-100" value="Submit">
+        <button type="button" onclick="prevUserStep()" class="btn w-49">Previous</button>
+        <input type="submit" class="btn d-block w-49" value="Submit">
       </div>
     </form>
-
 
     <form id="signup-specialists" class="d-none p-4 bg-white" action="{%url 'accounts:specialist_register_view' %}" method="post" enctype="multipart/form-data">
       {% csrf_token %}
@@ -123,7 +120,7 @@
           <label class="form-label">Profile Photo</label>
           <input type="file" class="form-control" name="image" required>
         </div>
-        <button type="button" onclick="nextSpecialistStep(2)">Next</button>
+        <button type="button" onclick="nextSpecialistStep()" class="btn w-100">Next</button>
       </div>
 
       <div class="step" id="specialist-step-2" style="display:none;">
@@ -133,11 +130,10 @@
         </div>
         <div class="mb-3">
           <label class="form-label">Repeat Password</label>
-          <input type="password" class="form-control" name="repeat-password" placeholder="Repeat your password"
-            required>
+          <input type="password" class="form-control" name="repeat-password" placeholder="Repeat your password" required>
         </div>
-        <button type="button" onclick="previousSpecialistStep(1)">Previous</button>
-        <button type="button" onclick="nextSpecialistStep(3)">Next</button>
+        <button type="button" onclick="previousSpecialistStep()" class="btn w-49">Previous</button>
+        <button type="button" onclick="nextSpecialistStep()" class="btn w-49">Next</button>
       </div>
 
       <div class="step" id="specialist-step-3" style="display:none;">
@@ -146,7 +142,6 @@
           <select class="form-select" name="gender" required>
             <option value="">Gender</option>
             {% for val, label in gender_choices  %}
-  
             <option value="{{val}}">{{label}}</option>
             {% endfor %}
           </select>
@@ -155,8 +150,8 @@
           <label class="form-label">Birth Date</label>
           <input type="date" class="form-control" name="birth_date" required>
         </div>
-        <button type="button" onclick="previousSpecialistStep(2)">Previous</button>
-        <button type="button" onclick="nextSpecialistStep(4)">Next</button>
+        <button type="button" onclick="previousSpecialistStep()" class="btn w-49">Previous</button>
+        <button type="button" onclick="nextSpecialistStep()" class="btn w-49">Next</button>
       </div>
 
       <div class="step" id="specialist-step-4" style="display:none;">
@@ -169,7 +164,6 @@
         <select class="form-select" name="specialty" required>
           <option value="">Choose</option>
           {% for val, label in specialty_choices  %}
-
           <option value="{{val}}">{{label}}</option>
           {% endfor %}
         </select>
@@ -183,51 +177,128 @@
           </div>
           <div id="certificates-container"></div>
         </div>
-        <button type="button" onclick="previousSpecialistStep(3)">Previous</button>
-        <input type="submit" class="btn d-block w-100" value="Submit" >
+        <button type="button" onclick="previousSpecialistStep()" class="btn w-49">Previous</button>
+        <input type="submit" class="btn d-block w-49" value="Submit" >
       </div>
-
     </form>
-
   </div>
 </section>
+
+<style>
+  .form-step button, .step button {
+    margin-top: 1rem;
+  }
+  .w-49 {
+    width: 49% !important;
+    display: inline-block;
+  }
+  .is-invalid {
+    border-color: #dc3545;
+  }
+  .invalid-feedback {
+    display: block;
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+  }
+</style>
+
 <script>
   // Show
   function showForm(formId) {
     document.getElementById('signup-user').classList.add('d-none');
     document.getElementById('signup-specialists').classList.add('d-none');
-
     document.getElementById(formId).classList.remove('d-none');
   }
+  
   let certificateCount = 1;
-  let certificateCountFile = 1;
+  
+  // Validation function
+  function validateStep(stepId, isSpecialist = false) {
+    const step = document.getElementById(stepId);
+    const requiredFields = step.querySelectorAll('input[required], select[required], textarea[required]');
+    let isValid = true;
+    
+    requiredFields.forEach(field => {
+      field.classList.remove('is-invalid');
+      const existingError = field.parentElement.querySelector('.invalid-feedback');
+      if (existingError) {
+        existingError.remove();
+      }
+      
+      if (field.type === 'select-one' && field.value === '') {
+        isValid = false;
+        field.classList.add('is-invalid');
+        const error = document.createElement('div');
+        error.className = 'invalid-feedback';
+        error.textContent = 'Please select an option';
+        field.parentElement.appendChild(error);
+      } else if (field.type === 'email' && field.value && !validateEmail(field.value)) {
+        isValid = false;
+        field.classList.add('is-invalid');
+        const error = document.createElement('div');
+        error.className = 'invalid-feedback';
+        error.textContent = 'Please enter a valid email';
+        field.parentElement.appendChild(error);
+      } else if (field.value.trim() === '') {
+        isValid = false;
+        field.classList.add('is-invalid');
+        const error = document.createElement('div');
+        error.className = 'invalid-feedback';
+        error.textContent = 'This field is required';
+        field.parentElement.appendChild(error);
+      }
+    });
+    
+    // Password match validation
+    if (stepId === 'user-step-3' || stepId === 'specialist-step-2') {
+      const password = step.querySelector('input[name="password"]');
+      const repeatPassword = step.querySelector('input[name="repeat-password"]');
+      
+      if (password.value !== repeatPassword.value) {
+        isValid = false;
+        repeatPassword.classList.add('is-invalid');
+        const error = document.createElement('div');
+        error.className = 'invalid-feedback';
+        error.textContent = 'Passwords do not match';
+        repeatPassword.parentElement.appendChild(error);
+      }
+    }
+    
+    return isValid;
+  }
+  
+  function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  }
+  
   // Certificates
   function addCertificate() {
     const container = document.getElementById("certificates-container");
-
     const newField = document.createElement("div");
     newField.className = "certificate-item mb-3 position-relative";
-
+    
     newField.innerHTML = `
     <div>
       <label class="form-label">Certificate Name ${certificateCount}</label>
       <input type="text" class="form-control mb-2" name="certificates-name-${certificateCount}" required>
-      <input type="file" class="form-control"  name="certificate_file_${certificateCount}" required>
+      <input type="file" class="form-control" name="certificate_file_${certificateCount}" required>
     </div>
     <button type="button" class="cancel position-absolute bg-transparent top-0 end-0 text-danger border-0" onclick="removeCertificate(this)">
       <i class="fa-solid fa-trash"></i>
     </button>
   `;
-
+    
     container.appendChild(newField);
     resetCertificateLabels();
   }
-
+  
   function removeCertificate(button) {
     button.parentElement.remove();
     resetCertificateLabels();
   }
-
+  
   function resetCertificateLabels() {
     const items = document.querySelectorAll('.certificate-item');
     items.forEach((item, index) => {
@@ -240,61 +311,82 @@
     });
     certificateCount = items.length + 1;
   }
+  
   // User Form step
   let userCurrentStep = 0;
   const userSteps = document.querySelectorAll(".form-step");
-
+  
   function showUserStep(index) {
     userSteps.forEach((step, i) => {
       step.style.display = i === index ? "block" : "none";
     });
   }
-
+  
   function nextUserStep() {
-    if (userCurrentStep < userSteps.length - 1) {
-      userCurrentStep++;
-      showUserStep(userCurrentStep);
+    const currentStepId = `user-step-${userCurrentStep + 1}`;
+    if (validateStep(currentStepId)) {
+      if (userCurrentStep < userSteps.length - 1) {
+        userCurrentStep++;
+        showUserStep(userCurrentStep);
+      }
     }
   }
-
+  
   function prevUserStep() {
     if (userCurrentStep > 0) {
       userCurrentStep--;
       showUserStep(userCurrentStep);
     }
   }
-
+  
   showUserStep(userCurrentStep);
-
+  
   // Specialist Form step
   let specialistCurrentStep = 0;
   const specialistSteps = document.querySelectorAll(".step");
-
+  
   function showSpecialistStep(index) {
     specialistSteps.forEach((step, i) => {
       step.style.display = i === index ? "block" : "none";
     });
   }
-
-  function nextSpecialistStep(step) {
-    if (specialistCurrentStep < specialistSteps.length - 1) {
-      specialistCurrentStep++;
-      showSpecialistStep(specialistCurrentStep);
+  
+  function nextSpecialistStep() {
+    const currentStepId = `specialist-step-${specialistCurrentStep + 1}`;
+    if (validateStep(currentStepId, true)) {
+      if (specialistCurrentStep < specialistSteps.length - 1) {
+        specialistCurrentStep++;
+        showSpecialistStep(specialistCurrentStep);
+      }
     }
   }
-
-  function previousSpecialistStep(step) {
+  
+  function previousSpecialistStep() {
     if (specialistCurrentStep > 0) {
       specialistCurrentStep--;
       showSpecialistStep(specialistCurrentStep);
     }
   }
-
+  
   showSpecialistStep(specialistCurrentStep);
-
-
-
-
+  
+  // Form submit validation
+  document.addEventListener('DOMContentLoaded', function() {
+    const userForm = document.getElementById('signup-user');
+    const specialistForm = document.getElementById('signup-specialists');
+    
+    userForm.addEventListener('submit', function(e) {
+      if (!validateStep(`user-step-${userCurrentStep + 1}`)) {
+        e.preventDefault();
+      }
+    });
+    
+    specialistForm.addEventListener('submit', function(e) {
+      if (!validateStep(`specialist-step-${specialistCurrentStep + 1}`, true)) {
+        e.preventDefault();
+      }
+    });
+  });
 </script>
 
 {% endblock %}

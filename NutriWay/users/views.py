@@ -4,12 +4,12 @@ from specialists.models import Specialist
 from django.contrib import messages
 from accounts.models import Person ,PersonData, Director
 from specialists.models import *
-from .models import Subscription, ProgressReport
+from .models import Subscription, ProgressReport, GeneralPlanPurchase
 from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
 from itertools import groupby
 from datetime import date
-
+ 
 
 def my_plans_view(request: HttpRequest):
     if not request.user.is_authenticated:
@@ -21,6 +21,8 @@ def my_plans_view(request: HttpRequest):
     try:
         person = Person.objects.get(user=request.user)
         subscriptions = Subscription.objects.filter(person=person)
+        general_plans = GeneralPlanPurchase.objects.filter(person=person).values_list('general_plan', flat=True)
+        
         if (request.user != person.user):
             messages.error(request, "You don't have permission to view this subscription", "alert-danger")
             return redirect('users:my_plans_view')
@@ -29,8 +31,8 @@ def my_plans_view(request: HttpRequest):
             if today > subscription.end_date:
                 subscription.status = subscription.StatusChoices.EXPIRED
                 subscription.save()
-                
-        return render(request, 'users/my_plans.html', {'subscriptions': subscriptions})
+        
+        return render(request, 'users/my_plans.html', {'subscriptions': subscriptions,'general_plans':general_plans})
     except Person.DoesNotExist:
         messages.error(request, "User profile not found", "alert-danger")
         return redirect('core:home_view')

@@ -2,11 +2,13 @@ from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
 import stripe
 from django.conf import settings
-from specialists.models import SubscriptionPlan, Generalplan 
+from django.contrib.auth.decorators import login_required
+from specialists.models import SubscriptionPlan, Generalplan
 from accounts.models import Person
 from django.core.mail import send_mail
 from payments.models import Payment
 import logging
+from users.models import GeneralPlanPurchase
 from users.views import subscription_to_plan , Subscription
 from django.contrib import messages
 
@@ -247,6 +249,10 @@ def payment_success_general(request: HttpRequest) -> HttpResponse:
                 amount=plan.price,
                 payment_method='visa',  # Assuming 'visa' is the default payment method
                 status='Paid'
+            )
+            GeneralPlanPurchase.objects.create(
+                person = person,
+                general_plan = plan
             )
         except Exception as e:
             logger.error(f"Error saving general payment: {e}")
