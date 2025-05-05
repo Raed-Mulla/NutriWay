@@ -4,20 +4,20 @@
 
 {% block content %}
 <section class="employee-profile">
-    <div class="container-fluid">
-        <div class="row">
+    <div class="container d-flex justify-content-center py-4">
+        <div class="row w-100" style="max-width: 1200px;">
             <!-- Main content -->
             <main class="col-12 px-md-4">
                
 
                 <!-- Profile Card -->
-                <div class="profile-card card">
+                <div class="profile-card card mx-auto">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <span class="date-info">Last Updated - {{ profile_user.date_joined|date:"M d, Y" }}</span>
                         {% if request.user == profile_user %}
                         <div class="edit-actions">
                             <a href="{% url 'accounts:update_profile_view' profile_user.username %}" class="btn-edit-profile">
-                                <i class="fa-regular fa-pen-to-square me-2"></i> Edit Profile
+                                <i class="fa-regular fa-pen-to-square me-2"></i> Edit
                             </a>
                         </div>
                         {% endif %}
@@ -87,11 +87,7 @@
                                 <div class="details-section">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <h4 class="mb-0">Personal Details</h4>
-                                        {% if request.user == profile_user %}
-                                            <a href="{% url 'accounts:update_profile_view' profile_user.username %}" class="edit-link">
-                                                <i class="fa-regular fa-pen-to-square me-1"></i> EDIT
-                                            </a>
-                                        {% endif %}
+
                                     </div>
 
                                     <div class="row">
@@ -263,6 +259,9 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-top: 1rem;
     border: none;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .employee-profile .date-info {
@@ -314,7 +313,6 @@
 /* Charts Container */
 .employee-profile .charts-container {
     padding: 1rem;
-    background: #f8f9fa;
     border-radius: 8px;
 }
 
@@ -400,6 +398,44 @@
     .employee-profile .nav-tabs .nav-link {
         margin-right: 0.5rem;
         font-size: 0.8rem;
+    }
+    
+    .employee-profile .profile-card {
+        margin: 0.5rem;
+    }
+}
+
+/* Container adjustments for centering */
+.employee-profile .container {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+@media (min-width: 576px) {
+    .employee-profile .container {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+}
+
+@media (min-width: 768px) {
+    .employee-profile .container {
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+}
+
+@media (min-width: 992px) {
+    .employee-profile .container {
+        padding-left: 80px;
+        padding-right: 80px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .employee-profile .container {
+        padding-left: 120px;
+        padding-right: 120px;
     }
 }
 </style>
