@@ -2,11 +2,22 @@ from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
 from .models import SpecialistRequest
 from .forms import SpecialistRequestForm
-from accounts.models import Specialist, Certificate , Director
-from specialists.models import SubscriptionPlan
+from accounts.models import Specialist, Certificate , Director , Person
+from specialists.models import SubscriptionPlan ,Generalplan
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
+from users.models import Subscription , GeneralPlanPurchase
+from django.db.models import Count , Sum , Value,F , FloatField
+from django.utils.timezone import now
+from django.db.models.functions import TruncDate , TruncMonth , Coalesce
+from django.contrib.auth import get_user_model
+from directors.models import SpecialistRequest
+from collections import defaultdict
+from calendar import month_name
+import json
+
+
 
 def specialist_request (request:HttpRequest):
     if not request.user.is_authenticated:
@@ -204,4 +215,97 @@ def reject_specialist_request(request: HttpRequest, request_id):
     return render(request, 'directors/reject_request.html', {'specialist_request': specialist_request})
 
 
+def director_dashboard(request):
+    if not request.user.is_authenticated or not hasattr(request.user, 'director'):
+        messages.error(request, "You are not authorized to view this page.")
+        return redirect("core:home_view")
 
+    today = now().date()
+    start_of_month = today.replace(day=1)
+    start_of_year = today.replace(month=1, day=1)
+
+    User = get_user_model()
+
+    # المستخدمين الجدد هذا الشهر
+    new_users = (
+        User.objects.filter(date_joined__date__gte=start_of_month)
+        .annotate(date=TruncDate('date_joined'))
+        .values('date')
+        .annotate(count=Count('id'))
+        .order_by('date')
+    )
+    dates = [str(entry['date']) for entry in new_users]
+    counts = [entry['count'] for entry in new_users]
+
+    # المستخدمين الجدد هذا العام
+    users_year = (
+        User.objects.filter(date_joined__date__gte=start_of_year)
+        .annotate(month=TruncMonth('date_joined'))
+        .values('month')
+        .annotate(count=Count('id'))
+        .order_by('month')
+    )
+    monthly_labels = [entry['month'].strftime('%B') for entry in users_year]
+    monthly_counts = [entry['count'] for entry in users_year]
+
+    # الاشتراكات الجديدة شهريًا
+    subscriptions_by_month = (
+        Subscription.objects.filter(created_at__date__gte=start_of_year)
+        .annotate(month=TruncMonth('created_at'))
+        .values('month')
+        .annotate(count=Count('id'))
+        .order_by('month')
+    )
+    subscription_chart_labels = [entry['month'].strftime('%B') for entry in subscriptions_by_month]
+    subscription_chart_counts = [entry['count'] for entry in subscriptions_by_month]
+
+    # حساب أرباح واشتراكات الأخصائيين
+    duration_map = {
+        '1_month': 1,
+        '3_months': 3,
+        '6_months': 6,
+        '12_months': 12
+    }
+
+    specialist_stats = defaultdict(lambda: {'username': '', 'total': 0.0, 'subscriber_count': 0})
+
+    for sub in Subscription.objects.filter(status='active'):
+        months = duration_map.get(sub.duration, 1)
+        earnings = sub.subscription_plan.price * months
+        sid = sub.subscription_plan.specialist.id
+        username = sub.subscription_plan.specialist.user.username
+
+        specialist_stats[sid]['username'] = username
+        specialist_stats[sid]['total'] += earnings
+        specialist_stats[sid]['subscriber_count'] += 1
+
+    for entry in GeneralPlanPurchase.objects.all():
+        sid = entry.general_plan.specialist.id
+        username = entry.general_plan.specialist.user.username
+        price = entry.general_plan.price
+
+        specialist_stats[sid]['username'] = username
+        specialist_stats[sid]['total'] += price
+
+    top_earning_specialists = sorted(specialist_stats.values(), key=lambda x: x['total'], reverse=True)[:5]
+    top_subscribed_specialists = sorted(specialist_stats.values(), key=lambda x: x['subscriber_count'], reverse=True)[:5]
+
+    pending_requests_count = SpecialistRequest.objects.filter(status='pending').count()
+
+    context = {
+        'total_general_plans': Generalplan.objects.count(),
+        'total_subscription_plans': SubscriptionPlan.objects.count(),
+        'total_specialists': Specialist.objects.count(),
+        'total_persons': Person.objects.count(),
+        'pending_requests_count': pending_requests_count,
+        'dates': dates,
+        'counts': counts,
+        'monthly_labels': monthly_labels,
+        'monthly_counts': monthly_counts,
+        'subscription_chart_labels': subscription_chart_labels,
+        'subscription_chart_counts': subscription_chart_counts,
+        'top_earning_specialists': top_earning_specialists,
+        'top_subscribed_specialists': top_subscribed_specialists,
+    }
+
+    return render(request, 'directors/dashboard.html', context)
