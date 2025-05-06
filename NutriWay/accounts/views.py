@@ -291,8 +291,6 @@ def profile_view(request, user_name):
             person = request.user.person  # This is the proper way to access related objects
             subscriptions = Subscription.objects.filter(person=person)
             person_specialist = [a.subscription_plan.specialist for a in subscriptions]
-            print(f'########## \n{person_specialist}')
-            print(f'########## \n{request.user}')
             if request.user != person.user and request.user not in person_specialist :
                 messages.error(request, "You don't have permission to view this subscription", "alert-danger")
                 return redirect('core:home_view')
@@ -324,9 +322,6 @@ def profile_view(request, user_name):
         active_count = subscriptions.filter(status='active', end_date__gte=today).count() if subscriptions else 0
         expired_count = subscriptions.filter(status='expired').count() if subscriptions else 0
         new_this_month_count = subscriptions.filter(start_date__gte=start_of_month).count() if subscriptions else 0
-        print('@@@@@@@@@@@@@@@@@@@@@@@@@@@2')
-        print(f'active_count { active_count}' )
-        print(f'expired_count {expired_count}')
         data.update({
             'active_count': active_count,
             'expired_count': expired_count,
