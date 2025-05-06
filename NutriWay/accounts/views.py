@@ -227,9 +227,15 @@ def login_view(request: HttpRequest):
 
             
             if user.is_active:
+                
                 login(request, user)
+                redirect_url = request.session.get('redirect_after_login')
+                if redirect_url:
+                    del request.session['redirect_after_login']
+                    return redirect(redirect_url)
                 messages.success(request, f"Welcome {user.username}, you logged in successfully!", "alert-success")
                 
+               
                 if hasattr(user, 'specialist'):
                     return redirect('specialists:specialist_dashboard', specialist_id=user.specialist.id)
                 elif hasattr(user, 'director'):

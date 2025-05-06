@@ -297,6 +297,7 @@ def subscription_summary(request : HttpRequest, plan_id : int) -> HttpResponse:
         plan = SubscriptionPlan.objects.get(id=plan_id)
 
         if not request.user.is_authenticated:
+            request.session['redirect_after_login'] = request.build_absolute_uri()
             messages.error(request, "You must be logged in to access this page.", "alert-danger")
             return redirect("accounts:login_view")
         
@@ -350,6 +351,7 @@ def subscription_summary(request : HttpRequest, plan_id : int) -> HttpResponse:
 
 def generalplan_summary(request : HttpRequest, plan_id : int) -> HttpResponse:
     if not request.user.is_authenticated:
+        request.session['redirect_after_login'] = request.build_absolute_uri()
         messages.error(request, "You must be logged in to access this page.", "alert-danger")
         return redirect("accounts:login_view")
     try:
