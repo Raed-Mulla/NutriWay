@@ -44,9 +44,9 @@
   <h2 class="main-title">General Plans</h2>
   <div class="container">
     <div class="row">
-      <div class="col-lg-4 col-md-6 mb-4">
         {% for general_plan in general_plans%}
-        <div class="box">
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="box">
           <div class="info p-3">
             <h3 class="subscription-name">{{ general_plan.name }}</h3>
             <p class="description"><span>Description:</span> {{ general_plan.description }}</p>
