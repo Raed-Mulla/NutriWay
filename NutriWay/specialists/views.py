@@ -154,18 +154,24 @@ def my_plans(request: HttpRequest):
     plans = SubscriptionPlan.objects.filter(specialist=specialist).annotate(
         subscriber_count=Count('subscription')
     )
-
-    paginator = Paginator(plans, 6)  
-    page_number = request.GET.get("page")
+    general_plans = Generalplan.objects.filter(specialist=specialist)
+    paginator = Paginator(plans, 3)  
+    page_number = request.GET.get("Subscription_page")
     page_obj = paginator.get_page(page_number)
 
-    general_plans = Generalplan.objects.filter(specialist=specialist)
+    general_paginator = Paginator(general_plans, 3)
+    general_page_number = request.GET.get("general_page")
+    general_page_obj = general_paginator.get_page(general_page_number)
+
+
+    
 
     return render(request, 'specialists/my_plans.html', {
         'specialist': specialist,
         'plans': page_obj,
         'page_obj': page_obj,
-        'general_plans' : general_plans
+        'general_plans': general_page_obj,
+        'general_page_obj': general_page_obj,
     })
 
 
@@ -176,6 +182,11 @@ def all_specialists(request: HttpRequest):
     sort = request.GET.get('sort')
 
     specialists = Specialist.objects.annotate(average_rating=Avg('reviews__rating')).filter(specialistrequest__status='approved')
+
+    for specialist in specialists:
+        born = specialist.birth_date
+        today = date.today()
+        specialist.age = today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
     if gender:
         specialists = specialists.filter(gender=gender)
@@ -225,6 +236,7 @@ def specialist_subscriptions(request: HttpRequest, plan_id):
         messages.error(request, "You are not authorized to access this page.", "alert-danger")
         return redirect('core:home_view')
 
+    plan = SubscriptionPlan.objects.get(id=plan_id)
 
     filter_status = request.GET.get('status', 'all')
 
@@ -262,6 +274,7 @@ def specialist_subscriptions(request: HttpRequest, plan_id):
         request,
         'specialists/view_subscriptions.html',
         {
+            'plan': plan,
             'subscriptions': page_obj,
             'subscription_plan': subscription_plan,
             'page_obj': page_obj,

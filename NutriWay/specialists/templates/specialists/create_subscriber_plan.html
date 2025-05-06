@@ -80,7 +80,7 @@
           <input type="number" placeholder="Day" class="form-control" required name="day_number-${mealCount}">
         </div>
         <div class="col-2 flex-grow-1">
-          <select class="form-select" required name="meal_type-new-${mealCount}">
+          <select class="form-select" required name="meal_type-${mealCount}">
   <option value="">Type</option>
   {% for val, label in subscriberMeal %}
     <option value="{{val}}">{{label}}</option>
