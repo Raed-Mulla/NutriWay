@@ -41,6 +41,10 @@
         <div class="mb-3">
           <label class="form-label">Password</label>
           <input type="password" class="form-control" name="password" placeholder="Enter password" required>
+          <small class="form-text text-muted">
+            Password must be at least 8 characters and include letters, numbers, and symbols.
+          </small>
+          
         </div>
         <div class="mb-3">
           <label class="form-label">Repeat Password</label>
@@ -127,6 +131,10 @@
         <div class="mb-3">
           <label class="form-label">Password</label>
           <input type="password" class="form-control" name="password" placeholder="Enter password" required>
+          <small class="form-text text-muted">
+            Password must be at least 8 characters and include letters, numbers, and symbols.
+          </small>
+          
         </div>
         <div class="mb-3">
           <label class="form-label">Repeat Password</label>
@@ -178,7 +186,7 @@
           <div id="certificates-container"></div>
         </div>
         <button type="button" onclick="previousSpecialistStep()" class="btn w-49">Previous</button>
-        <input type="submit" class="btn d-block w-49" value="Submit" >
+        <input type="submit" class="btn d-block w-100" value="Submit" >
       </div>
     </form>
   </div>
@@ -250,20 +258,36 @@
       }
     });
     
-    // Password match validation
-    if (stepId === 'user-step-3' || stepId === 'specialist-step-2') {
-      const password = step.querySelector('input[name="password"]');
-      const repeatPassword = step.querySelector('input[name="repeat-password"]');
-      
-      if (password.value !== repeatPassword.value) {
-        isValid = false;
-        repeatPassword.classList.add('is-invalid');
-        const error = document.createElement('div');
-        error.className = 'invalid-feedback';
-        error.textContent = 'Passwords do not match';
-        repeatPassword.parentElement.appendChild(error);
-      }
-    }
+ // Password match and strength validation
+if (stepId === 'user-step-3' || stepId === 'specialist-step-2') {
+  const password = step.querySelector('input[name="password"]');
+  const repeatPassword = step.querySelector('input[name="repeat-password"]');
+
+  const passwordValue = password.value;
+
+  const strongPassword = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^\w\s]).{8,}$/;
+
+  // Check password strength
+  if (!strongPassword.test(passwordValue)) {
+    isValid = false;
+    password.classList.add('is-invalid');
+    const error = document.createElement('div');
+    error.className = 'invalid-feedback';
+    error.textContent = 'Password must be at least 8 characters and include letters, numbers, and symbols';
+    password.parentElement.appendChild(error);
+  }
+
+  // Check password match
+  if (password.value !== repeatPassword.value) {
+    isValid = false;
+    repeatPassword.classList.add('is-invalid');
+    const error = document.createElement('div');
+    error.className = 'invalid-feedback';
+    error.textContent = 'Passwords do not match';
+    repeatPassword.parentElement.appendChild(error);
+  }
+}
+
     
     return isValid;
   }
