@@ -1,16 +1,24 @@
 {% extends "core/base.html" %}
 
 
-{% block redirct %}   <meta http-equiv="refresh" content="5; url={% url 'users:my_plans_view' %}"> {% endblock %}
+{% block redirct %}  <meta http-equiv="refresh" content="5; url={% url 'users:my_plans_view' %}">  {% endblock %}
 
 {% block title %}Payment Success{% endblock %}
 {% block content %}
 <section class="payment-success pt-5 pb-5">
     <div class="container">
-        <h1>Payment Successful</h1>
-        <p>Your payment has been processed successfully.</p>
-        <p>Thank you for your purchase!</p>
-        <small>You will be redirect after 5 sec</small>
+        <div class="row justify-content-center">
+            <div class="col-lg-7 col-md-7">
+                <div class="card text-center">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <h1>Payment Successful</h1>
+                    <p>Your payment has been processed successfully.</p>
+                    <p>Thank you for your purchase!</p>
+                    <small>You will be redirect after 5 sec</small>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 {% endblock %}
+

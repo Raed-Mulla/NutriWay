@@ -2,39 +2,53 @@
 {% block title %}Subscription Plan Detail{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-<div class="card shadow p-4">
-    <h2>{{ plan.name }}</h2>
-    <p><strong>Specialist:</strong> {{ plan.specialist.user.username }}</p>
-    
-    {% if plan.image %}
-    <img src="{{ plan.image.url }}" alt="Plan Image" class="img-fluid mb-3">
-    {% endif %}
-    
-    <p><strong>Description:</strong> {{ plan.description }}</p>
+<section class="subscription-details pt-5 pb-5">
+  <h2 class="main-title">Subscription Details</h2>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-5 col-md-5 d-flex">
+        {% if plan.image %}
+        <img src="{{ plan.image.url }}" alt="Plan Image" class="img-fluid">
+        {% endif %}
+      </div>
+      <div class="col-lg-7 col-md-7 d-flex">
+        <div class="card w-100 d-flex ">
+          <div class="info">
+            <h2>{{ plan.name }}</h2>
+            <p><strong>Specialist:</strong> {{ plan.specialist.user.username }}</p>
+            
+      
+            
+            <p><strong>Description:</strong> {{ plan.description }}</p>
+        
+            <p><strong>Details:</strong> {{ plan.detail }}</p>
+            
+            <p><strong>Type:</strong> {{ plan.plan_type }}</p>
+            <p><strong>Price:</strong> {{ plan.price }} ﷼</p>
+          </div>
 
-    {% if plan.detail %}
-    <p><strong>Details:</strong> {{ plan.detail }}</p>
-    {% endif %}
-    
-    <p><strong>Type:</strong> {{ plan.plan_type }}</p>
-    <p><strong>Price:</strong> {{ plan.price }} ﷼</p>
-    <form method="get" action="{% url 'payments:subscription_summary' plan.id %}">
-        <label for="duration" class="form-label">Select Duration</label>
-        <select name="duration" class="form-select mb-3" required>
-        {% for val, label in duration_choices %}
-            <option value="{{ val }}">{{ label }}</option>
-        {% endfor %}
-        </select>
-        {% if is_subscribed %}
-  <button type="button" class="btn btn-secondary d-block w-100" disabled>
-    You are already subscribed
-  </button>
-{% else %}
-  <button type="submit" class="btn-a d-block w-100 btn">Subscribe Now</button>
-{% endif %}
-
-    </form>
-</div>
-</div>
+          <form method="get" action="{% url 'payments:subscription_summary' plan.id %}">
+              <label for="duration" class="form-label">Select Duration</label>
+              <select name="duration" class="form-select mb-3" required>
+              {% for val, label in duration_choices %}
+                  <option value="{{ val }}">{{ label }}</option>
+              {% endfor %}
+              </select>
+              {% if is_subscribed %}
+        <button type="button" class="btn btn-secondary d-block w-100" disabled>
+          You are already subscribed
+        </button>
+      {% else %}
+        <button type="submit" class="btn-a d-block w-100 btn">Subscribe Now</button>
+      {% endif %}
+      
+          </form>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock %}
+<div class="container mt-5">
+
+  </div>
