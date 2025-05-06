@@ -7,7 +7,7 @@ from django.contrib import messages
 from users.models import Subscription , ProgressReport,GeneralPlanPurchase
 from datetime import date
 from datetime import datetime
-from django.db.models import Avg ,  Count,  Sum , Case,When,Value,IntegerField
+from django.db.models import Avg ,  Count,  Sum , Case,When,Value,IntegerField , Q
 from django.utils.timezone import now
 from calendar import month_name
 import json
@@ -152,7 +152,7 @@ def my_plans(request: HttpRequest):
         return redirect('core:home_view')
 
     plans = SubscriptionPlan.objects.filter(specialist=specialist).annotate(
-        subscriber_count=Count('subscription')
+        subscriber_count=Count('subscription', filter=Q(subscription__status__in=['active']))
     )
     general_plans = Generalplan.objects.filter(specialist=specialist)
     paginator = Paginator(plans, 3)  
