@@ -154,18 +154,24 @@ def my_plans(request: HttpRequest):
     plans = SubscriptionPlan.objects.filter(specialist=specialist).annotate(
         subscriber_count=Count('subscription')
     )
-
-    paginator = Paginator(plans, 6)  
+    general_plans = Generalplan.objects.filter(specialist=specialist)
+    paginator = Paginator(plans, 3)  
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
-    general_plans = Generalplan.objects.filter(specialist=specialist)
+    general_paginator = Paginator(general_plans, 2)
+    general_page_number = request.GET.get("general_page")
+    general_page_obj = general_paginator.get_page(general_page_number)
+
+
+    
 
     return render(request, 'specialists/my_plans.html', {
         'specialist': specialist,
         'plans': page_obj,
         'page_obj': page_obj,
-        'general_plans' : general_plans
+        'general_plans': general_page_obj,
+        'general_page_obj': general_page_obj,
     })
 
 
