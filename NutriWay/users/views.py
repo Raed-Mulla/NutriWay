@@ -21,7 +21,8 @@ def my_plans_view(request: HttpRequest):
     try:
         person = Person.objects.get(user=request.user)
         subscriptions = Subscription.objects.filter(person=person)
-        general_plans = GeneralPlanPurchase.objects.filter(person=person).values_list('general_plan', flat=True)
+        purchased_general_plans_ids = GeneralPlanPurchase.objects.filter(person=person).values_list('general_plan_id', flat=True)
+        general_plans = Generalplan.objects.filter(id__in=purchased_general_plans_ids)
         
         if (request.user != person.user):
             messages.error(request, "You don't have permission to view this subscription", "alert-danger")
