@@ -1,7 +1,7 @@
 {% extends "core/base.html" %}
 
-
-{% block redirct %}  <meta http-equiv="refresh" content="5; url={% url 'users:my_plans_view' %}">  {% endblock %}
+{% block redirct %}  <meta http-equiv="refresh" content="5; url={% url 'users:my_plans_view' %}">
+{% endblock %}
 
 {% block title %}Payment Success{% endblock %}
 {% block content %}
@@ -15,6 +15,7 @@
                     <p>Your payment has been processed successfully.</p>
                     <p>Thank you for your purchase!</p>
                     <small>You will be redirect after 5 sec</small>
+                    <span class="loader"></span>
                 </div>
             </div>
         </div>
