@@ -156,10 +156,10 @@ def my_plans(request: HttpRequest):
     )
     general_plans = Generalplan.objects.filter(specialist=specialist)
     paginator = Paginator(plans, 3)  
-    page_number = request.GET.get("page")
+    page_number = request.GET.get("Subscription_page")
     page_obj = paginator.get_page(page_number)
 
-    general_paginator = Paginator(general_plans, 2)
+    general_paginator = Paginator(general_plans, 3)
     general_page_number = request.GET.get("general_page")
     general_page_obj = general_paginator.get_page(general_page_number)
 
