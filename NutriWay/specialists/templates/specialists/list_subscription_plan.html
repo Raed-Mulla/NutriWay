@@ -76,23 +76,43 @@
     </div>
     <div class="mt-4 text-center">
       <nav>
-        <ul class="pagination justify-content-center">
+        <ul class="pagination justify-content-center align-items-center">
+
+          {# First page arrow #}
+          {% if page_obj.number > 1 %}
+            <li class="page-item-1 icon">
+              <a class="page-link-1" href="?page=1{% if selected_filter %}&filter={{ selected_filter }}{% endif %}{% if selected_type %}&type={{ selected_type }}{% endif %}">&laquo;</a>
+            </li>
+          {% endif %}
+        
+          {# Previous page arrow #}
           {% if page_obj.has_previous %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if selected_type %}&type={{ selected_type }}{% endif %}{% if selected_gender %}&gender={{ selected_gender }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">Previous</a>
+            <li class="page-item-1 icon">
+              <a class="page-link-1" href="?page={{ page_obj.previous_page_number }}{% if selected_filter %}&filter={{ selected_filter }}{% endif %}{% if selected_type %}&type={{ selected_type }}{% endif %}">&lsaquo;</a>
             </li>
           {% endif %}
-    
-          <li class="page-item disabled">
-            <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        
+          {# Current page #}
+          <li class="page-item-1 number disabled">
+            <span class="page-link-1">{{ page_obj.number }}</span>
           </li>
-    
+        
+          {# Next page arrow #}
           {% if page_obj.has_next %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if selected_type %}&type={{ selected_type }}{% endif %}{% if selected_gender %}&gender={{ selected_gender }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}">Next</a>
+            <li class="page-item-1 icon">
+              <a class="page-link-1" href="?page={{ page_obj.next_page_number }}{% if selected_filter %}&filter={{ selected_filter }}{% endif %}{% if selected_type %}&type={{ selected_type }}{% endif %}">&rsaquo;</a>
             </li>
           {% endif %}
+        
+          {# Last page arrow #}
+          {% if page_obj.number < page_obj.paginator.num_pages %}
+            <li class="page-item-1 icon">
+              <a class="page-link-1" href="?page={{ page_obj.paginator.num_pages }}{% if selected_filter %}&filter={{ selected_filter }}{% endif %}{% if selected_type %}&type={{ selected_type }}{% endif %}">&raquo;</a>
+            </li>
+          {% endif %}
+        
         </ul>
+        
       </nav>
     </div>
     
