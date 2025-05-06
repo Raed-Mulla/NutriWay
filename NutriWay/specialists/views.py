@@ -183,6 +183,11 @@ def all_specialists(request: HttpRequest):
 
     specialists = Specialist.objects.annotate(average_rating=Avg('reviews__rating')).filter(specialistrequest__status='approved')
 
+    for specialist in specialists:
+        born = specialist.birth_date
+        today = date.today()
+        specialist.age = today.year - born.year - ((today.month, today.day) < (born.month, born.day))
+
     if gender:
         specialists = specialists.filter(gender=gender)
 
