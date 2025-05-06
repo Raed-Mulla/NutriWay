@@ -48,14 +48,17 @@
         {% for general_plan in general_plans%}
         <div class="box">
           <div class="info p-3">
-            <h3 class="subscription-name">general_plan.name</h3>
-            <p class="description"><span>Description:</span> general_plan.description</p>
-            <a href="" class="btn d-block m-auto mb-2">Upload</a>
-            {%endfor%}
+            <h3 class="subscription-name">{{ general_plan.name }}</h3>
+            <p class="description"><span>Description:</span> {{ general_plan.description }}</p>
+            <p class="detail"><span>Detail:</span> {{ general_plan.detail }}</p>
+            {% if general_plan.plan_file %}
+            <a href="{{ general_plan.plan_file.url }}" download class="btn d-block m-auto mb-2">Download Plan</a>
+            {% endif %}
+            
           </div>
         </div>
-        
       </div>
+      {%endfor%}
     </div>
   </div>
 </section>
