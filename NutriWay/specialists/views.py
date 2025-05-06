@@ -159,10 +159,13 @@ def my_plans(request: HttpRequest):
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
+    general_plans = Generalplan.objects.filter(specialist=specialist)
+
     return render(request, 'specialists/my_plans.html', {
         'specialist': specialist,
         'plans': page_obj,
-        'page_obj': page_obj
+        'page_obj': page_obj,
+        'general_plans' : general_plans
     })
 
 
