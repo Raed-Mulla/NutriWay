@@ -131,7 +131,6 @@
 
           <ul class="drop-links dropdown-menu dropdown-menu-end ">
             <h6 class="dropdown-item mb-2">Welcome Mr.{{request.user.first_name}}</h6>
-            <li><a class="dropdown-item" href="{% url 'accounts:profile_view' user.username %}">Profile</a></li>
             <li><a class="dropdown-item" href="{% url 'directors:Specialist_Request'%}">Specialist Request</a></li>
             <li><a class="dropdown-item" href="{% url 'directors:specialist_manage' %}">Specialist Manage</a></li>
             <li><a class="dropdown-item" href="{% url 'directors:dashboard' %}">Dashboard</a></li>

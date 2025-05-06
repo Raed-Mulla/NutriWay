@@ -295,7 +295,7 @@ def director_dashboard(request):
     context = {
         'total_general_plans': Generalplan.objects.count(),
         'total_subscription_plans': SubscriptionPlan.objects.count(),
-        'total_specialists': Specialist.objects.count(),
+        'total_specialists' : Specialist.objects.filter(specialistrequest__status='approved').count(),
         'total_persons': Person.objects.count(),
         'pending_requests_count': pending_requests_count,
         'dates': dates,

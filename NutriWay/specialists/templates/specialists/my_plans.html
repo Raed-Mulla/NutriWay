@@ -49,4 +49,24 @@
     </div>
   </div>
 </section>
+<section class="plans subscription-plans general-plans pt-5 pb-5">
+  <h2 class="main-title">General Plans</h2>
+  <div class="container">
+    <div class="row">
+      {% for general_plan in general_plans%}
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="box">
+          <div class="info p-3">
+            <h3 class="subscription-name">{{ general_plan.name }}</h3>
+            <p class="description"><span>Description:</span> {{ general_plan.description }}</p>
+            <p class="detail"><span>Detail:</span> {{ general_plan.detail }}</p>
+            <a href="{% url 'specialists:general_plan_detail' general_plan.id %}" class="btn d-block m-auto mb-2">Details</a>
+            
+          </div>
+        </div>
+      </div>
+      {%endfor%}
+    </div>
+  </div>
+</section>
 {% endblock %}
