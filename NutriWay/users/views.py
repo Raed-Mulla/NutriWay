@@ -87,10 +87,12 @@ def subscription_to_plan(request: HttpRequest, plan_id: int,duration: str):
 
 
 def subscription_detail(request, subscription_id):
+    subscription_detail = {}
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to access this page.", "alert-danger")
         return redirect("accounts:login_view")
     subscription = get_object_or_404(Subscription, id=subscription_id)
+    subscription_detail.update({'person_username':subscription.person.user.username})
     
     if (request.user != subscription.person.user and 
         request.user != subscription.subscription_plan.specialist.user):
@@ -201,6 +203,7 @@ def subscription_detail(request, subscription_id):
             'change': weight_change,
             'is_positive': weight_change > 0
         }
+        
     
     today_checked = MealCheck.objects.filter(
         subscription=subscription,
@@ -229,6 +232,7 @@ def subscription_detail(request, subscription_id):
         'available_days': available_days,
         'today_checked': today_checked,
         'subscriber_plan':subscriber_plan,
+        'person_username':subscription.person.user.username
     }
     
     return render(request, 'users/subscription_detail.html', subscription_detail)

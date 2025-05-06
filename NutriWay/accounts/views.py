@@ -268,23 +268,39 @@ def profile_view(request, user_name):
         certificates = None
         active = None
         new_this_month = None
-        latest_data = None
-        weight_entries = None
-        labels = None
-        weights = None
+        user = User.objects.filter(username=user_name).first()
+        latest_data = None  
+        weights= None
+        labels = None  
+        if user and hasattr(user,'person') :     
+            # Fix: Get single Person instance, not QuerySet
+            person = Person.objects.filter(user=user).first()  # Use .first() to get a single instance
+            if person:  # Check if person exists
+                latest_data = PersonData.objects.filter(person=person).order_by('-created_at').first()
+                weight_entries = PersonData.objects.filter(person=person).order_by('created_at') 
+                labels = [DateFormat(entry.created_at).format('M d') for entry in weight_entries]
+                weights = [entry.weight for entry in weight_entries]   
         if hasattr(request.user, 'person'):
-            person = Person.objects.get(user=request.user)
+            # Fix: Use .get() or .filter().first()
+            person = request.user.person  # This is the proper way to access related objects
+            subscriptions = Subscription.objects.filter(person=person)
+            person_specialist = [a.subscription_plan.specialist for a in subscriptions]
+            print(f'########## \n{person_specialist}')
+            print(f'########## \n{request.user}')
+            if request.user != person.user and request.user not in person_specialist :
+                messages.error(request, "You don't have permission to view this subscription", "alert-danger")
+                return redirect('core:home_view')
             subscriptions = Subscription.objects.filter(person=person)
             general_plans = GeneralPlanPurchase.objects.filter(person=person).values_list('general_plan', flat=True)
-            latest_data = PersonData.objects.filter(person=person).last()
+            # Fix: Use .order_by().first() instead of .last()
+            latest_data = PersonData.objects.filter(person=person).order_by('-created_at').first()
             weight_entries = PersonData.objects.filter(person=person).order_by('created_at') 
             labels = [DateFormat(entry.created_at).format('M d') for entry in weight_entries]
             weights = [entry.weight for entry in weight_entries]        
-            if request.user != person.user:
-                messages.error(request, "You don't have permission to view this subscription", "alert-danger")
-                return redirect('core:home_view')
+          
         if hasattr(request.user, 'specialist'):
-            specialist = Specialist.objects.get(user=request.user)
+            # Fix: Use request.user.specialist to access related object
+            specialist = request.user.specialist
             if request.user != specialist.user:
                 messages.error(request, "You don't have permission to view this subscription", "alert-danger")
                 return redirect('core:home_view')
@@ -299,9 +315,9 @@ def profile_view(request, user_name):
         today = now().date()
         start_of_month = today.replace(day=1)
 
-        active_count = subscriptions.filter(status='active', end_date__gte=today).count()
-        expired_count = subscriptions.filter(status='expired').count()
-        new_this_month_count = subscriptions.filter(start_date__gte=start_of_month).count()
+        active_count = subscriptions.filter(status='active', end_date__gte=today).count() if subscriptions else 0
+        expired_count = subscriptions.filter(status='expired').count() if subscriptions else 0
+        new_this_month_count = subscriptions.filter(start_date__gte=start_of_month).count() if subscriptions else 0
         print('@@@@@@@@@@@@@@@@@@@@@@@@@@@2')
         print(f'active_count { active_count}' )
         print(f'expired_count {expired_count}')
@@ -313,9 +329,6 @@ def profile_view(request, user_name):
                
         
         profile_user = User.objects.get(username=user_name)
-        if request.user.username != user_name:
-            messages.error(request, "You can only view your own profile.", "alert-danger")
-            return redirect('core:home_view')
         data.update({
         'profile_user': profile_user,
         'subscriptions': subscriptions,
@@ -323,7 +336,9 @@ def profile_view(request, user_name):
         'latest_data': latest_data,
         'certificates': certificates,
         'weight_labels': labels,
-        'weight_values': weights
+        'weight_values': weights,
+        'is_person':hasattr(user, 'person'),
+        'is_himself':request.user.username == user_name
     })
 
         return render(request, 'accounts/profile.html', data)
@@ -331,7 +346,6 @@ def profile_view(request, user_name):
     except User.DoesNotExist:
         messages.error(request, "User not found.", "alert-danger")
         return redirect('core:home_view')
-
     
 def update_profile_view(request,user_name):
     if not request.user.is_authenticated:
