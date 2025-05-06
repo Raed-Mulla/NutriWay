@@ -8,7 +8,7 @@
         <div class="row w-100" style="max-width: 1200px;">
             <!-- Main content -->
             <main class="col-12 px-md-4">
-
+               
 
                 <!-- Profile Card -->
                 <div class="profile-card card mx-auto">
@@ -16,8 +16,7 @@
                         <span class="date-info">Last Updated - {{ profile_user.date_joined|date:"M d, Y" }}</span>
                         {% if request.user == profile_user %}
                         <div class="edit-actions">
-                            <a href="{% url 'accounts:update_profile_view' profile_user.username %}"
-                                class="btn-edit-profile">
+                            <a href="{% url 'accounts:update_profile_view' profile_user.username %}" class="btn-edit-profile">
                                 <i class="fa-regular fa-pen-to-square me-2"></i> Edit
                             </a>
                         </div>
@@ -28,11 +27,9 @@
                         <div class="row align-items-center mb-4">
                             <div class="col-md-2 text-center">
                                 {% if profile_user.specialist and profile_user.specialist.image %}
-                                <img src="{{ profile_user.specialist.image.url }}"
-                                    class="profile-img rounded-circle mb-3" alt="Profile">
+                                <img src="{{ profile_user.specialist.image.url }}" class="profile-img rounded-circle mb-3" alt="Profile">
                                 {% else %}
-                                <img src="{% static 'images/default_profile.jpg' %}"
-                                    class="profile-img rounded-circle mb-3" alt="Profile">
+                                <img src="{% static 'images/default_profile.jpg' %}" class="profile-img rounded-circle mb-3" alt="Profile">
                                 {% endif %}
                             </div>
                             <div class="col-md-6">
@@ -54,8 +51,7 @@
                                         <h5 class="mb-3">Subscribers Overview</h5>
                                         <canvas id="subscribersChart" height="200"></canvas>
                                         <div class="text-center mt-3">
-                                            <a href="{% url 'specialists:specialist_dashboard' request.user.specialist.id %}"
-                                                class="btn btn-outline-primary btn-sm">
+                                            <a href="{% url 'specialists:specialist_dashboard' request.user.specialist.id %}" class="btn btn-outline-primary btn-sm">
                                                 Go to Dashboard
                                             </a>
                                         </div>
@@ -68,19 +64,16 @@
                         <!-- Tab Navigation -->
                         <nav class="mt-4">
                             <div class="nav nav-tabs" id="profile-tabs" role="tablist">
-                                <button class="nav-link active" id="personal-tab" data-bs-toggle="tab"
-                                    data-bs-target="#personal-details" type="button" role="tab">
+                                <button class="nav-link active" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personal-details" type="button" role="tab">
                                     PERSONAL DETAILS
                                 </button>
                                 {% if profile_user.specialist %}
-                                <button class="nav-link" id="specialist-tab" data-bs-toggle="tab"
-                                    data-bs-target="#specialist-details" type="button" role="tab">
+                                <button class="nav-link" id="specialist-tab" data-bs-toggle="tab" data-bs-target="#specialist-details" type="button" role="tab">
                                     SPECIALIST DETAILS
                                 </button>
                                 {% endif %}
                                 {% if profile_user.person %}
-                                <button class="nav-link" id="health-tab" data-bs-toggle="tab"
-                                    data-bs-target="#health-details" type="button" role="tab">
+                                <button class="nav-link" id="health-tab" data-bs-toggle="tab" data-bs-target="#health-details" type="button" role="tab">
                                     HEALTH DETAILS
                                 </button>
                                 {% endif %}
@@ -110,11 +103,11 @@
                                             <h6 class="text-muted mb-1">Gender</h6>
                                             <p class="mb-0">
                                                 {% if profile_user.specialist %}
-                                                {{ profile_user.specialist.gender }}
+                                                    {{ profile_user.specialist.gender }}
                                                 {% elif profile_user.person %}
-                                                {{ profile_user.person.gender }}
+                                                    {{ profile_user.person.gender }}
                                                 {% elif profile_user.director %}
-                                                {{ profile_user.director.gender }}
+                                                    {{ profile_user.director.gender }}
                                                 {% endif %}
                                             </p>
                                         </div>
@@ -129,11 +122,11 @@
                                             <h6 class="text-muted mb-1">Birth Date</h6>
                                             <p class="mb-0">
                                                 {% if profile_user.specialist %}
-                                                {{ profile_user.specialist.birth_date }}
+                                                    {{ profile_user.specialist.birth_date }}
                                                 {% elif profile_user.person %}
-                                                {{ profile_user.person.birth_date }}
+                                                    {{ profile_user.person.birth_date }}
                                                 {% elif profile_user.director %}
-                                                {{ profile_user.director.birth_date }}
+                                                    {{ profile_user.director.birth_date }}
                                                 {% endif %}
                                             </p>
                                         </div>
@@ -152,7 +145,7 @@
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <h4 class="mb-0">Specialist Details</h4>
                                     </div>
-
+                                    
                                     <div class="row">
                                         <div class="col-md-4 mb-3">
                                             <h6 class="text-muted mb-1">Specialty</h6>
@@ -161,18 +154,15 @@
                                     </div>
                                     {% if certificates %}
                                     <div class="row">
-                                        <h6 class="text-muted mb-1">certificates</h6>
+                                      <h6 class="text-muted mb-1">certificates</h6>
                                         {% for cert in certificates %}
                                         <div class="col-md-6 mb-3">
-                                            <div
-                                                class="certificate-item d-flex justify-content-between align-items-center p-3 border rounded">
+                                            <div class="certificate-item d-flex justify-content-between align-items-center p-3 border rounded">
                                                 <div>
                                                     <h6 class="mb-0">{{ cert.name }}</h6>
-                                                    <small class="text-muted">Added on {{ cert.created_at|date:"M d, Y"
-                                                        }}</small>
+                                                    <small class="text-muted">Added on {{ cert.created_at|date:"M d, Y" }}</small>
                                                 </div>
-                                                <a href="{% url 'specialists:show_certificates' profile_user.specialist.id %}"
-                                                    class="btn btn-sm btn-outline-primary">
+                                                <a href="{% url 'specialists:show_certificates' profile_user.specialist.id %}" class="btn btn-sm btn-outline-primary">
                                                     View
                                                 </a>
                                             </div>
@@ -186,7 +176,7 @@
                                 </div>
                             </div>
                             {%endif%}
-
+                            
                             <!-- Health Details Tab -->
                             {% if profile_user.person %}
                             <div class="tab-pane fade" id="health-details" role="tabpanel">
@@ -253,313 +243,309 @@
 </section>
 
 <style>
-    /* Employee Profile Enhancement */
-    .employee-profile {
-        min-height: 100vh;
-        background-color: #f5f5f5;
-    }
+/* Employee Profile Enhancement */
+.employee-profile {
+    min-height: 100vh;
+    background-color: #f5f5f5;
+}
 
-    .employee-profile .header-section {
-        border-bottom: 1px solid #e0e0e0;
-        padding: 1rem 0;
-        background-color: white;
-    }
+.employee-profile .header-section {
+    border-bottom: 1px solid #e0e0e0;
+    padding: 1rem 0;
+    background-color: white;
+}
 
-    .employee-profile .profile-card {
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        margin-top: 1rem;
-        border: none;
-        max-width: 1000px;
-        margin-left: auto;
-        margin-right: auto;
-    }
+.employee-profile .profile-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 1rem;
+    border: none;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
 
-    .employee-profile .date-info {
-        color: #666;
-        font-size: 0.9rem;
-    }
+.employee-profile .date-info {
+    color: #666;
+    font-size: 0.9rem;
+}
 
-    .employee-profile .profile-img {
-        width: 120px;
-        height: 120px;
-        object-fit: cover;
-        border: 3px solid #f0f0f0;
-    }
+.employee-profile .profile-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border: 3px solid #f0f0f0;
+}
 
-    /* Professional Edit Button */
-    .employee-profile .btn-edit-profile {
-        display: inline-flex;
-        align-items: center;
-        padding: 8px 16px;
-        background-color: #f8f9fa;
-        border: 1px solid #dee2e6;
-        border-radius: 6px;
-        color: #495057;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.2s ease;
-    }
+/* Professional Edit Button */
+.employee-profile .btn-edit-profile {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    color: #495057;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
 
-    .employee-profile .btn-edit-profile:hover {
-        background-color: #e9ecef;
-        border-color: #dee2e6;
-        color: #212529;
-    }
+.employee-profile .btn-edit-profile:hover {
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+    color: #212529;
+}
 
-    .employee-profile .edit-link {
-        display: inline-flex;
-        align-items: center;
-        color: #6c757d;
-        text-decoration: none;
-        font-weight: 500;
-        font-size: 0.875rem;
-        transition: color 0.2s ease;
-    }
+.employee-profile .edit-link {
+    display: inline-flex;
+    align-items: center;
+    color: #6c757d;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: color 0.2s ease;
+}
 
-    .employee-profile .edit-link:hover {
-        color: #495057;
-    }
+.employee-profile .edit-link:hover {
+    color: #495057;
+}
 
-    /* Charts Container */
-    .employee-profile .charts-container {
-        padding: 1rem;
-        border-radius: 8px;
-    }
+/* Charts Container */
+.employee-profile .charts-container {
+    padding: 1rem;
+    border-radius: 8px;
+}
 
-    .employee-profile .charts-container h5 {
-        color: #495057;
-        font-size: 1rem;
-        font-weight: 600;
-    }
+.employee-profile .charts-container h5 {
+    color: #495057;
+    font-size: 1rem;
+    font-weight: 600;
+}
 
-    /* Tabs */
+/* Tabs */
+.employee-profile .nav-tabs .nav-link {
+    color: #666;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 1rem 0;
+    margin-right: 2rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.employee-profile .nav-tabs .nav-link.active {
+    color: #328E6E;
+    border-bottom-color: #328E6E;
+    background: none;
+}
+
+/* Details Section */
+.employee-profile .details-section h6 {
+    color: #888;
+    font-size: 0.85rem;
+    font-weight: normal;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+    letter-spacing: 0.5px;
+}
+
+.employee-profile .details-section p {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+/* Certificate Items */
+.employee-profile .certificate-item {
+    background-color: #f8f9fa;
+    margin-bottom: 0.5rem;
+}
+
+.employee-profile .certificate-item:hover {
+    background-color: #e9ecef;
+}
+
+/* Profile Actions */
+.employee-profile .profile-actions {
+    margin-top: 2rem;
+    padding-top: 1rem;
+}
+
+.employee-profile .btn-primary {
+    background-color: #328E6E;
+    border-color: #328E6E;
+}
+
+.employee-profile .btn-primary:hover {
+    background-color: #276254;
+    border-color: #276254;
+}
+
+.employee-profile .btn-outline-primary {
+    color: #328E6E;
+    border-color: #328E6E;
+}
+
+.employee-profile .btn-outline-primary:hover {
+    background-color: #328E6E;
+    border-color: #328E6E;
+    color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
     .employee-profile .nav-tabs .nav-link {
-        color: #666;
-        border: none;
-        border-bottom: 2px solid transparent;
-        padding: 1rem 0;
-        margin-right: 2rem;
-        text-transform: uppercase;
-        font-weight: bold;
-        font-size: 0.9rem;
+        margin-right: 0.5rem;
+        font-size: 0.8rem;
     }
-
-    .employee-profile .nav-tabs .nav-link.active {
-        color: #328E6E;
-        border-bottom-color: #328E6E;
-        background: none;
+    
+    .employee-profile .profile-card {
+        margin: 0.5rem;
     }
+}
 
-    /* Details Section */
-    .employee-profile .details-section h6 {
-        color: #888;
-        font-size: 0.85rem;
-        font-weight: normal;
-        text-transform: uppercase;
-        margin-bottom: 0.25rem;
-        letter-spacing: 0.5px;
-    }
+/* Container adjustments for centering */
+.employee-profile .container {
+    padding-left: 15px;
+    padding-right: 15px;
+}
 
-    .employee-profile .details-section p {
-        font-size: 1rem;
-        color: #333;
-        margin-bottom: 1rem;
-    }
-
-    /* Certificate Items */
-    .employee-profile .certificate-item {
-        background-color: #f8f9fa;
-        margin-bottom: 0.5rem;
-    }
-
-    .employee-profile .certificate-item:hover {
-        background-color: #e9ecef;
-    }
-
-    /* Profile Actions */
-    .employee-profile .profile-actions {
-        margin-top: 2rem;
-        padding-top: 1rem;
-    }
-
-    .employee-profile .btn-primary {
-        background-color: #328E6E;
-        border-color: #328E6E;
-    }
-
-    .employee-profile .btn-primary:hover {
-        background-color: #276254;
-        border-color: #276254;
-    }
-
-    .employee-profile .btn-outline-primary {
-        color: #328E6E;
-        border-color: #328E6E;
-    }
-
-    .employee-profile .btn-outline-primary:hover {
-        background-color: #328E6E;
-        border-color: #328E6E;
-        color: white;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        .employee-profile .nav-tabs .nav-link {
-            margin-right: 0.5rem;
-            font-size: 0.8rem;
-        }
-
-        .employee-profile .profile-card {
-            margin: 0.5rem;
-        }
-    }
-
-    /* Container adjustments for centering */
+@media (min-width: 576px) {
     .employee-profile .container {
-        padding-left: 15px;
-        padding-right: 15px;
+        padding-left: 24px;
+        padding-right: 24px;
     }
+}
 
-    @media (min-width: 576px) {
-        .employee-profile .container {
-            padding-left: 24px;
-            padding-right: 24px;
-        }
+@media (min-width: 768px) {
+    .employee-profile .container {
+        padding-left: 40px;
+        padding-right: 40px;
     }
+}
 
-    @media (min-width: 768px) {
-        .employee-profile .container {
-            padding-left: 40px;
-            padding-right: 40px;
-        }
+@media (min-width: 992px) {
+    .employee-profile .container {
+        padding-left: 80px;
+        padding-right: 80px;
     }
+}
 
-    @media (min-width: 992px) {
-        .employee-profile .container {
-            padding-left: 80px;
-            padding-right: 80px;
-        }
+@media (min-width: 1200px) {
+    .employee-profile .container {
+        padding-left: 120px;
+        padding-right: 120px;
     }
-
-    @media (min-width: 1200px) {
-        .employee-profile .container {
-            padding-left: 120px;
-            padding-right: 120px;
-        }
-    }
+}
 </style>
 
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const weightChart = document.getElementById('weightChart');
-        if (weightChart) {
-            const weightData = {
-                labels: {{ weight_labels| safe
-        }
-    },
-        datasets: [{
-            label: 'Weight (kg)',
-            data: {{ weight_values| safe }},
-        borderColor: '#328E6E',
-        backgroundColor: 'rgba(50, 142, 110, 0.1)',
-        tension: 0.4,
-        fill: true,
-        pointRadius: 4,
-        pointBackgroundColor: '#328E6E',
-        pointHoverRadius: 6
+  document.addEventListener('DOMContentLoaded', function() {
+      const weightChart = document.getElementById('weightChart');
+      if (weightChart) {
+          const weightData = {
+              labels: {{ weight_labels|safe }},
+              datasets: [{
+                  label: 'Weight (kg)',
+                  data: {{ weight_values|safe }},
+                  borderColor: '#328E6E',
+                  backgroundColor: 'rgba(50, 142, 110, 0.1)',
+                  tension: 0.4,
+                  fill: true,
+                  pointRadius: 4,
+                  pointBackgroundColor: '#328E6E',
+                  pointHoverRadius: 6
               }]
           };
-
-    new Chart(weightChart, {
-        type: 'line',
-        data: weightData,
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: true,
-                    labels: {
-                        color: '#333',
-                        font: {
-                            weight: 'bold'
-                        }
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            return context.parsed.y + ' kg';
-                        }
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        color: '#888'
-                    }
-                },
-                y: {
-                    beginAtZero: false,
-                    ticks: {
-                        color: '#888'
-                    }
-                }
-            }
-        }
-    });
+  
+          new Chart(weightChart, {
+              type: 'line',
+              data: weightData,
+              options: {
+                  responsive: true,
+                  plugins: {
+                      legend: {
+                          display: true,
+                          labels: {
+                              color: '#333',
+                              font: {
+                                  weight: 'bold'
+                              }
+                          }
+                      },
+                      tooltip: {
+                          callbacks: {
+                              label: function(context) {
+                                  return context.parsed.y + ' kg';
+                              }
+                          }
+                      }
+                  },
+                  scales: {
+                      x: {
+                          ticks: {
+                              color: '#888'
+                          }
+                      },
+                      y: {
+                          beginAtZero: false,
+                          ticks: {
+                              color: '#888'
+                          }
+                      }
+                  }
+              }
+          });
       }
   });
-    document.addEventListener('DOMContentLoaded', function () {
-        const subscribersChart = document.getElementById('subscribersChart');
-        if (subscribersChart) {
-            const subscriberData = {
-                labels: ['Active', 'Expired', 'New This Month'],
-                datasets: [{
-                    data: [
-                        {{ active_count| add: "0" }},
-                {{ expired_count| add: "0"
-        }
-    },
-        {{ new_this_month_count| add: "0" }}
+  document.addEventListener('DOMContentLoaded', function() {
+    const subscribersChart = document.getElementById('subscribersChart');
+    if (subscribersChart) {
+      const subscriberData = {
+        labels: ['Active', 'Expired', 'New This Month'],
+        datasets: [{
+            data: [
+                {{ active_count|add:"0" }},
+                {{ expired_count|add:"0" }},
+                {{ new_this_month_count|add:"0" }}
             ],
-        backgroundColor: ['#328E6E', '#e9ecef', '#67AE6E'],
-        borderWidth: 1
+            backgroundColor: ['#328E6E', '#e9ecef', '#67AE6E'],
+            borderWidth: 1
         }]
     };
+    
 
-
-    new Chart(subscribersChart, {
-        type: 'doughnut',
-        data: subscriberData,
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        color: '#444',
-                        font: { weight: 'bold' }
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            return `${context.label}: ${context.raw}`;
+        new Chart(subscribersChart, {
+            type: 'doughnut',
+            data: subscriberData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#444',
+                            font: { weight: 'bold' }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.raw}`;
+                            }
                         }
                     }
                 }
             }
-        }
-    });
+        });
     }
 });
-</script>
-
+  </script>
+  
 {% endblock %}
 {% endblock %}
