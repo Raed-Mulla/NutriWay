@@ -388,13 +388,5 @@
         "action_flag": 3,
         "change_message": ""
     }
-},
-{
-    "model": "admin.logentry",
-    "pk": 31,
-    "fields": {
-        "action_time": "2025-04-30T11:12:39.108Z",
-        "user": 8,
-        "content_type": 15,
-        "object_id": "1",
-        "object_repr": 
+}
+]
