@@ -101,3 +101,6 @@ def calorie_calculator(request:HttpRequest):
   
     return render(request, "core/calorie_calculator.html", {"result": result})
   return render(request, "core/calorie_calculator.html")
+
+def about(request:HttpRequest):
+  return render(request, "core/about.html")

@@ -8,7 +8,7 @@
     <div class="row">
       <div class="col-lg-5 col-md-5 d-flex">
         {% if plan.image %}
-        <img src="{{ plan.image.url }}" alt="Plan Image" class="img-fluid">
+        <img src="{{ plan.image.url }}" class="img" alt="Plan Image" class="img-fluid">
         {% endif %}
       </div>
       <div class="col-lg-7 col-md-7 d-flex">
@@ -24,7 +24,11 @@
             <p><strong>Details:</strong> {{ plan.detail }}</p>
             
             <p><strong>Type:</strong> {{ plan.plan_type }}</p>
-            <p><strong>Price:</strong> {{ plan.price }} ﷼</p>
+            <p><strong>Price:</strong>   <img alt="Unicode 0x20C1.svg"
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/120px-Unicode_0x20C1.svg.png"
+              decoding="async" width="30px" class="mw-file-element"
+              srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/180px-Unicode_0x20C1.svg.png 1.5x, https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Unicode_0x20C1.svg/240px-Unicode_0x20C1.svg.png 2x"
+              data-file-width="16" data-file-height="16"> {{ plan.price|floatformat:0 }} </p>
           </div>
 
           <form method="get" action="{% url 'payments:subscription_summary' plan.id %}">

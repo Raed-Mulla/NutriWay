@@ -9,4 +9,5 @@ urlpatterns = [
   path("mode/<mode>", views.mode_view, name= "mode_view"),
   path("calorie/calculator", views.calorie_calculator, name= "calorie_calculator"),
   path("review/<int:specialist_id>", views.add_review, name= "add_review"),
+  path("about/us", views.about, name= "about"),
 ]

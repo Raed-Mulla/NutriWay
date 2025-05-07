@@ -64,7 +64,8 @@ body {
 .contact-message,
 .progress-sec,
 .subscription-detail,
-.view-subscriptions {
+.view-subscriptions,
+.vertify {
   min-height: calc(100vh - 56px);
 }
 
@@ -587,10 +588,6 @@ input:focus::placeholder {
 }
 
 @media (min-width:992px) {
-  .specialists .row .col:nth-child(2) {
-    /* transform: translateY(15px); */
-  }
-
   .specialists .row>div:nth-child(2) {
     transform: translateY(15px);
   }
@@ -758,7 +755,6 @@ input:focus::placeholder {
   overflow: hidden;
 }
 
-.plans .box .head .left .name span {}
 
 .plans .box .name img {
   width: 30px;
@@ -981,7 +977,6 @@ input:focus::placeholder {
 /* End view subscriptions */
 
 /* Start Craete Plan Form */
-.form-sec .label {}
 
 .form-sec .row {
   gap: 4px;
@@ -1219,7 +1214,7 @@ footer p {
 }
 
 .dashboard .card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-5px) !important;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
@@ -1291,7 +1286,6 @@ footer p {
   color: #ff8b4f;
 }
 
-.dashboard .card-1 .icon svg {}
 
 .dashboard .card-1 .info {
   width: 50%;
@@ -1495,9 +1489,8 @@ footer p {
 /* Dasboard */
 
 /* subscription-details */
-.subscription-details .h2 {}
 
-.subscription-details img {
+.subscription-details .img img {
   border-radius: 16px;
   width: 100%;
   margin-bottom: 10px;
@@ -1518,11 +1511,20 @@ footer p {
   flex-direction: column !important;
   justify-content: space-between;
 }
+.subscription-details .card {
+  transform: translate(0) !important ;
+}
+.subscription-details .img  {
+  width: 100%;
+  border-radius: 16px;
 
+}
+.card:hover {
+  transform: translate(0) !important;
+}
 
 /* subscription-details */
 /* pagination */
-nav .pagination {}
 
 nav .pagination .page-item-1.number {
   width: 30px;
@@ -1535,11 +1537,13 @@ nav .pagination .page-item-1.number {
   justify-content: center;
   border-radius: 50%;
 }
+
 nav .pagination .page-item-1.number a {
 
   color: white;
 
 }
+
 nav .pagination .page-item-1.icon {
   width: 30px;
   height: 30px;
@@ -1555,6 +1559,7 @@ nav .pagination .page-item-1.icon a {
   font-size: 30px;
 
 }
+
 /* pagination */
 /* payment-success */
 .payment-success .card {
@@ -1566,11 +1571,13 @@ nav .pagination .page-item-1.icon a {
   flex-direction: column !important;
   justify-content: space-between;
 }
+
 .payment-success .card svg {
   font-size: 40px;
   color: var(--custom-success);
   margin-bottom: 20px;
 }
+
 /* payment-success */
 /* Spin */
 .loader {
@@ -1590,40 +1597,150 @@ nav .pagination .page-item-1.icon a {
 @keyframes mltShdSpin {
   0% {
     box-shadow: 0 -0.83em 0 -0.4em,
-    0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em,
-    0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+      0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em,
+      0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
   }
+
   5%,
   95% {
-    box-shadow: 0 -0.83em 0 -0.4em, 
-    0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 
-    0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+    box-shadow: 0 -0.83em 0 -0.4em,
+      0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em,
+      0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
   }
+
   10%,
   59% {
-    box-shadow: 0 -0.83em 0 -0.4em, 
-    -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, 
-    -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;
+    box-shadow: 0 -0.83em 0 -0.4em,
+      -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em,
+      -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;
   }
+
   20% {
     box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em,
-     -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, 
-     -0.749em -0.34em 0 -0.477em;
+      -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em,
+      -0.749em -0.34em 0 -0.477em;
   }
+
   38% {
     box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em,
-     -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, 
-     -0.82em -0.09em 0 -0.477em;
+      -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em,
+      -0.82em -0.09em 0 -0.477em;
   }
+
   100% {
-    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 
-    0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em,
+      0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
   }
 }
 
 @keyframes round {
-  0% { transform: rotate(0deg) }
-  100% { transform: rotate(360deg) }
+  0% {
+    transform: rotate(0deg)
+  }
+
+  100% {
+    transform: rotate(360deg)
+  }
 }
- 
+
 /* Spin */
+/* About */
+.about-img {
+  height: 50vh;
+
+}
+.about-img img {
+  height: 100%;
+  width: 100%;
+  /* object-fit: fill; */
+
+}
+
+.about-sec p,
+.our-mission-sec p,
+.our-story-sec p,
+.team-member-sec p {
+  max-width: 1000px;
+  margin: auto;
+}
+
+.our-mission-sec,
+.team-member-sec {
+  background-color: var(--sec-bg);
+}
+
+.about p span {
+  color: var(--primary-color);
+  font-weight: 800;
+}
+
+.team-member .card {
+  background: #fff;
+  border-radius: 16px;
+  border: none;
+  padding: 35px 24px !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  border-bottom: 4px solid var(--primary-color);
+  background: linear-gradient(135deg, #fdfdfd, #eafaf1);
+  transition: transform 0.3s ease;
+}
+
+.team-member .card:hover {
+  transform: translateY(-5px) ;
+}
+
+.team-member .card .img img {
+  width: 50px;
+  height: 50px;
+}
+
+.team-member .info h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--primary-color);
+  margin-top: 25px;
+}
+
+.team-member .info .role {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--secondary-color);
+  margin-bottom: 0.5rem;
+}
+
+.team-member .info .description {
+  font-size: 0.9rem;
+  color: #444;
+  line-height: 1.4;
+  margin-top: 15px;
+}
+
+.team-member ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  margin-top: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.team-member ul li {
+  padding: 0 10px;
+}
+
+.team-member ul li a {
+  color: var(--btn-color);
+  transition: var(--t-duration);
+}
+
+.team-member ul li a:hover {
+  color: var(--btn-hover-color);
+}
+
+.team-member ul li a svg {
+  font-size: 20px;
+}
+
+/* About */
