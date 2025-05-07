@@ -65,7 +65,8 @@ body {
 .progress-sec,
 .subscription-detail,
 .view-subscriptions,
-.vertify {
+.vertify,
+.subscription-details {
   min-height: calc(100vh - 56px);
 }
 
@@ -840,6 +841,7 @@ input:focus::placeholder {
 
 .info-sec .row .personal-info img {
   width: 200px;
+  height: 200px;
   border-radius: 50%;
 }
 
@@ -1744,3 +1746,8 @@ nav .pagination .page-item-1.icon a {
 }
 
 /* About */
+/*  */
+.certificate-image {
+  width: 400px;
+}
+/*  */
