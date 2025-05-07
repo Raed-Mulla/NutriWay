@@ -1497,7 +1497,7 @@ footer p {
 }
 
 @media (max-width:767px) {
-  .subscription-details img {
+  .subscription-details .img img {
     height: 300px;
   }
 }
