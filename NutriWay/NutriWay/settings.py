@@ -30,6 +30,7 @@ SECRET_KEY = 'django-insecure-@s0q@6=a#+8qkaiqt!k$^$&=v5g_&gst3dv)589&)j-p2*f#@s
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = ["https://nutriway-production.up.railway.app", "http://127.0.0.1"]
 
 
 
