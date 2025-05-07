@@ -10,3 +10,10 @@ NutriWay is a comprehensive digital platform designed to connect users with cert
 
 ## wireframe
 [Wireframe - Figma ](https://www.figma.com/design/4tktliex9K0HV6rTNrYcGo/NutriHeaven?node-id=0-1&t=6FYmH8EH3M3r56n2-1)
+
+## Members
+
+- Nawaf Alahmadi  
+- Mohamad Alharbi  
+- Ali Alnemary  
+- Raed Mulla
