@@ -4,7 +4,7 @@
       "builder": "NIXPACKS"
   },
   "deploy": {
-      "startCommand": "cd NutriWay && python manage.py migrate && python manage.py collectstatic --noinput && gunicorn NutriWay.wsgi"
+    "startCommand": "cd NutriWay && python manage.py migrate && python manage.py loaddata all_data.json && python manage.py collectstatic --noinput && gunicorn NutriWay.wsgi"
   }
 }
 
